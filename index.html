@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odyssey of the Dragonlords — DM Tracker</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#854F0B">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f3; --bg3: #efefec;
+    --text: #1a1a18; --text2: #5a5a56; --text3: #9a9a94;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --radius: 10px; --radius-sm: 6px;
+    --amber-bg: #FAEEDA; --amber-bd: #FAC775; --amber-tx: #633806;
+    --teal-bg: #E1F5EE; --teal-bd: #9FE1CB; --teal-tx: #085041;
+    --green-bg: #EAF3DE; --green-bd: #C0DD97; --green-tx: #27500A;
+    --blue-bg: #E6F1FB; --blue-bd: #85B7EB; --blue-tx: #0C447C;
+    --coral-bg: #FAECE7; --coral-bd: #F0997B; --coral-tx: #993C1D;
+    --red-bg: #FCEBEB; --red-bd: #F09595; --red-tx: #A32D2D;
+    --purple-bg: #EEEDFE; --purple-bd: #AFA9EC; --purple-tx: #3C3489;
+    --gray-bg: #F1EFE8; --gray-tx: #444441;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c; --bg2: #2a2a28; --bg3: #333330;
+      --text: #e8e8e2; --text2: #a0a09a; --text3: #606058;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+  .header { display: flex; align-items: baseline; gap: 10px; margin-bottom: 1.5rem; }
+  .header h1 { font-size: 13px; font-weight: 600; letter-spacing: .08em; color: #854F0B; text-transform: uppercase; }
+  .header span { font-size: 12px; color: var(--text3); }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+  .tab { padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--text2); background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; }
+  .tab:hover { color: var(--text); }
+  .tab.on { color: #854F0B; border-bottom-color: #854F0B; }
+  .sec { display: none; } .sec.on { display: block; }
+  .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .g3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 7px; }
+  label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
+  input, select, textarea { font-size: 13px; width: 100%; padding: 7px 10px; border: 1px solid var(--border2); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-family: inherit; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #854F0B; }
+  textarea { resize: vertical; min-height: 60px; }
+  .btn { font-size: 12px; font-weight: 500; padding: 7px 14px; border: 1px solid var(--border2); border-radius: var(--radius-sm); background: transparent; color: var(--text); cursor: pointer; font-family: inherit; transition: background .15s; }
+  .btn:hover { background: var(--bg2); }
+  .btn.p { background: var(--amber-bg); border-color: var(--amber-bd); color: var(--amber-tx); }
+  .btn.p:hover { background: var(--amber-bd); }
+  .btn.d { background: var(--coral-bg); border-color: var(--coral-bd); color: var(--coral-tx); }
+  .btn.s { padding: 4px 10px; font-size: 11px; }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .mla { margin-left: auto; }
+  h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+  h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .hr { border: none; border-top: 1px solid var(--border); margin: 12px 0; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: var(--radius-sm); }
+  .bt { background: var(--teal-bg); color: var(--teal-tx); }
+  .ba { background: var(--amber-bg); color: var(--amber-tx); }
+  .bc { background: var(--coral-bg); color: var(--coral-tx); }
+  .bg { background: var(--gray-bg); color: var(--gray-tx); }
+  .empty { text-align: center; padding: 2.5rem; color: var(--text3); font-size: 13px; }
+
+  /* tree */
+  .ph { padding: 9px 14px; border-radius: var(--radius-sm); margin-bottom: 10px; border-left: 3px solid; }
+  .ph-t { font-size: 13px; font-weight: 600; }
+  .ph-s { font-size: 11px; margin-top: 2px; line-height: 1.5; opacity: .85; }
+  .nl { display: flex; gap: 0; align-items: stretch; margin-bottom: 4px; }
+  .arr { display: flex; align-items: center; padding: 0 4px; color: var(--text3); font-size: 14px; flex-shrink: 0; }
+  .nc { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; background: var(--bg); cursor: pointer; transition: border-color .15s; }
+  .nc:hover { border-color: var(--border2); }
+  .nc.sa { border-color: var(--amber-bd); background: var(--amber-bg); }
+  .nc.sd { border-color: var(--teal-bd); background: var(--teal-bg); }
+  .nc.key { border-style: dashed; }
+  .nc.sa.key { border-color: #EF9F27; }
+  .nc.sd.key { border-color: #1D9E75; }
+  .nl-t { display: block; font-size: 12px; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
+  .nl-d { font-size: 11px; color: var(--text2); line-height: 1.4; }
+  .nl-s { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; margin-top: 5px; }
+  .st { background: var(--gray-bg); color: var(--gray-tx); }
+  .sa2 { background: var(--amber-bg); color: var(--amber-tx); }
+  .sd2 { background: var(--teal-bg); color: var(--teal-tx); }
+  .hkw { margin-top: 7px; border-top: 1px dashed var(--border); padding-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+  .hki { display: flex; gap: 6px; align-items: flex-start; font-size: 10.5px; line-height: 1.4; color: var(--text2); }
+  .hkc { flex-shrink: 0; font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; white-space: nowrap; }
+  .sns { margin-top: 7px; border-top: 1px solid var(--border); padding-top: 6px; }
+  .sni { font-size: 11px; color: var(--text2); padding: 3px 0; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+  .sni:hover { color: var(--text); }
+  .snb { width: 13px; height: 13px; border: 1px solid var(--border2); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+  .snb.ck { background: var(--teal-bg); border-color: var(--teal-bd); color: var(--teal-tx); }
+  .conn { display: flex; flex-direction: column; align-items: center; padding: 2px 0; margin: 2px 0; }
+  .cline { width: 1px; height: 14px; background: var(--border2); }
+  .cgate { font-size: 10px; color: var(--text3); background: var(--bg2); border: 1px solid var(--border); border-radius: 3px; padding: 2px 8px; margin: 2px 0; }
+  .leg { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; padding: 8px 12px; background: var(--bg2); border-radius: var(--radius-sm); font-size: 11px; color: var(--text2); }
+  .li { display: flex; align-items: center; gap: 5px; }
+  .ld { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* npcs */
+  .npc-c { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 10px; }
+  .ep-t { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 3px; margin-right: 3px; margin-top: 3px; display: inline-block; }
+  .act-b { font-size: 10px; padding: 2px 6px; border-radius: 3px; background: var(--bg2); color: var(--text2); border: 1px solid var(--border); }
+  .frow { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .fb { font-size: 11px; padding: 4px 12px; border: 1px solid var(--border2); border-radius: 20px; background: transparent; cursor: pointer; color: var(--text2); }
+  .fb:hover { background: var(--bg2); }
+  .fb.on { background: var(--amber-bg); border-color: var(--amber-bd); color: var(--amber-tx); }
+  .sec-box { margin-top: 8px; font-size: 12px; color: var(--text2); background: var(--bg2); border-radius: var(--radius-sm); padding: 7px 10px; }
+  .log-e { font-size: 12px; color: var(--text2); padding: 6px 0; border-bottom: 1px solid var(--border); line-height: 1.5; }
+  .log-e:last-child { border-bottom: none; }
+  .thread-i { display: flex; align-items: flex-start; gap: 10px; padding: 12px; background: var(--bg2); border-radius: var(--radius-sm); margin-bottom: 8px; }
+  .tdot { width: 9px; height: 9px; border-radius: 50%; margin-top: 4px; flex-shrink: 0; }
+
+  /* avatar */
+  .av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+
+  /* combat */
+  .ci { background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:grab;transition:opacity .15s,box-shadow .15s;user-select:none; }
+  .ci:active { cursor:grabbing; }
+  .ci.dragging { opacity:.4; }
+  .ci.drag-over { box-shadow:0 -3px 0 0 #854F0B; }
+  .ci.current-turn { border-color:#854F0B;background:var(--amber-bg);box-shadow:0 0 0 2px rgba(133,79,11,.2); }
+  .ci.dead { opacity:.45; }
+  .ci-init { width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0; }
+  .ci-name { font-size:13px;font-weight:600;flex:1;min-width:0; }
+  .ci-sub { font-size:11px;color:var(--text2); }
+  .hp-bar { height:6px;border-radius:3px;background:var(--bg3);overflow:hidden;width:80px;flex-shrink:0; }
+  .hp-fill { height:100%;border-radius:3px;transition:width .3s; }
+  .hp-num { font-size:11px;font-weight:600;min-width:44px;text-align:right;flex-shrink:0; }
+  .ci-btns { display:flex;gap:4px;flex-shrink:0; }
+  .turn-arrow { font-size:18px;color:#854F0B;width:20px;flex-shrink:0;text-align:center; }
+  .round-badge { font-size:13px;font-weight:600;padding:3px 12px;border-radius:20px;background:var(--amber-bg);color:var(--amber-tx);border:1px solid var(--amber-bd); }
+
+  /* sync */
+  .sync-pill { font-size:11px; font-weight:500; padding:4px 11px; border-radius:20px; border:1px solid var(--border2); background:var(--bg2); color:var(--text2); cursor:pointer; white-space:nowrap; font-family:inherit; }
+  .sync-pill.ok { background:var(--teal-bg); border-color:var(--teal-bd); color:var(--teal-tx); }
+  .sync-pill.busy { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
+  .sync-pill.warn { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
+  .sync-pill.err { background:var(--red-bg); border-color:var(--red-bd); color:var(--red-tx); }
+  .sync-pill.off { background:var(--gray-bg); border-color:var(--border); color:var(--gray-tx); }
+  .notice { border-radius:var(--radius-sm); padding:10px 12px; margin-bottom:12px; font-size:12px; line-height:1.55; display:none; }
+  .notice.warn { background:var(--amber-bg); border:1px solid var(--amber-bd); color:var(--amber-tx); }
+  .notice.bad { background:var(--red-bg); border:1px solid var(--red-bd); color:var(--red-tx); }
+  .cm { display:flex; gap:10px; align-items:center; padding:9px 0; border-bottom:1px solid var(--border); font-size:12px; }
+  .cm:last-child { border-bottom:none; }
+  .hint { font-size:11px; color:var(--text3); line-height:1.5; margin-top:4px; }
+  @media (max-width:560px){ .header { flex-wrap:wrap; } .tabs { overflow-x:auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <h1>Odyssey of the Dragonlords</h1>
+    <span>DM Tracker</span>
+    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+      <button class="sync-pill off" id="syncPill" onclick="ghSyncNow()" title="Nu opslaan naar GitHub">Niet verbonden</button>
+      <button class="btn s" onclick="ghCheck(true)" title="Haal de versie van GitHub op">↻ Ophalen</button>
+      <button class="btn s" onclick="ghHistory()">Geschiedenis</button>
+      <button class="btn s" onclick="ghOpenCfg()">Verbinding</button>
+      <button class="btn s" onclick="exportData()" title="Download je data als JSON-bestand">⬇ Export</button>
+      <label class="btn s" style="cursor:pointer;margin:0;" title="Laad een eerder geëxporteerd JSON-bestand">⬆ Import<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+    </div>
+  </div>
+  <div id="ghNotice" class="notice"></div>
+  <div id="ghCfg" class="card" style="display:none;">
+    <div class="row"><h3 style="margin:0;">Verbinding met GitHub</h3><button class="btn s mla" onclick="hide('ghCfg')">Sluiten</button></div>
+    <div class="hr"></div>
+    <div class="g2">
+      <div><label>Eigenaar (je GitHub-gebruikersnaam)</label><input id="gf-owner" autocapitalize="off" autocorrect="off" spellcheck="false"></div>
+      <div><label>Repo met je campagnedata</label><input id="gf-repo" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="odl-data"></div>
+      <div><label>Branch</label><input id="gf-branch" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="main"></div>
+      <div><label>Bestandsnaam</label><input id="gf-path" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="campaign.json"></div>
+    </div>
+    <div style="margin-top:12px;"><label>Token</label><input id="gf-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="github_pat_...">
+      <div class="hint">Fine-grained token met toegang tot enkel deze repo, en Contents op "Read and write". De token blijft op dit toestel staan en gaat nergens anders heen.</div>
+    </div>
+    <div class="row" style="margin:12px 0 0;">
+      <button class="btn s p" onclick="ghSaveCfgForm()">Verbinden</button>
+      <button class="btn s" onclick="ghDisconnect()">Verbinding wissen</button>
+      <span id="gf-msg" style="font-size:11px;color:var(--text2);"></span>
+    </div>
+  </div>
+  <div id="ghHist" class="card" style="display:none;">
+    <div class="row"><h3 style="margin:0;">Opgeslagen versies</h3><button class="btn s mla" onclick="hide('ghHist')">Sluiten</button></div>
+    <div class="hint" style="margin-bottom:4px;">Elke opslag is een aparte versie. Terugzetten maakt een nieuwe versie bovenop — er gaat niets verloren.</div>
+    <div id="ghHistList"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" id="tb-characters" onclick="ST('characters')">Players</button>
+    <button class="tab" id="tb-campaign" onclick="ST('campaign')">Campaign</button>
+    <button class="tab" id="tb-npcs" onclick="ST('npcs')">NPCs</button>
+    <button class="tab" id="tb-threads" onclick="ST('threads')">Plot Threads</button>
+    <button class="tab" id="tb-sessions" onclick="ST('sessions')">Sessions</button>
+    <button class="tab" id="tb-combat" onclick="ST('combat')">⚔ Combat</button>
+  </div>
+
+  <!-- PLAYERS -->
+  <div id="tab-characters" class="sec on">
+    <h2>Player Characters</h2>
+    <div id="pgrid" class="g2"></div>
+    <div id="pedit" class="card" style="display:none;">
+      <h3 id="pe-title">Edit</h3>
+      <div class="g2" style="margin-top:10px;">
+        <div><label>Player</label><input id="pe-player"/></div>
+        <div><label>Character name</label><input id="pe-name"/></div>
+        <div><label>Class & Level</label><input id="pe-class" placeholder="e.g. Paladin 1"/></div>
+        <div><label>Race</label><input id="pe-race" placeholder="e.g. Thylean Siren"/></div>
+        <div><label>Epic Path</label>
+          <select id="pe-path">
+            <option value="">— none —</option>
+            <option>The Cursed One</option><option>The Demi-God</option><option>The Doomed One</option>
+            <option>The Dragonslayer</option><option>The Gifted One</option><option>The Haunted One</option>
+            <option>The Lost One</option><option>The Vanished One</option>
+          </select>
+        </div>
+        <div><label>HP Max</label><input id="pe-hp" type="number"/></div>
+      </div>
+      <div style="margin-top:10px;"><label>Notes (backstory, oaths, bonds)</label><textarea id="pe-notes"></textarea></div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn p" onclick="savePlayer()">Save</button>
+        <button class="btn" onclick="hide('pedit')">Cancel</button>
+        <span id="pe-idx" style="display:none;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAMPAIGN -->
+  <div id="tab-campaign" class="sec">
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:var(--gray-bg);border:1px solid #D3D1C7;"></div>Not started</div>
+      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px solid var(--amber-bd);"></div>Active</div>
+      <div class="li"><div class="ld" style="background:var(--teal-bg);border:1px solid var(--teal-bd);"></div>Done</div>
+      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px dashed #EF9F27;"></div>Key gate (★)</div>
+      <span style="color:var(--text3);">Click a node to cycle its status</span>
+    </div>
+    <div id="tree"></div>
+  </div>
+
+  <!-- NPCs -->
+  <div id="tab-npcs" class="sec">
+    <div class="row" style="margin-bottom:10px;"><h2 style="margin:0;">NPCs</h2><button class="btn s p mla" onclick="openNF(-1)">+ Add NPC</button></div>
+    <div class="frow" id="nfrow"></div>
+    <div id="nlist"></div>
+    <div id="nform" class="card" style="display:none;margin-top:12px;">
+      <h3 id="nf-title">Add NPC</h3>
+      <div class="g2" style="margin-top:10px;">
+        <div><label>Name</label><input id="nf-name"/></div>
+        <div><label>Role</label><input id="nf-role"/></div>
+        <div><label>Location</label><input id="nf-loc"/></div>
+        <div><label>First appears in</label>
+          <select id="nf-act"><option>Prologue</option><option>Act 1</option><option>Act 2</option><option>Act 3</option><option>Act 4</option><option>Act 5</option></select>
+        </div>
+        <div><label>Disposition</label>
+          <select id="nf-att"><option>Friendly</option><option>Neutral</option><option>Hostile</option><option>Unknown</option></select>
+        </div>
+      </div>
+      <div style="margin-top:10px;"><label>Epic paths connected (comma separated, e.g. "Demi-God, Lost One")</label><input id="nf-paths"/></div>
+      <div style="margin-top:10px;"><label>DM secrets (players don't know this)</label><textarea id="nf-sec"></textarea></div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn p" onclick="saveNPC()">Save</button>
+        <button class="btn" onclick="hide('nform')">Cancel</button>
+        <span id="nf-idx" style="display:none;"></span>
+      </div>
+    </div>
+    <div id="nlog" class="card" style="display:none;margin-top:12px;">
+      <div class="row"><h3 id="nl-title" style="margin:0;"></h3><button class="btn s mla" onclick="closeNL()">Close</button></div>
+      <div id="nl-entries" style="margin-top:10px;max-height:220px;overflow-y:auto;"></div>
+      <div class="hr"></div>
+      <label>Log interaction</label>
+      <textarea id="nl-input" style="min-height:52px;"></textarea>
+      <div class="row" style="margin-top:8px;">
+        <select id="nl-player" style="flex:1;font-size:12px;"></select>
+        <button class="btn s p" onclick="addLog()">Log it</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- THREADS -->
+  <div id="tab-threads" class="sec">
+    <div class="row"><h2 style="margin:0;">Plot Threads</h2><button class="btn s p mla" onclick="openTF()">+ Add Thread</button></div>
+    <div id="tlist" style="margin-top:12px;"></div>
+    <div id="tform" class="card" style="display:none;margin-top:12px;">
+      <h3>New plot thread</h3>
+      <div class="g2" style="margin-top:10px;">
+        <div><label>Title</label><input id="tf-title"/></div>
+        <div><label>Status</label>
+          <select id="tf-st"><option value="hidden">Hidden</option><option value="active">Active</option><option value="resolved">Resolved</option></select>
+        </div>
+      </div>
+      <div style="margin-top:10px;"><label>Description</label><textarea id="tf-desc"></textarea></div>
+      <div style="margin-top:10px;"><label>Consequences if ignored</label><textarea id="tf-con" style="min-height:48px;"></textarea></div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn p" onclick="saveTF()">Save</button>
+        <button class="btn" onclick="hide('tform')">Cancel</button>
+        <span id="tf-idx" style="display:none;"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SESSIONS -->
+  <div id="tab-sessions" class="sec">
+    <div class="row"><h2 style="margin:0;">Session Log</h2><button class="btn s p mla" onclick="openSF()">+ New Session</button></div>
+    <div id="slist" style="margin-top:12px;"></div>
+    <div id="sform" class="card" style="display:none;margin-top:12px;">
+      <h3 id="sf-title">New Session</h3>
+      <div class="g2" style="margin-top:10px;">
+        <div><label>Session #</label><input id="sf-num" type="number"/></div>
+        <div><label>Date</label><input id="sf-date" type="date"/></div>
+      </div>
+      <div style="margin-top:10px;"><label>Summary — what happened</label><textarea id="sf-sum"></textarea></div>
+      <div style="margin-top:10px;"><label>Cliffhanger / open questions for next session</label><textarea id="sf-cliff" style="min-height:48px;"></textarea></div>
+      <div style="margin-top:10px;"><label>DM notes (prep, what worked)</label><textarea id="sf-notes" style="min-height:48px;"></textarea></div>
+      <div class="row" style="margin-top:12px;">
+        <button class="btn p" onclick="saveSF()">Save</button>
+        <button class="btn" onclick="hide('sform')">Cancel</button>
+        <span id="sf-idx" style="display:none;"></span>
+      </div>
+    </div>
+  </div>
+  <!-- COMBAT -->
+  <div id="tab-combat" class="sec">
+    <div class="row" style="margin-bottom:12px;">
+      <h2 style="margin:0;">Initiative Tracker</h2>
+      <span id="round-disp" style="margin-left:8px;"></span>
+      <div class="mla" style="display:flex;gap:6px;">
+        <button class="btn s p" onclick="nextTurn()">&#9658; Next turn</button>
+        <button class="btn s" onclick="sortByInit()">Sort by init</button>
+        <button class="btn s d" id="clear-btn" onclick="clearCombat()">Clear all</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px;">
+      <div style="display:grid;grid-template-columns:1fr 80px 80px auto;gap:8px;align-items:end;">
+        <div><label>Name</label><input id="ci-name" placeholder="e.g. Goblin Chief"/></div>
+        <div><label>Initiative</label><input id="ci-init" type="number" placeholder="14"/></div>
+        <div><label>HP</label><input id="ci-hp" type="number" placeholder="30"/></div>
+        <div style="padding-bottom:0;display:flex;align-items:flex-end;"><button class="btn p" onclick="addMonster()" style="width:100%;">+ Monster</button></div>
+      </div>
+      <button class="btn s" onclick="addAllPlayers()" style="margin-top:10px;width:100%;">+ Add all players (voert initiative in per speler)</button>
+    </div>
+    <div id="combat-list"></div>
+    <p style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center;">Sleep rijen om volgorde aan te passen &middot; Klik HP-getal om exact in te stellen &middot; &#10005; om te verwijderen</p>
+  </div>
+
+</div>
+
+<script>
+var PL=['Laura','Indy','Tiebe','Ruben','Marthe','Jarne','Jonas'];
+var PC=[{bg:'#FAEEDA',c:'#633806'},{bg:'#E1F5EE',c:'#085041'},{bg:'#FAECE7',c:'#993C1D'},{bg:'#EEEDFE',c:'#3C3489'},{bg:'#EAF3DE',c:'#27500A'},{bg:'#E6F1FB',c:'#0C447C'},{bg:'#FBEAF0',c:'#72243E'}];
+var NC=[{bg:'#E1F5EE',c:'#085041'},{bg:'#FAECE7',c:'#993C1D'},{bg:'#EEEDFE',c:'#3C3489'},{bg:'#FAEEDA',c:'#633806'},{bg:'#E6F1FB',c:'#0C447C'},{bg:'#FBEAF0',c:'#72243E'},{bg:'#EAF3DE',c:'#27500A'},{bg:'#FCEBEB',c:'#A32D2D'},{bg:'#E6F1FB',c:'#185FA5'},{bg:'#EAF3DE',c:'#3B6D11'},{bg:'#FAEEDA',c:'#412402'},{bg:'#EEEDFE',c:'#26215C'}];
+var EPC={'Demi-God':'#FAEEDA|#633806','Vanished One':'#E1F5EE|#085041','Doomed One':'#FAECE7|#993C1D','Haunted One':'#EEEDFE|#3C3489','Gifted One':'#EAF3DE|#27500A','Lost One':'#E6F1FB|#0C447C','Cursed One':'#FBEAF0|#72243E','Dragonslayer':'#FCEBEB|#A32D2D'};
+var ACB={'Prologue':'#FAEEDA|#633806','Act 1':'#EAF3DE|#27500A','Act 2':'#E1F5EE|#085041','Act 3':'#E6F1FB|#0C447C','Act 4':'#FAECE7|#993C1D','Act 5':'#FCEBEB|#A32D2D'};
+
+var TREE=[
+  {id:'P',lbl:'Prologue — The Prophecy',sub:'The Sour Vintage in the Heartlands. Kyrah (vermomd als dichteres) roept de helden samen. Eindigt met de Drie Arbeidsdaden en de zeven gesprekken met Versi.',bg:'#FAEEDA',br:'#FAC775',tx:'#633806',lin:false,gate:null,
+   nodes:[
+    {id:'p1',lbl:'The Sour Vintage',desc:"Kyrah verzamelt de helden en onthult het visioen van het Orakel. Ze benoemt ieders talent — dat is haar opdracht.",key:false,
+     sns:[{id:'s10',lbl:'Kennismaking + opdracht aangenomen'},{id:'s11',lbl:'Vertrek met Taneias en Javon'}],hk:[]},
+    {id:'p2',lbl:'The Great Boar',desc:"Zwijn met verdorven hart, losgelaten door de Titanen. Survival DC 10 om het hol te vinden. Eén jager sterft sowieso.",key:false,
+     sns:[{id:'s12',lbl:'Hol voorbereiden (strikken/valkuil/palissade)'},{id:'s13',lbl:'Karkas geofferd — AAN WIE? (komt terug in Act 2)'}],hk:[]},
+    {id:'p3',lbl:'Temple of the Oracle',desc:"Versi is gevangene van zeeheks Heleka, gestuurd door Sydon. Zonder haar bevrijding start de campagne niet.",key:false,
+     sns:[{id:'s14',lbl:'Heleka en haar minions verslagen'},{id:'s15',lbl:'Versi bevrijd'}],hk:[]},
+    {id:'p4',lbl:'Drie Arbeidsdaden onthuld ★',desc:"(1) Drink uit de Horn of Balmytria. (2) Ontsteek de Mithral Forge. (3) Herover de wapens van de Dragonlords. Proteus geeft één dragonlord coin.",key:true,sns:null,hk:[]},
+    {id:'p5',lbl:'Versi apart — de zeven gesprekken ★',desc:"De vijf minuten die de hele campagne dragen. Versi heeft meerdere agenda's tegelijk: bloedverwant van twee spelers, cipier van een derde.",key:true,sns:null,
+     hk:[
+      {p:'Doomed One',t:'Gedeeld bloed van Sydon erkend. Doem is echt én afwendbaar → Mithral Forge. Zwijgt over Kentimane.'},
+      {p:'Dragonslayer',t:'De draak bestaat en draagt een ruiter. Volg de aanvoerder van de Orde. Zwijgt over metallieke draken en de eed.'},
+      {p:'Vanished One',t:'Versi bekent dat zij 500 jaar de cipier was. Naar Xander in de Necropolis. Eed van terugkeer.'},
+      {p:'Haunted One',t:'Gewist is niet vernietigd. Begin in het Oudwoud, bij haar zuster.'},
+      {p:'Lost One',t:'Bemanning leeft, verspreid over de Golf. De taal ligt in een bibliotheek voorbij de horizon.'},
+      {p:'Gifted One',t:'KLEINKIND VAN SYDON. Krijgt het medaillon van zijn grootmoeder. Geen roem — gezag dat niet weggelachen kan worden.'},
+      {p:'Cursed One',t:'Weigert zijn arenanaam. Vloek is breekbaar; het pad eindigt in een toren in zee.'}
+     ]},
+    {id:'p6',lbl:'Oath of Fellowship',desc:"Kyrah stelt de eed voor. Fame wordt gedeeld en de eed beschermt de groep. Daarna: eerste Arbeidsdaad kiezen — Kyrah stuurt naar Estoria.",key:false,sns:null,hk:[]},
+    {id:'p7',lbl:'Een week later — het medaillon spreekt',desc:"De geest van de grootmoeder meldt zich voor het eerst: laat de Dragonlords herrijzen, maar neem eerst wraak op Sydon.",key:false,sns:null,
+     hk:[{p:'Gifted One',t:'Zij was zelf een tovenares. Zijn wizardhaat is zelfhaat — en hij moet elke week luisteren.'}]}
+  ]},
+
+  {id:'A1',lbl:'Act 1 — The Great Labors',sub:'Basis: Estoria. Pythor ÉN Volkan zitten hier. Anora eerst, dan de drie kerkers. De Droom voegt er twee toe.',bg:'#EAF3DE',br:'#C0DD97',tx:'#27500A',lin:false,gate:'Prologue complete',
+   nodes:[
+    {id:'a1g',lbl:'Estoria — Pythor & Volkan',desc:"Pythor is dronken en uitgehold door 500 jaar vrede. Volkan doet zich voor als verstrooide dwerg. Hub voor alle drie de kerkers.",key:false,sns:null,
+     hk:[{p:'Gifted One',t:'Stad = ongemak. Hij is hier de minst thuisvoelende van de zeven.'},
+         {p:'Dragonslayer',t:'Het leger dat Estoria bedreigt bestaat uit centaurenstammen. Zijn eigen volk.'}]},
+    {id:'a1a',lbl:'Rescue Princess Anora ★',desc:"Vastgeketend aan de Rock of Estor vóór de volle maan, anders vallen de centauren aan. Pythor helpt met niets tot ze veilig is. Tijd voor één Arbeidsdaad eerst.",key:true,
+     sns:[{id:'s16',lbl:'Anora levend terug'},{id:'s17',lbl:'Feest van Pythor + zijn raad'}],
+     hk:[{p:'Lost One',t:'Zodra Anora veilig is vertelt Pythor over Estor Arkelander en de schat van de Dragonlords.'},
+         {p:'Demi-God',t:'VRIJGEKOMEN — geen spelershaak meer. Werkt als partijquest en poort naar Pythors medewerking.'}]},
+    {id:'a1b',lbl:'Labor 1 — Mossy Temple',desc:"Oudwood. Goatlings stalen de Hoorn voor Demetria, Versi's verdorven zuster, die trouw zwoer aan Lutheria nadat Estor de eik van haar zuster omhakte.",key:false,
+     sns:[{id:'s1',lbl:'Retrieve the Horn of Balmytria'},{id:'s2',lbl:'Heroes drink from the Horn (triggers the Dream)'},{id:'s18',lbl:'Meisjes gewaarschuwd vóór het ritueel (Persuasion DC 15)'}],
+     hk:[{p:'Haunted One',t:'Demetria heeft het lesser artifact (Ring of Protection). Attunement = de stemmen beginnen.'},
+         {p:'Doomed One',t:'Demetria kent haar lot en lekt de helft: de doem komt van Lutheria.'},
+         {p:'Gifted One',t:'Dit is zijn eigen bos. Druïden van de Oldwood vingen hem op na het incident.'},
+         {p:'Vanished One',t:"Demetria's haat richt zich op de Dragonlords, en op Estor in het bijzonder."}]},
+    {id:'a1c',lbl:'Labor 2 — Mithral Mines',desc:"Troglodietenkoning eerst uitschakelen, dan pas de smidse wekken. De Forgekeeper in het lavabekken helpt als je de bol ontmantelt.",key:false,
+     sns:[{id:'s19',lbl:'Troglodietenkoning uitgeschakeld'},{id:'s20',lbl:'Vuren ontstoken — Labor voltooid'},{id:'s21',lbl:'Geheime dok achter de watervallen (F22)'}],
+     hk:[{p:'Doomed One',t:'Hier wordt haar beschermartefact tegen de doem gesmeed. Versi wees hier in scène één al naartoe.'},
+         {p:'Dragonslayer',t:'Forgekeeper: je hebt een drakendodend wapen nodig — gesmeed door de gygans van Yonder.'}]},
+    {id:'a1d',lbl:'Labor 3 — Necropolis at Telamok',desc:"Damon laat alleen door tegen de dragonlord coin. In de Tomb of Xander liggen de wapens én de kronen.",key:false,
+     sns:[{id:'s3',lbl:"Enter Xander's tomb"},{id:'s4',lbl:'Recover Dragonlord weapons and armor'}],
+     hk:[{p:'Vanished One',t:'Xander HERKENT haar en geeft de kroon. Eerste echte herinnering. Harnas is er niet — Gaius heeft het.'},
+         {p:'Gifted One',t:'TWEEDE KROON: het boek verdeelt ze zelf. Damon = stichter van de Academie → eerste wizardconfrontatie.'},
+         {p:'Cursed One',t:'Damon kende zijn voorouder en weet dat de vloek door Sydon én Lutheria samen bedacht werd.'}]},
+    {id:'a1e',lbl:'The Dream — Two More Labors ★',desc:"Na het drinken: acht uur slaap, en een visioen van een galei, een bronzen apparaat en dode roeiers. Ultros + Antikythera toegevoegd.",key:true,sns:null,hk:[]},
+    {id:'a1f',lbl:'Gaius — recurring threat',desc:"Duikt op na Labor 1. Commandant van de Orde van Sydon, berijdt de zilveren draak Argyn. Bij ons: mét centaurenwarbands.",key:false,sns:null,
+     hk:[{p:'Dragonslayer',t:'Eerste directe provocatie. Volg Gaius en je vindt Argyn.'},
+         {p:'Vanished One',t:'Hij bewaart haar harnas in zijn kamer op Yonder.'},
+         {p:'Cursed One',t:"Gaius voert de Orde aan waaraan Ox' priester verbonden is."}]},
+    {id:'a1h',lbl:'Ontbieding door Acastus',desc:"Na 2+ Arbeidsdaden verschijnen drie koperdraken met centurions. Tarchon mag niet zonder de helden terugkeren. Maak eerst de derde Labor af.",key:false,sns:null,hk:[]}
+  ]},
+
+  {id:'A2',lbl:'Act 2 — The Dragonlords (City of Mytros)',sub:'De storm, de Ultros, de Antikythera. Eindigt met het uitvaren en de 60-dagen klok.',bg:'#E1F5EE',br:'#9FE1CB',tx:'#085041',lin:false,gate:'Complete at least 2 Great Labors',
+   nodes:[
+    {id:'a2a',lbl:'The Storm — vijf voorstellen',desc:"Acastus legt het besluit bij de helden. Elke optie heeft een prijs: control weather / tempel slopen / 70 kinderen / hecatombe 10.000gp / mirakel (Persuasion DC 16).",key:false,
+     sns:[{id:'s22',lbl:'Keuze gemaakt — storm gaat liggen'},{id:'s23',lbl:'Kaart naar de Ultros ontvangen'}],hk:[]},
+    {id:'a2b',lbl:'Queen Vallus ★',desc:"Godin van wijsheid. Waarschuwt openlijk voor de ambities van haar man. Betrouwbaarste bondgenoot.",key:true,sns:null,
+     hk:[{p:'Gifted One',t:'Neemt hem apart: de fortress ligt bij een draak in de Garden of Helios. Het geheime ei gaat naar hem.'}]},
+    {id:'a2c',lbl:'King Acastus',desc:"Wil de orde van de Dragonlords herstellen maar heeft zijn draken niet verdiend — Lutheria gaf hem de eieren plus potions of aging.",key:false,sns:null,
+     hk:[{p:'Gifted One',t:'Icarus is een zoon van Nephele. Zet dit klaar voor Act 4.'},
+         {p:'Haunted One',t:'Als de troonaanspraak echt is, wordt hij vanaf Act 3 een probleem voor Acastus.'}]},
+    {id:'a2d',lbl:'Explore Mytros',desc:"Academie, Tempel van de Vijf vs. Orde van Sydon, de arena en de Great Games, de aquaducten, de haven.",key:false,
+     sns:[{id:'s24',lbl:'Cult of the Snake in de aquaducten gevonden'}],
+     hk:[{p:'Cursed One',t:'Zijn arena, en de cultus van zijn priester. Zet de oproep hier klaar.'},
+         {p:'Haunted One',t:'De Academie: zijn eigen leermeesters plaatsen hem niet.'},
+         {p:'Gifted One',t:'De gebeten student LEEFT en is nu meester. Zijn versie: "een monster viel ons zonder aanleiding aan."'},
+         {p:'Doomed One',t:'Haar stad, haar haven.'}]},
+    {id:'a2e',lbl:'Dead Falls — Claim the Ultros ★',desc:"Zeventig geesten en spectres. Estor Arkelander wacht op krijgers en wil een lichaam — hij bezoekt eerst hun dromen.",key:true,sns:null,
+     hk:[{p:'Lost One',t:'DE DEAL: Estor wijst de schat in de Nether Sea aan, mits hij eerste keuze krijgt (xiphos of slaughter). Zonder eed geen route.'},
+         {p:'Vanished One',t:"Estor was Versi's andere minnaar, 500 jaar geleden."}]},
+    {id:'a2f',lbl:'Feest, Antikythera & vertrek',desc:"Vallus geeft de Antikythera — vijf Arbeidsdaden compleet. Pythor zweert dienst en gaat mee, Volkan in zijn kielzog. Honderd vrijwilligers.",key:false,
+     sns:[{id:'s25',lbl:'Antikythera ontvangen'},{id:'s26',lbl:'Bemanning + voorraden geregeld'}],
+     hk:[{p:'Lost One',t:'De Antikythera kan door een gygan-smid (Steros/Bront/Garzoon) omgebouwd worden tot kompas naar buiten Thylea.'},
+         {p:'Gifted One',t:'Vallus geeft het geheime drakenei aan Kyrah — wijs het aan hem toe. Brass/gold broeden = fire bolt.'}]},
+    {id:'a2g',lbl:'De 60-dagen klok start ★',desc:"Vanaf hier telt elke zeedag. Drie dagen varen tussen eilanden. Laat Kyrah aftellen; op dag 50 wordt ze gejaagd.",key:true,sns:null,hk:[]}
+  ]},
+
+  {id:'A3',lbl:'Act 3 — The Great Voyage',sub:'Cerulean Gulf → Forgotten Sea → Nether Sea → Praxys. Bijna elke persoonlijke lijn koerst hier af op een antwoord. Plan deze akte, of hij plant jou.',bg:'#E6F1FB',br:'#85B7EB',tx:'#0C447C',lin:false,gate:'Claim the Ultros',
+   nodes:[
+    {id:'a3a',lbl:'Yonder — VIERvoudige afrekening ★',desc:"Het enige verplichte eiland: het Antikythera-tandwiel ligt in een verguld kistje bij Chondrus. Gaius voert het bevel. SPEEL ALS MEERDERE SCÈNES.",key:true,
+     sns:[{id:'s27',lbl:'1. Aankomst + Grote Bibliotheek'},{id:'s28',lbl:'2. Chondrus + het tandwiel'},{id:'s29',lbl:'3. De ontdekkingen (harnas, runen)'},{id:'s30',lbl:'4. Confrontatie Gaius & Argyn'}],
+     hk:[{p:'Dragonslayer',t:'Argyn. Beslis: verdorven of slachtoffer? Zilver = metalliek, dus na de eed zijn eigen bloed.'},
+         {p:'Vanished One',t:'Haar harnas in de kamer van Gaius. Geen Dragon Scale Mail — Boots of Speed of Cloak of the Bat.'},
+         {p:'Lost One',t:'De Grote Bibliotheek maakt zijn runen leesbaar. Chondrus\' kanttekeningen lekken de Act 4-onthulling.'},
+         {p:'Cursed One',t:'Hoofdkwartier van de Orde van zijn priester.'}]},
+    {id:'a3c',lbl:'Island of the Fates — TWEE scènes',desc:"Drie zusters aan een weefgetouw. Het scherpste stuk waarheid in de campagne. Het weefgetouw kan een wapen tegen Lutheria maken.",key:false,
+     sns:[{id:'s31',lbl:'Scène A — de Doomed One'},{id:'s32',lbl:'Scène B — de Haunted One'},{id:'s33',lbl:'Weefgetouw: onderhandeld of genomen'}],
+     hk:[{p:'Doomed One',t:'Volledige geboorteprofetie: Lutheria liet haar ouders afslachten en beval eindeloze kwelling — als grap. + de naam Kentimane.'},
+         {p:'Haunted One',t:'Lutheria joeg hem op ("zou de macht van de dood breken"); MYTROS wiste hem om hem te redden. Zielen zitten in de zeis.'},
+         {p:'Cursed One',t:'De Fates zien de vloek van zijn volk als lotsbeschikking, niet als ongeluk.'},
+         {p:'Gifted One',t:'Eén zin over de brandende achterpoten — leest achteraf als voorspelling.'}]},
+    {id:'a3d',lbl:'Island of Themis — Amazones',desc:"Bronzen automaten (stimfay). Machtige bondgenoten voor Act 4. Respect verdienen, niet het eiland aflopen.",key:false,sns:null,
+     hk:[{p:'Haunted One',t:'Greater artifact bij de Koningin: Helm of Brilliance, tevens bewijs van de troonaanspraak.'},
+         {p:'Lost One',t:'De stimfay-bouwers: levend gyganisch vakmanschap, geen ruïne.'}]},
+    {id:'a3b',lbl:'Cerulean Gulf — overige eilanden',desc:"Golden Heart, Chimera, Exiles, Scorpion, Indigo, Titan's Folly, Fire Island. Schat, gevaar en epic-path-werk. Reken ~1 maand voor de hele Golf.",key:false,sns:null,
+     hk:[{p:'Lost One',t:'Zijn bemanning ligt hier verspreid. Suggestie: één bij de Barbarians, één gevangen op Yonder, één dood.'},
+         {p:'Vanished One',t:'Het brass drakenei op Fire Island (V15).'}]},
+    {id:'a3h',lbl:'Garden of Helios (Forgotten Sea)',desc:"Gouden draak Helios. In zijn schathoop ligt het instant fortress. Erinyes-scène: Helios wordt meegesleept naar het Island of Oathbreakers.",key:false,sns:null,
+     hk:[{p:'Gifted One',t:'Fortress of the Dragonlords = heroic task 1. De nieuwe orde heeft een zetel nodig.'},
+         {p:'Dragonslayer',t:'In canon ligt hier de climax (Helios). Bij ons is dat Argyn — bruikbaar als tweede draak of spiegel.'}]},
+    {id:'a3e',lbl:'Island of the Dragon — Hexia',desc:"Groene draak die Pythors geliefden een voor een wegnam. Houdt Ophea gevangen. VRIJGEKOMEN — hangt aan geen spelersblad meer.",key:false,sns:null,
+     hk:[{p:'Demi-God',t:'BESLIS: schrappen, behouden als partijquest (verklaart waarom Pythor drinkt), of als NPC-draad parkeren.'}]},
+    {id:'a3f',lbl:"Praxys — Sydon's Tower ★",desc:"Verdieping na verdieping omhoog: arena van Talieus, Nephele, de Furies met hun orrery, een stervende ster. Sydon biedt onderhandeling maar vecht niet tot de dood.",key:true,
+     sns:[{id:'s34',lbl:'Bondgenoten verzameld (ster / Nephele / Furies)'},{id:'s35',lbl:'Sydon geconfronteerd — ontsnapt via de kaart'}],
+     hk:[{p:'Gifted One',t:'GROOTSTE PAYOFF. Medaillon breken = grootmoeders ziel in Nephele. Zij is de moeder van Argyn én Icarus. Sydon herkent hem.'},
+         {p:'Cursed One',t:'De toren in zee uit scène één. Bron van de vloek. Wat betekent "breken"?'},
+         {p:'Doomed One',t:'Haar eigen bloedlijn, en hij weet het. Zij en Wauros staan hier als familie.'}]},
+    {id:'a3g',lbl:'Nether Sea — Confront Lutheria ★',desc:"Inktzwart zuur water. Lutheria op Hypnos, getrokken door Talieus. LACH OM HAAR MOPPEN. Het Royal Game zet levens van de bemanning in.",key:true,
+     sns:[{id:'s36',lbl:'Prison Cube gevonden'},{id:'s37',lbl:'Aan boord van Hypnos'},{id:'s38',lbl:'De kristallen zeis GEBROKEN'}],
+     hk:[{p:'Haunted One',t:'Zij richt alles op hem. Zeis breken = familie vrij + de wereld herinnert zich hen weer. EINDE VAN ZIJN BOOG.'},
+         {p:'Doomed One',t:'Lutheria doet één ronde niets van het lachen. Haar dood heft de limiet op zijn derde dood op.'},
+         {p:'Lost One',t:'De schat in de spiegelgevangenis. Estor neemt daarna zijn xiphos of slaughter.'},
+         {p:'Vanished One',t:'Hezzebal geeft haar persoonlijk de schuld van zijn eeuwenlange opsluiting.'}]}
+  ]},
+
+  {id:'A4',lbl:'Act 4 — The Battle of Mytros',sub:'De Oath of Peace eindigt. ONTHULLING: de Vijf Goden zijn draken. Conflicten volgen elkaar op zonder short rest.',bg:'#FAECE7',br:'#F0997B',tx:'#993C1D',lin:false,gate:'Confront both Titans in Act 3',
+   nodes:[
+    {id:'a4a',lbl:'De goden veranderen ★',desc:"Op de zestigste ochtend: Kyrah en Pythor worden bronzen draken op het dek. Balmytria misleidde de Titanen en haar broed werd goden.",key:true,sns:null,
+     hk:[{p:'Dragonslayer',t:'De omkering van zijn hele eed. Alles waarop hij zwoer blijkt draak.'}]},
+    {id:'a4e',lbl:'Oath of the Dragonlord — binden',desc:"Elke held kiest een draak, zweert de eed hardop en offert daarvoor een magisch voorwerp.",key:false,sns:null,
+     hk:[{p:'Dragonslayer',t:'Sluit de cirkel die in Act 1 begon met een gestolen hoorn.'},
+         {p:'Gifted One',t:'Zijn eigen draak, uit Vallus\' ei, vliegt hier voor het eerst de oorlog in.'}]},
+    {id:'a4b',lbl:'Icarus & de valse Dragonlord',desc:"Acastus verloor de controle over zijn zilveren draak. Versla Icarus, confronteer de koning, claim de Colossus of Pythor.",key:false,sns:null,
+     hk:[{p:'Gifted One',t:'Icarus is Nephele\'s zoon. Als hij haar bevrijdde, staat hij tegenover haar kind.'},
+         {p:'Dragonslayer',t:'Broer van Argyn. Conflict 1 is voor hem en Wauros samen een familiekwestie.'},
+         {p:'Haunted One',t:'Als de zeis gebroken is, herinnert de wereld zijn familie. Laat iemand hem bij zijn echte naam noemen.'}]},
+    {id:'a4c',lbl:'Titans Attack Mytros ★',desc:"Sydon, Lutheria en Kentimane vallen aan, afhankelijk van wie nog leeft. Elke bondgenoot en elke beslissing telt nu.",key:true,sns:null,
+     hk:[{p:'Doomed One',t:'Het wezen uit haar profetie staat letterlijk in de baai. En het is háár stad.'},
+         {p:'Lost One',t:'Kentimane is het antwoord op de sarcofaag. Zijn vloek is mogelijk het enige dat tegen hem opgewassen is.'},
+         {p:'Cursed One',t:'Zijn arena brandt.'}]},
+    {id:'a4d',lbl:'The New Oath',desc:"Titanen verslagen. Nieuwe eden van de overlevende Titanen, en van de helden zelf aan de stad.",key:false,sns:null,hk:[]}
+  ]},
+
+  {id:'A5',lbl:'Act 5 — The New Pantheon',sub:'Laat eerst jaren voorbijgaan. Narsus biedt het pad naar goddelijkheid. Dan de Apokalypsis.',bg:'#FCEBEB',br:'#F09595',tx:'#A32D2D',lin:false,gate:'Survive the Battle of Mytros',
+   nodes:[
+    {id:'a5e',lbl:'De jaren daarna',desc:"Mytros herbouwd, nieuwe nederzettingen met elk een held als beschermheer. De orde van de Dragonlords als vredeshandhavers. Vraag elke speler wat hun personage deed.",key:false,sns:null,hk:[]},
+    {id:'a5a',lbl:'Narsus the Forgotten God',desc:"Ekoh komt met het verzoek. Narsus is 500 jaar gevangene van Queen Calliope in Aresia. Hij weet welk pad een sterveling naar goddelijkheid voert.",key:false,sns:null,hk:[]},
+    {id:'a5b',lbl:'Siege of Aresia',desc:"Belegeren met een leger, of binnensluipen terwijl het leger voor de poorten staat. Beide werken — dit is een test van leiderschap.",key:false,sns:null,
+     hk:[{p:'Cursed One',t:'Aresia ligt naast het voorouderlijke doolhof van zijn volk.'}]},
+    {id:'a5c',lbl:'Gather the Divine Artifacts',desc:"Drie items voor de Theogenesis, uit twee Aresische kerkers en het Verzonken Koninkrijk.",key:false,
+     sns:[{id:'s39',lbl:'Caduceus — Tomb of Karpathos'},{id:'s40',lbl:"Ambrosia — Zakroth's Prison Fort"},{id:'s41',lbl:'Promethean Fire — Sunken Kingdom'}],
+     hk:[{p:'Doomed One',t:'Het Verzonken Koninkrijk IS haar verloren sirenenstad.'}]},
+    {id:'a5d',lbl:'The Apokalypsis ★',desc:"Lutheria laat de Wapens van de Goden vrij (Tarrasque, Kraken, Nether Dragon, Behemoth) én het vergeten pantheon, dat de artefacten wil inpikken.",key:true,
+     sns:[{id:'s42',lbl:'Vier oermonsters onderschept'},{id:'s43',lbl:'Empyrean Palace + verloren pantheon'},{id:'s44',lbl:'Theogenesis — of niet'}],
+     hk:[{p:'Lost One',t:'Theogenesis is zijn enige weg naar huis.'},
+         {p:'Gifted One',t:'Hier landt zijn eerste heroic task: een orde die het land bewaakt in plaats van opeet.'},
+         {p:'Dragonslayer',t:'Als de draken hun ruiters dragen, sterft de orde niet meer uit. Dat was zijn eed.'},
+         {p:'Vanished One',t:'En dan is er nog de eed van terugkeer. Versi heeft geen haast, maar vergeet niets.'}]}
+  ]}
+];
+
+var DNPCS=[
+  {"name": "Kyrah", "role": "Goddess of Music (disguised as poet)", "loc": "With party (Prologue onwards)", "act": "Prologue", "att": "Friendly", "paths": "All paths", "sec": "Goddess in disguise — party guide and chronicler. Never fights (Oath of Peace). True identity is one of the great reveals. Becomes a dragon in Act 4.", "log": [{"pl": "Whole party", "txt": "de party weet wie kyrah is, en volgt haar", "dt": "27/08/2026"}]},
+  {"name": "Versi (the Oracle)", "role": "Water Nymph — Prophet", "loc": "Temple of the Oracle", "act": "Prologue", "att": "Friendly", "paths": "Doomed One, Vanished One, Gifted One, Lost One, Haunted One, Cursed One", "sec": "Daughter of Sydon. Captured by a hag at campaign start. JORIS: speelt haar behulpzaam (optie A). Was Estor's lover 500 jaar geleden. VIER AGENDA'S TEGELIJK: bloedverwant van Orelle; cipier van Dragini (liet haar zweren terug te keren); de enige die Apollodorus, Sirius en Kyrenos een richting kan geven; en degene die Wauros vertelt dat hij een kleinkind van Sydon is. GIFTED ONE: geeft hem het medaillon van zijn grootmoeder; een week later spreekt haar geest — laat de Dragonlords herrijzen, maar neem eerst wraak op Sydon. JALOEZIE (canon, dodelijk): begint Dragini iets met een ander, dan staat Versi een dag later voor de deur.", "log": []},
+  {"name": "Pythor", "role": "God of Battle / King of Estoria", "loc": "Estoria (Act 1), Ultros crew (Act 2+)", "act": "Act 1", "att": "Friendly", "paths": "Lost One", "sec": "God of Battle, koning van Estoria. Vijfhonderd jaar zonder oorlog heeft hem uitgehold; hij drinkt. Zijn geliefden werden een voor een weggenomen door de groene draak Hexia — niemand weet waarom ze hem zo haat. Anora moet eerst gered worden; tot dan helpt hij met niets. Joins Ultros crew Act 2. Wordt draak in Act 4. GEEN SPELERSHAAK MEER (Demi-God vrijgekomen): Anora blijft de poort naar zijn medewerking, maar de emotionele haak is weg.", "log": []},
+  {"name": "Volkan", "role": "God of Forges — IN ESTORIA (not Mytros)", "loc": "Estoria — Volkan's Hall", "act": "Act 1", "att": "Friendly", "paths": "Doomed One", "sec": "God of Forges — IN ESTORIA, niet Mytros. Verstrooide dwergensmid, vader van Pythor, echtgenoot van Mytros. Smeedt aan de Mithral Forge zodra de vuren branden: Orelles beschermartefact tegen Kentimane, en verder wat de partij aanlevert. Stuurt een keledone om af te leveren. Joins Ultros crew Act 2. Wordt draak in Act 4.", "log": []},
+  {"name": "Princess Anora", "role": "Pythor's daughter", "loc": "Estoria", "act": "Act 1", "att": "Friendly", "paths": "—", "sec": "Dochter van Pythor. Wordt geofferd aan Sydon als jaarlijkse tribuut — vastgeketend aan de Rock of Estor vóór de volle maan, anders vallen de verzamelde centaurenstammen aan. Zij heeft zich erbij neergelegd; Pythor heeft haar opgesloten om te beletten dat ze zichzelf aanbiedt. Zou een betere heerser zijn dan haar vader. PARTIJQUEST — geen persoonlijke haak meer sinds de spelerswissel.", "log": []},
+  {"name": "Aesop", "role": "Keeper of the Dragon Shrine", "loc": "Estoria", "act": "Act 1", "att": "Friendly", "paths": "Vanished One, Dragonslayer", "sec": "Kyrenos' mentor/werkgever — vervangt de 'groep Dragonlord-paladins' uit zijn backstory. The Horn of Balmytria was stolen from his reliquary by goatlings. Needs party to retrieve it. Believes heroes should be the new Dragonlords, not Acastus.", "log": []},
+  {"name": "Damon", "role": "Ancient Wizard — Guardian of the Necropolis", "loc": "Necropolis at Telamok", "act": "Act 1", "att": "Neutral", "paths": "Vanished One, Gifted One, Cursed One", "sec": "Served the original Dragonlords. Guarded the Necropolis for 500 years. Near-immortal or undead. GIFTED ONE: Damon is de STICHTER VAN DE ACADEMIE van Mytros en de grootste wizard die Thylea voortbracht. Wauros' eerste echte wizardconfrontatie — en hij kan er niet omheen, Damon bewaakt de poort.", "log": []},
+  {"name": "Demetria", "role": "Corrupted sister of the Oracle", "loc": "Mossy Temple (Oldwood)", "act": "Act 1", "att": "Hostile", "paths": "Doomed One, Haunted One, Gifted One", "sec": "Versi's sister, corrupted by Lutheria — dus ook dochter van Sydon en bloedverwant van Orelle. Has Apollodorus' lesser artifact (Ring of Protection). Kan Orelles doem half lekken (vroege payoff). Boss encounter. GIFTED ONE: de Mossy Temple ligt in Wauros' eigen bos.", "log": []},
+  {"name": "Xander (undead)", "role": "First Dragonlord — undead spirit", "loc": "Necropolis at Telamok", "act": "Act 1", "att": "Neutral", "paths": "Vanished One, Gifted One", "sec": "Recognizes the Vanished One and gives them the Crown of the Dragonlords. His armor was stolen by Gaius. His tomb holds the Dragonlord weapons (Labor 3). TWEE KRONEN: het boek geeft er een aan de Vanished One EN een aan de Gifted One. Geen verdeelprobleem tussen Marthe en Jonas. Kroon = bond of the dragonlords + dirge of the dragonlords (Gifted task 2).", "log": []},
+  {"name": "Gaius", "role": "Commander, Order of Sydon — recurring villain", "loc": "Heartlands (Act 1) → Island of Yonder (Act 3)", "act": "Act 1", "att": "Hostile", "paths": "Vanished One, Dragonslayer, Cursed One, Gifted One", "sec": "DRIEVOUDIGE aartsvijand: rijdt ARGYN (doodde Kyrenos' Adara), bewaart Dragini's harnas op Yonder, en Ox' priester dient zijn Orde. Stuurt centaurenwarbands (pijnlijk voor Kyrenos). Yonder Act 3 = drie climaxen — speel als meerdere scenes. Beslis: is Argyn verdorven of zelf slachtoffer? Berijdt ARGYN, zoon van Nephele. Yonder is een VIERvoudige afrekening: Kyrenos/Argyn, Dragini's harnas, Sirius' runen, Ox' Orde.", "log": []},
+  {"name": "King Acastus", "role": "King of Mytros", "loc": "Mytros", "act": "Act 2", "att": "Neutral", "paths": "Gifted One, Lost One, Haunted One", "sec": "Last Dragonlord heir but made dark Titan pacts for his dragons. Dragon Icarus turns on him in Act 4. Gave the Ultros map hoping Estor would kill the heroes. ICARUS is eveneens een zoon van Nephele — het eerste epische conflict van Act 4 is voor Tiebe en Jonas samen een familiekwestie.", "log": []},
+  {"name": "Queen Vallus", "role": "Goddess of Wisdom", "loc": "Mytros", "act": "Act 2", "att": "Friendly", "paths": "Gifted One, Lost One, Dragonslayer", "sec": "Eldest daughter of Mytros. Most reliable ally. Warns about Acastus. Secretly gives dragon egg. Gives the Antikythera at the celebration. Becomes dragon in Act 4. GIFTED ONE: neemt Wauros voor het uitvaren apart — de fortress ligt bij een draak in de Garden of Helios. Het geheime drakenei GAAT NAAR WAUROS.", "log": []},
+  {"name": "Estor Arkelander", "role": "Ghost Dragonlord — captain of the Ultros", "loc": "The Ultros", "act": "Act 2", "att": "Neutral", "paths": "Lost One, Vanished One", "sec": "Geest van de beruchtste Dragonlord — vermoordde zijn eigen bemanning. Houdt zijn schip smetteloos; het is misschien het enige waar hij ooit van hield. Wil een lichaam en bezoekt eerst de dromen van de helden om de waardigste te kiezen. DEAL MET SIRIUS: wijst de schat in de Nether Sea aan (en de route via de Dead Falls) in ruil voor eerste keuze — hij wil de xiphos of slaughter. Pas op met eden. Versi's andere minnaar: rivaal van Dragini zonder dat zij het weet.", "log": []},
+  {"name": "The Three Fates", "role": "Ancient hag coven — weavers of destiny", "loc": "Island of the Fates", "act": "Act 3", "att": "Neutral", "paths": "Doomed One, Haunted One, Cursed One", "sec": "Onthullen aan Orelle: haar doem-wezen is KENTIMANE. Kennen de waarheid over Apollodorus' familie en de troonaanspraak. Voor Ox: zijn volk ziet de vloek als hun wil — was dat rechtvaardig? Verdeel over meerdere scenes. Extremely dangerous to bargain with.", "log": []},
+  {"name": "Amazon Queen (Thea)", "role": "Queen of the Amazons", "loc": "Island of Themis", "act": "Act 3", "att": "Neutral", "paths": "Haunted One, Lost One", "sec": "Has de Helm of Brilliance — Apollodorus' greater artifact en bewijs van de vergeten troonaanspraak. Won't give it up easily. Stimfay-bouwers: pelgrimage voor Sirius. Powerful allies for the Battle of Mytros.", "log": []},
+  {"name": "Hexia", "role": "Green dragon — Act 3 boss", "loc": "Island of the Dragon", "act": "Act 3", "att": "Hostile", "paths": "—", "sec": "Groene draak, Act 3 boss op het Island of the Dragon. Pythors grootste vijand: nam zijn geliefden een voor een weg. Houdt OPHEA gevangen. May yield a dragon egg. (Dragonslayer zit op Argyn, niet hier.) VRIJGEKOMEN — nu optioneel. Behoud je het, dan is het een reddingsverhaal van de partij.", "log": []},
+  {"name": "Nephele", "role": "Silver dragon at Praxys", "loc": "Praxys, Tower of Sydon", "act": "Act 3", "att": "Neutral", "paths": "Gifted One, Dragonslayer", "sec": "Has no soul. The Gifted One's grandmother's spirit can enter her (break the locket) to create a powerful ally against Sydon. KRUIS MET TIEBE: Nephele is de MOEDER VAN ARGYN EN ICARUS. Sydon gaf haar twee draken om mee te paren en schonk het broedsel aan Gaius en Acastus. Breekt Wauros het medaillon, dan wordt zijn grootmoeder deze draak — arrogant, grillig, enkel bereid te helpen tegen Sydon. Prijs: hij hoort haar stem nooit meer los.", "log": []},
+  {"name": "Sydon", "role": "Lord of Storms — Titan", "loc": "Phraxys (Act 3) → Mytros (Act 4)", "act": "Act 1", "att": "Hostile", "paths": "Cursed One, Doomed One, Gifted One", "sec": "Vervloekte Ox' hele volk (de stam van Minos) en liet Orelles sirenenstad zinken. Ox' priester dient zijn Orde. Attacks indirectly via Gaius (Oath of Peace). Escapes Praxys to the final battle at Mytros. GIFTED ONE: Wauros' grootvader. Herkent hem op Praxys met interesse maar is teleurgesteld dat zijn nageslacht zo klein uitviel. Ook: de dam bij Wauros' dorp kon gebouwd worden omdat de Orde van Sydon het toestond — zijn oudste grief hangt vast aan zijn eigen grootvader.", "log": []},
+  {"name": "Lutheria", "role": "Lady of Dreams — Titan", "loc": "Nether Sea — aboard Hypnos", "act": "Act 1", "att": "Hostile", "paths": "Haunted One", "sec": "Wiste Apollodorus' familie — en is zelf vergeten waarom (de troonaanspraak?). Hun zielen zitten in haar kristallen zeis: hereniging kan op de Nether Sea. Sends nightmares from the very start — voor Apollodorus persoonlijk.", "log": []},
+  {"name": "Kentimane", "role": "De Honderdhandige — vader van de Titanen", "loc": "Rond Thylea (Act 4: Mytros)", "act": "Act 4", "att": "Hostile", "paths": "Doomed One, Lost One", "sec": "Orelles doem-wezen (Fates onthullen dit Act 3) EN de bron van Sirius' vloek (zijn bloed zat in de sarcofaag-dienaar). Twee spelers, een Titaan: zij is voorspeld door zijn hand te sterven, hij draagt zijn bloed. Valt Mytros aan in Act 4.", "log": []},
+  {"name": "De Priester (naam TBD)", "role": "Ox' bevrijder — Orde van Sydon (geheim)", "loc": "Mytros", "act": "Act 2", "att": "Unknown", "paths": "Cursed One", "sec": "Bevrijdde Ox echt uit de arena en bond hem met een onbegrensde Oath of Service. Dient de Orde van Sydon — Ox weet dat niet. Beveelt nooit, herinnert alleen: 'Je weet wat je mij beloofd hebt.' Roep hem EEN keer op op het slechtst mogelijke moment, met een schijnbaar redelijke vraag. Geef hem een naam.", "log": []},
+  {"name": "Ophea", "role": "Harpiste — Pythors laatste grote liefde", "loc": "Island of the Dragon (gevangene van Hexia)", "act": "Act 3", "att": "Friendly", "paths": "—", "sec": "Harpiste, Pythors laatste grote liefde. LEEFT, als gevangene van Hexia. Pythor loog dat ze stierf bij de bevalling en haalde haar nooit terug — daarom drinkt hij. Kent de Forgotten Sea en kan van elk eiland een ruwe beschrijving geven. VRIJGEKOMEN: hangt aan geen spelersblad meer. Schrappen, of behouden als losse draad die Pythors drankzucht verklaart en de partij een reddingsverhaal geeft.", "log": []},
+  {"name": "Narsus", "role": "Forgotten god of beauty", "loc": "Aresia (captive)", "act": "Act 5", "att": "Friendly", "paths": "All paths", "sec": "Lost his divinity when the Oath of Peace ended. Imprisoned in Aresia. Key to Act 5 and the Theogenesis ritual. Offers heroes a path to godhood.", "log": []},
+  {"name": "Wauros' grootmoeder", "role": "Geest in het medaillon — sterfelijke tovenares, dochter van Sydons geliefde", "loc": "In het medaillon (Prologue onwards)", "act": "Prologue", "att": "Unknown", "paths": "Gifted One", "sec": "Spreekt een week na de proloog voor het eerst. Wil dat de Dragonlords herrijzen, maar eerst wraak op Sydon. IRONIE: zij was een wizard — Wauros' haat tegen wizards is zelfhaat, en het medaillon dwingt hem elke week naar haar te luisteren. Eindpunt: haar ziel in Nephele (medaillon breken).", "log": []},
+  {"name": "De gebeten student (naam TBD)", "role": "Meester aan de Academie van Mytros — littekens op de schouder", "loc": "Mytros — Academie", "act": "Act 2", "att": "Hostile", "paths": "Gifted One", "sec": "LEEFT. Vertelt het verhaal anders: 'een monster viel ons zonder aanleiding aan.' Wauros' reputatie in Mytros is negatief tot hij het rechtzet — en hij moet zelf kiezen of hij dat wil, of liever het monster blijft dat ze van hem maakten.", "log": []},
+  {"name": "Argyn", "role": "Zilveren draak — rijdier van Gaius, zoon van Nephele", "loc": "Island of Yonder", "act": "Act 3", "att": "Hostile", "paths": "Dragonslayer, Gifted One", "sec": "Doodde Kyrenos' kudde en Adara. BESLIS: verdorven door Gaius, of zelf slachtoffer? Bepaalt doden vs bevrijden. Zilver = metalliek: na de Dragonlord-eed is Argyn Kyrenos' bloed. Zoon van Nephele — kruist met Wauros.", "log": []},
+  {"name": "Icarus", "role": "Zilveren draak van Acastus — zoon van Nephele", "loc": "Mytros", "act": "Act 4", "att": "Hostile", "paths": "Gifted One, Dragonslayer", "sec": "Eerste epische conflict van Act 4. Broer van Argyn; als Wauros Nephele bevrijdde staat hij tegenover haar zoon.", "log": []},
+  {"name": "Helios", "role": "Gouden draak — bewaakt het Fortress of the Dragonlords", "loc": "Garden of Helios (Forgotten Sea)", "act": "Act 3", "att": "Hostile", "paths": "Gifted One, Dragonslayer", "sec": "In zijn schathoop ligt het instant fortress (Gifted task 1). Erinyes-scene: Helios wordt meegesleept naar het Island of Oathbreakers. In canon is Helios het Dragonslayer-doelwit — bij ons is dat Argyn, maar deze scene blijft bruikbaar als spiegel.", "log": []},
+  {"name": "Chondrus", "role": "Hogepriester van Lutheria — meester van de Grote Bibliotheek", "loc": "Mytros (Act 2) → Island of Yonder (Act 3)", "act": "Act 2", "att": "Hostile", "paths": "Dragonslayer, Lost One", "sec": "Ooit in Lutheria's harem, weggeworpen. Pact met een arcanoloth uit Hades voor geheimen over de helden. Biedt aan de partij naar Hypnos te leiden — LEUGEN, hij saboteert. Draagt in canon het greater artifact van de Dragonslayer. Het Antikythera-tandwiel ligt in een verguld kistje in zijn kamer.", "log": []},
+  {"name": "Druiden van de Oldwood", "role": "Bosorde — geloven dat Mytros zich nooit in de Heartlands had mogen vestigen", "loc": "Oldwood", "act": "Act 1", "att": "Friendly", "paths": "Gifted One", "sec": "AANBEVOLEN: zij vingen Wauros op na het incident. Verklaart waarom hij als tiener al ongecontroleerd wildshapete zonder een enkele les. Hun leer is letterlijk zijn grief tegen de Academie-buitenpost.", "log": []}
+];
+
+var DTHREADS=[
+  {"title": "The Three Great Labors", "status": "active", "desc": "Given by Oracle: (1) Horn of Balmytria — Mossy Temple. (2) Mithral Forge. (3) Weapons of the Dragonlords — Necropolis.", "con": "Must complete all three to unlock the City of Mytros (Act 2)."},
+  {"title": "Two Dream Labors: Ultros + Antikythera", "status": "hidden", "desc": "Revealed in a dream after drinking the Horn. Find the ghost ship Ultros and the Antikythera navigation device.", "con": "The Ultros unlocks Act 3. Antikythera needed to navigate the Cerulean Gulf."},
+  {"title": "Rescue Princess Anora", "status": "hidden", "desc": "Pythor's daughter is being sacrificed to Sydon. Pythor will not help with the Labors until she is safe.", "con": "Without Pythor's guidance the Labors are harder and the party misses crucial lore."},
+  {"title": "Gaius and the Order of Sydon", "status": "hidden", "desc": "Recurring villain from Act 1. Rides silver dragon Argyn. Has the Vanished One's armor. Base on Island of Yonder.", "con": "Keeps sending forces and blocking progress unless confronted."},
+  {"title": "Acastus's secret betrayal", "status": "hidden", "desc": "Acastus made pacts with the Titans for his dragons. Gave the Ultros map hoping Estor would kill the heroes.", "con": "In Act 4 he unleashes dragon Icarus with disastrous results. Must be confronted."},
+  {"title": "Dragon eggs — who are the Dragonlords?", "status": "hidden", "desc": "VERDELING VASTLEGGEN: Tiebe via pseudodraak (classfeature, uiterlijk lvl 6). Marthe het brass ei op Fire Island (V15) via Versi's visioen. Wauros krijgt Vallus' geheime ei in Act 2. Reserve: koperen ei bij de Fates, en de drie eieren in Praxys waarvan er een nog leeft.", "con": "Drie spelers eindigen bij een eigen draak. Broeden brass/gold = heet houden, o.a. met fire bolt — precies de cantrip die Wauros' voet verminkte."},
+  {"title": "The 60-day countdown", "status": "hidden", "desc": "The Oath of Peace expires 60 days after the Celebration in Act 2. The Titans prepare for war.", "con": "If the party takes too long in Act 3, Mytros falls unprepared."},
+  {"title": "Ox' Oath of Service", "status": "active", "desc": "Ox is gebonden aan een priester van de Orde van Sydon (weet dat niet). Eed zonder limiet, taken of ontslagvoorwaarde. Niet reageren op een oproep = curse of the treacherous.", "con": "Een keer inzetten op het slechtst mogelijke moment, met een schijnbaar redelijke vraag. Oracle-quote klaar: 'Je brak je ketens, maar gaf je naam weg.'"},
+  {"title": "Argyn — Kyrenos' doelwit", "status": "active", "desc": "De zilveren draak van Gaius doodde Adara en Kyrenos' kudde. Maar zilver is metalliek: na de Dragonlord-eed is Argyn zijn 'bloed'.", "con": "Beslis: verdorven, of zelf slachtoffer van Gaius? Bepaalt of Act 3 op Yonder eindigt in doden of bevrijden."},
+  {"title": "Ophea leeft — vrijgekomen draad", "status": "hidden", "desc": "Pythors laatste grote liefde leeft als gevangene van Hexia. Hij loog over haar dood en haalde haar nooit terug.", "con": "Hangt aan geen spelersblad meer. Schrappen, of behouden als partijquest die Pythors drankzucht verklaart."},
+  {"title": "Sirius' verspreide bemanning", "status": "hidden", "desc": "Zijn bemanningsleden spoelden aan op de eilanden van de Cerulean Gulf. Locaties nog te kiezen (suggestie: een bij de Barbarians of the Gulf, een als gevangene op Yonder, een dood).", "con": "Vult Act 3-eilanden met persoonlijke inzet. Lost One task 1."},
+  {"title": "Kentimane — twee levens, een Titaan", "status": "hidden", "desc": "Orelle is voorspeld door zijn hand te sterven (Fates, Act 3); Sirius draagt zijn bloed (sarcofaag). Runen leesbaar in de Grote Bibliotheek op Yonder.", "con": "Act 4: als Kentimane Mytros aanvalt hebben twee spelers een tegengestelde band met hem. Sirius' vloek is mogelijk het enige dat tegen hem opgewassen is."},
+  {"title": "De vergeten troonaanspraak", "status": "hidden", "desc": "De Greenbottles hadden een oude, waardeloos geworden aanspraak op de troon van Mytros — tot iemand hem gevaarlijk vond. Apollodorus weet dit niet. De Helm of Brilliance (bij de Amazonenkoningin) is het bewijs.", "con": "Waarom Lutheria juist deze familie wiste. Maakt Apollodorus in Act 3+ een probleem voor Acastus."},
+  {"title": "Yonder — viervoudige afrekening", "status": "hidden", "desc": "Kyrenos/Argyn, Dragini's harnas, Sirius' runen in de Grote Bibliotheek, en Ox' Orde van Sydon (Gaius is de commandant).", "con": "Speel als MEERDERE scenes: aankomst/bibliotheek eerst, dan de ontdekkingen, dan pas de confrontatie. Anders delen vier spelers een climax van vijf minuten."},
+  {"title": "The Five Gods' true nature", "status": "hidden", "desc": "The Five Gods are actually metallic dragons locked into mortal and divine forms after the First War.", "con": "Reveal in Act 4 when the Oath ends and they transform. Do not spoil early."},
+  {"title": "Wauros' medaillon", "status": "active", "desc": "Grootmoeder spreekt wekelijks. Wil dat de Dragonlords herrijzen, maar eerst wraak op Sydon. Zij was zelf een wizard.", "con": "Eindigt op Praxys: medaillon breken = haar ziel in Nephele, volwassen zilveren draak als bondgenoot, maar haar stem voorgoed weg."},
+  {"title": "Nephele, Argyn en Icarus — een broedsel", "status": "hidden", "desc": "Nephele is de moeder van beide draken. Sydon gaf haar twee draken om mee te paren en schonk het broedsel aan Gaius en Acastus.", "con": "Kyrenos' wraak op Argyn en Wauros' bondgenootschap met Argyns moeder raken elkaar. Plan Praxys en Yonder samen. Act 4 conflict 1 (Icarus) is voor beiden familie."},
+  {"title": "De dam en de Orde van Sydon", "status": "hidden", "desc": "Water is Sydons domein. De Academie-buitenpost kon de dam bouwen omdat de Orde het toestond.", "con": "Wauros' oudste grief hangt vast aan zijn eigen grootvader. Laat dit pas kloppen wanneer hij het zelf kan leggen."},
+  {"title": "De brandende achterpoten", "status": "hidden", "desc": "Cosmetisch effect in wolfsvorm. Wordt echt zodra hij bindt met een brass of red draak.", "con": "Leest achteraf als voorspelling. De Fates in Act 3 mogen er een zin over kwijt."},
+  {"title": "De gebeten student", "status": "hidden", "desc": "Leeft, is nu meester aan de Academie, en vertelt het verhaal als een onprovoceerde monsteraanval.", "con": "Wauros' reputatie in Mytros is negatief tot hij het rechtzet. Zijn keuze of hij dat wil."},
+  {"title": "Orelle en Wauros zijn familie", "status": "active", "desc": "Beiden dragen het bloed van Sydon — zij gedoemd, hij wraakzuchtig. Twee kanten van dezelfde erfenis.", "con": "Licht Indy en Jonas vooraf in, net als bij Dragini/Kyrenos. Ze staan samen tegenover Sydon in Praxys."},
+  {"title": "Wauros tegen de geleerden", "status": "active", "desc": "Apollodorus is Academie-alumnus, Sirius is academicus-archeoloog. Allebei directe triggers voor zijn wizardhaat.", "con": "Goede wrijving, maar niet als verrassing aan tafel. Damon in Act 1 is de eerste onvermijdelijke confrontatie."},
+  {"title": "De vrijgekomen Demi-God-lijn", "status": "active", "desc": "Pythor, Anora, Volkan, Hexia en Ophea hingen aan het Demi-God-blad. Niemand aan tafel heeft er nu nog een persoonlijke band mee.", "con": "Anora redden werkt door als poort naar Pythor. Volkan blijft de smid. Hexia en Ophea zijn optioneel geworden."},
+  {"title": "Drie transformaties", "status": "active", "desc": "Smash overkomt Reed; Ox kiest het (bonus action); Wauros wildshapet routineus — maar zijn eerste keer was net zo ongecontroleerd als die van Reed.", "con": "Benoem het verschil hardop, anders wordt het herhaling. Wauros mag dat ooit zelf tegen Ruben zeggen."}
+];
+
+var S={
+  players:[
+    {"player": "Laura", "name": "Ox", "cls": "Barbarian 1", "race": "Thylean Minotaur", "path": "The Cursed One", "hp": 14, "fame": 0, "notes": "Ontsnapte arenaslaaf uit Mytros, gebonden door een onbegrensde Oath of Service aan een priester van de Orde van Sydon (weet dat zelf niet). Vloek van zijn volk = Sydon. Fel rood triggert vanaf lvl 5 zijn transformatie. Vloek verbreken = schande & dienstbaarheid breken + gedaante wordt eigen keuze (hij blijft minotaur). \"Ox\" is zijn arenanaam, niet zijn echte."},
+    {"player": "Indy", "name": "Orelle", "cls": "Fighter 1 (Hoplite)", "race": "Thylean Siren", "path": "The Doomed One", "hp": "", "fame": 0, "notes": "Kusthopliet van Mytros. Bloedlijn van Sydon. Doem-wezen = KENTIMANE (Fates onthullen dit in Act 3). Beschermartefact smeden aan Mithral Forge (Act 1). Versi is haar bloedverwant. Demetria kent haar lot. Wavering Emotions: rouw = geen vlucht."},
+    {"player": "Tiebe", "name": "Kyrenos Dragonbane", "cls": "Paladin 1 (Oath of the Dragonlord)", "race": "Thylean Centaur", "path": "The Dragonslayer", "hp": "", "fame": 0, "notes": "Adara (geliefde) gedood door ARGYN, de zilveren draak van Gaius. Schrijft in het geheim liederen in haar boek — Kyrah-hook. Pseudodraak op lvl 3, ei komt uit op lvl 7. Mentor: Aesop (Estoria). Let op: na de eed zijn metallieke draken zijn \"bloed\" — Argyn ook."},
+    {"player": "Ruben", "name": "Dr. Sirius Reed / Smash", "cls": "Artificer 1 / Barbarian 1", "race": "Elf / Goliath", "path": "The Lost One", "hp": "", "fame": 0, "notes": "Archeoloog, schipbreuk, door vissers naar Mytros gebracht. Sarcofaag-vloek = bloed van KENTIMANE (dienaar van hem lag erin); runen leesbaar in Grote Bibliotheek Yonder. Bemanning verspreid over de Golf (locaties nog kiezen). Woedemeter-huisregel: zie spelerskaart. Estor onderhandelt met hem over de schat."},
+    {"player": "Marthe", "name": "Dragini Led Vit", "cls": "Monk 1", "race": "Dragonborn (wit)", "path": "The Vanished One", "hp": 8, "fame": 0, "notes": "Originele Dragonlord, ~500 jaar in Versi's waakdroom. Winterwenswacht/Hoedim = droom, bestond nooit. Zwoer Versi terug te keren (eed!). Xander herkent haar in de Necropolis en geeft de kroon (eerste echte herinnering). Harnas bij Gaius op Yonder — Boots of Speed of Cloak of the Bat (geen Dragon Scale Mail, monk). Tarotdeck = enige bezit."},
+    {"player": "Jarne", "name": "Apollodorus", "cls": "Bard 1", "race": "Halfling", "path": "The Haunted One", "hp": "", "fame": 0, "notes": "Merric Huebald Clovis Greenbottle. Familie gewist door Lutheria (zielen in haar zeis). Vergeten troonaanspraak van de Greenbottles — hij weet dat niet; Clovis' vergetelheid was het begin van de uitwissing. Lesser artifact (Ring of Protection) bij Demetria; greater (Helm of Brilliance, bewijs van de aanspraak) bij de Amazonenkoningin — probleem voor Acastus. Academie-alumnus."},
+    {"player": "Jonas", "name": "Wauros", "cls": "Druid 1 (circle TBD)", "race": "Thyleaans (volk TBD)", "path": "The Gifted One", "hp": "", "fame": 0, "notes": "OPEN: volk, circle (Moon/wolf of Sacrifice), en of hij zichzelf hernoemd heeft bij vertrek uit het dorp (raakt Ox' naamthema). GEEN centaur — dat is Tiebe. Vervangt de Demi-God vanaf sessie 3. Begaafd bosjong uit dorp aan rand van de OLDWOOD, naast een Academie-buitenpost. Werd gepest; toen hij protesteerde tegen de dam die de rivier omlegde schoot een student een fire bolt op zijn blote voeten. Eerste ongecontroleerde wildshape (WOLF), beet de student in de schouder, achterpoten in brand. Vluchtte het bos in. LITTEKEN rechtervoet; in wolfsvorm lijken achterpoten te branden (cosmetisch tot hij bindt met brass/red draak). Haat wizards, ongemakkelijk in drukte, open naar monstrous races. WAARHEID: kleinkind van SYDON — grootmoeder was een sterfelijke tovenares die Sydon vermoordde op aanstoken van Lutheria. Zijn wizardhaat is dus zelfhaat. MOTIVATIE herkaderd: geen roem, maar gezag dat niet weggelachen kan worden. TASKS: (1) nieuwe orde Dragonlords + fortress, (2) kroon van Xander, (3) draak grootbrengen (Vallus' ei). OPEN: volk, circle, en of hij zichzelf hernoemd heeft bij vertrek uit het dorp (raakt Ox' naamthema)."}
+  ],
+  ns:{},sn:{},
+  npcs:JSON.parse(JSON.stringify(DNPCS)),
+  threads:JSON.parse(JSON.stringify(DTHREADS)),
+  sessions:[],nal:-1,nfilt:'All',
+  combat:{combatants:[],current:-1,round:0}
+};
+
+var KEY='odl-dm-tracker-v2';
+function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
+function SS(){
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Opslaan op dit toestel mislukt: '+e.message);}
+  if(typeof ghOn==='function'&&ghOn()&&!ghBooting){
+    setDirty(true);syncStat('busy','Wijzigingen…');
+    clearTimeout(ghTimer);ghTimer=setTimeout(function(){ghPush();},8000);
+  }
+}
+
+function hide(id){document.getElementById(id).style.display='none';}
+function show(id){document.getElementById(id).style.display='block';}
+function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase()||'?';}
+
+function ST(t){
+  ['characters','campaign','npcs','threads','sessions','combat'].forEach(function(x){
+    document.getElementById('tab-'+x).classList.remove('on');
+    document.getElementById('tb-'+x).classList.remove('on');
+  });
+  document.getElementById('tab-'+t).classList.add('on');
+  document.getElementById('tb-'+t).classList.add('on');
+  if(t==='characters')rP();
+  if(t==='campaign')rC();
+  if(t==='npcs')rN();
+  if(t==='threads')rT();
+  if(t==='sessions')rSes();
+  if(t==='combat')rCombat();
+}
+
+function rP(){
+  var h='';
+  for(var i=0;i<S.players.length;i++){
+    var p=S.players[i];var c=PC[i];
+    h+='<div class="card" style="cursor:pointer;" onclick="eP('+i+')">';
+    h+='<div class="row" style="margin-bottom:8px;">';
+    h+='<div class="av" style="background:'+c.bg+';color:'+c.c+';">'+ini(p.player)+'</div>';
+    h+='<div><div style="font-size:14px;font-weight:600;">'+(p.name||'—')+'</div>';
+    h+='<div style="font-size:12px;color:var(--text2);">'+p.player+'</div></div></div>';
+    h+='<div style="font-size:13px;color:var(--text2);">'+(p.cls||'Class unknown')+(p.race?' · '+p.race:'')+'</div>';
+    if(p.path)h+='<div style="margin-top:6px;"><span class="badge ba">'+p.path+'</span></div>';
+    if(p.fame)h+='<div style="margin-top:4px;font-size:12px;color:var(--text3);">Fame: '+p.fame+'</div>';
+    h+='</div>';
+  }
+  document.getElementById('pgrid').innerHTML=h;
+}
+function eP(i){
+  var p=S.players[i];
+  document.getElementById('pe-player').value=p.player||'';
+  document.getElementById('pe-name').value=p.name||'';
+  document.getElementById('pe-class').value=p.cls||'';
+  document.getElementById('pe-race').value=p.race||'';
+  document.getElementById('pe-path').value=p.path||'';
+  document.getElementById('pe-hp').value=p.hp||'';
+  document.getElementById('pe-notes').value=p.notes||'';
+  document.getElementById('pe-idx').textContent=i;
+  document.getElementById('pe-title').textContent='Edit — '+p.player;
+  show('pedit');
+}
+function savePlayer(){
+  var i=parseInt(document.getElementById('pe-idx').textContent);
+  var p=S.players[i];
+  p.player=document.getElementById('pe-player').value;
+  p.name=document.getElementById('pe-name').value;
+  p.cls=document.getElementById('pe-class').value;
+  p.race=document.getElementById('pe-race').value;
+  p.path=document.getElementById('pe-path').value;
+  p.hp=document.getElementById('pe-hp').value;
+  p.notes=document.getElementById('pe-notes').value;
+  SS();hide('pedit');rP();
+}
+
+function cN(n,extra){
+  var st=S.ns[n.id]||'todo';
+  var sl=st==='done'?'Done':st==='active'?'Active':'Not started';
+  var cls='nc'+(st==='active'?' sa':st==='done'?' sd':'')+(n.key?' key':'');
+  var stcls=st==='active'?'sa2':st==='done'?'sd2':'st';
+  var sh='';
+  if(n.sns){
+    sh='<div class="sns">';
+    for(var j=0;j<n.sns.length;j++){
+      var sn=n.sns[j];var ck=!!S.sn[sn.id];
+      sh+='<div class="sni" onclick="event.stopPropagation();tSN(\''+sn.id+'\')">';
+      sh+='<div class="snb'+(ck?' ck':'')+'">'+( ck?'✓':'')+'</div>';
+      sh+='<span style="'+(ck?'text-decoration:line-through;opacity:.6;':'')+'">'+sn.lbl+'</span></div>';
+    }
+    sh+='</div>';
+  }
+  var hh='';
+  if(n.hk&&n.hk.length){
+    var eps=getEPs();
+    hh='<div class="hkw">';
+    for(var k=0;k<n.hk.length;k++){
+      var hk=n.hk[k];var col=(EPC[hk.p]||'#F1EFE8|#5F5E5A').split('|');
+      var who=eps[hk.p];var lbl=who?who:hk.p;
+      var bd=who?'border:1px solid '+col[1]+';':'';
+      hh+='<div class="hki"><span class="hkc" style="background:'+col[0]+';color:'+col[1]+';'+bd+'">'+lbl+'</span><span>'+hk.t+'</span></div>';
+    }
+    hh+='</div>';
+  }
+  return '<div class="'+cls+'" style="'+(extra||'')+'" onclick="cyN(\''+n.id+'\')">'
+    +'<span class="nl-t">'+n.lbl+'</span>'
+    +'<span class="nl-d">'+n.desc+'</span>'
+    +'<div><span class="nl-s '+stcls+'">'+sl+'</span></div>'
+    +hh+sh+'</div>';
+}
+function cyN(id){var s=S.ns[id]||'todo';S.ns[id]=s==='todo'?'active':s==='active'?'done':'todo';SS();rC();}
+function tSN(id){S.sn[id]=!S.sn[id];SS();rC();}
+
+function rC(){
+  var h='';
+  for(var i=0;i<TREE.length;i++){
+    var ph=TREE[i];var nh='';
+    if(ph.lin){
+      var parts=[];
+      for(var j=0;j<ph.nodes.length;j++)parts.push(cN(ph.nodes[j],'flex:1;min-width:0;'));
+      nh='<div class="nl">';
+      for(var j=0;j<parts.length;j++){if(j>0)nh+='<div class="arr">→</div>';nh+=parts[j];}
+      nh+='</div>';
+    } else {
+      nh='<div class="g3">';
+      for(var j=0;j<ph.nodes.length;j++)nh+=cN(ph.nodes[j],'');
+      nh+='</div>';
+    }
+    var conn='';
+    if(i<TREE.length-1){
+      var g=TREE[i+1].gate;
+      conn='<div class="conn"><div class="cline"></div>';
+      if(g)conn+='<div class="cgate">🔒 Requires: '+g+'</div>';
+      else conn+='<div style="font-size:11px;color:var(--text3);">↓</div>';
+      conn+='<div class="cline"></div></div>';
+    }
+    h+='<div><div class="ph" style="background:'+ph.bg+';border-color:'+ph.br+';color:'+ph.tx+';">'
+      +'<div class="ph-t">'+ph.lbl+'</div><div class="ph-s">'+ph.sub+'</div></div>'
+      +nh+conn+'</div>';
+  }
+  document.getElementById('tree').innerHTML=h;
+}
+
+function getEPs(){
+  var e={};
+  for(var i=0;i<S.players.length;i++){var p=S.players[i];if(p.path){var k=p.path.replace('The ','');e[k]=p.player;}}
+  return e;
+}
+function epH(paths){
+  if(!paths)return'';
+  var eps=getEPs();var h='';
+  var arr=(paths==='All paths')?Object.keys(EPC):paths.split(',');
+  for(var i=0;i<arr.length;i++){
+    var ep=arr[i].trim();var col=EPC[ep]||'#F1EFE8|#5F5E5A';var pp=col.split('|');
+    var active=eps[ep];var bd=active?'border:2px solid '+pp[1]+';':'';
+    h+='<span class="ep-t" style="background:'+pp[0]+';color:'+pp[1]+';'+bd+'">'+ep+(active?' ★':'')+'</span>';
+  }
+  return h;
+}
+function actH(act){var col=(ACB[act]||'#F1EFE8|#5F5E5A').split('|');return'<span class="act-b" style="background:'+col[0]+';color:'+col[1]+';">'+act+'</span>';}
+
+function rN(){
+  var acts=['All','Prologue','Act 1','Act 2','Act 3','Act 4','Act 5'];
+  var fh='';for(var i=0;i<acts.length;i++){var a=acts[i];fh+='<button class="fb'+(S.nfilt===a?' on':'')+'" onclick="fN(\''+a+'\')">'+a+'</button>';}
+  document.getElementById('nfrow').innerHTML=fh;
+  var eps=getEPs();var h='';
+  for(var i=0;i<S.npcs.length;i++){
+    var n=S.npcs[i];
+    if(S.nfilt!=='All'&&n.act!==S.nfilt)continue;
+    var c=NC[i%NC.length];
+    var ab=n.att==='Friendly'?'bt':n.att==='Hostile'?'bc':'bg';
+    var rel=false;
+    if(n.paths){
+      if(n.paths==='All paths'){rel=Object.keys(eps).length>0;}
+      else{var parr=n.paths.split(',');for(var j=0;j<parr.length;j++){if(eps[parr[j].trim()])rel=true;}}
+    }
+    var bord=rel?'border:2px solid var(--amber-bd);':'';
+    h+='<div class="npc-c" style="'+bord+'">';
+    h+='<div class="row">';
+    h+='<div class="av" style="width:34px;height:34px;font-size:12px;background:'+c.bg+';color:'+c.c+';">'+ini(n.name)+'</div>';
+    h+='<div style="flex:1;min-width:0;">';
+    h+='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px;">';
+    h+='<span style="font-size:13px;font-weight:600;">'+n.name+'</span>';
+    h+=actH(n.act||'Act 1');
+    h+='<span class="badge '+ab+'">'+n.att+'</span>';
+    if(rel)h+='<span style="font-size:11px;color:#854F0B;font-weight:600;">⚡ party relevant</span>';
+    h+='</div>';
+    h+='<div style="font-size:12px;color:var(--text2);">'+n.role+(n.loc?' · '+n.loc:'')+'</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:4px;flex-shrink:0;">';
+    h+='<button class="btn s" onclick="oNL('+i+')">Log ('+(n.log||[]).length+')</button>';
+    h+='<button class="btn s" onclick="openNF('+i+')">✎</button>';
+    h+='<button class="btn s d" onclick="delN('+i+')">✕</button>';
+    h+='</div></div>';
+    if(n.paths)h+='<div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:3px;">'+epH(n.paths)+'</div>';
+    if(n.sec)h+='<div class="sec-box">🔒 '+n.sec+'</div>';
+    h+='</div>';
+  }
+  document.getElementById('nlist').innerHTML=h||'<div class="empty">No NPCs for this filter.</div>';
+}
+function fN(f){S.nfilt=f;rN();}
+function openNF(i){
+  hide('nlog');
+  document.getElementById('nf-idx').textContent=i;
+  if(i===-1){
+    document.getElementById('nf-title').textContent='Add NPC';
+    ['nf-name','nf-role','nf-loc','nf-paths','nf-sec'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('nf-att').value='Neutral';
+    document.getElementById('nf-act').value='Act 1';
+  } else {
+    var n=S.npcs[i];
+    document.getElementById('nf-title').textContent='Edit: '+n.name;
+    document.getElementById('nf-name').value=n.name||'';
+    document.getElementById('nf-role').value=n.role||'';
+    document.getElementById('nf-loc').value=n.loc||'';
+    document.getElementById('nf-att').value=n.att||'Neutral';
+    document.getElementById('nf-act').value=n.act||'Act 1';
+    document.getElementById('nf-paths').value=n.paths||'';
+    document.getElementById('nf-sec').value=n.sec||'';
+  }
+  show('nform');
+}
+function saveNPC(){
+  var i=parseInt(document.getElementById('nf-idx').textContent);
+  var n={name:document.getElementById('nf-name').value,role:document.getElementById('nf-role').value,
+    loc:document.getElementById('nf-loc').value,att:document.getElementById('nf-att').value,
+    act:document.getElementById('nf-act').value,paths:document.getElementById('nf-paths').value,
+    sec:document.getElementById('nf-sec').value,log:i===-1?[]:(S.npcs[i].log||[])};
+  if(i===-1)S.npcs.push(n);else S.npcs[i]=n;
+  SS();hide('nform');rN();
+}
+function delN(i){if(!confirm('Remove '+S.npcs[i].name+'?'))return;S.npcs.splice(i,1);SS();rN();}
+function oNL(i){
+  S.nal=i;hide('nform');
+  document.getElementById('nl-title').textContent='Interactions: '+S.npcs[i].name;
+  var oh='<option value="Whole party">⚔ Whole party</option>';
+  for(var j=0;j<S.players.length;j++){var p=S.players[j];oh+='<option>'+p.player+(p.name?' ('+p.name+')':'')+'</option>';}
+  document.getElementById('nl-player').innerHTML=oh;
+  show('nlog');rNL();
+}
+function closeNL(){hide('nlog');S.nal=-1;}
+function rNL(){
+  var i=S.nal;if(i<0)return;
+  var log=(S.npcs[i]&&S.npcs[i].log)||[];
+  var h='';
+  if(!log.length){h='<div class="empty">No interactions yet.</div>';}
+  else{var rev=log.slice().reverse();for(var j=0;j<rev.length;j++){var e=rev[j];
+    var isP=(e.pl==='Whole party');
+    var st=isP?'background:var(--amber-bg);color:var(--amber-tx);border:1px solid var(--amber-bd);font-weight:600;':'background:var(--bg2);';
+    h+='<div class="log-e"><span style="font-size:10px;padding:1px 5px;border-radius:3px;'+st+'margin-right:6px;">'+(isP?'⚔ '+e.pl:e.pl)+'</span>'+e.txt+'<br><span style="font-size:11px;color:var(--text3);">'+e.dt+'</span></div>';}}
+  document.getElementById('nl-entries').innerHTML=h;
+}
+function addLog(){
+  var i=S.nal;var t=document.getElementById('nl-input').value.trim();
+  if(!t||i<0)return;
+  if(!S.npcs[i].log)S.npcs[i].log=[];
+  S.npcs[i].log.push({pl:document.getElementById('nl-player').value,txt:t,dt:new Date().toLocaleDateString('en-GB')});
+  document.getElementById('nl-input').value='';SS();rNL();
+}
+
+function rT(){
+  var list=document.getElementById('tlist');
+  if(!S.threads.length){list.innerHTML='<div class="empty">No plot threads yet.</div>';return;}
+  var h='';
+  for(var i=0;i<S.threads.length;i++){
+    var t=S.threads[i];
+    var dc=t.status==='active'?'background:#EF9F27;':t.status==='resolved'?'background:#5DCAA5;':'background:#B4B2A9;';
+    var bc=t.status==='active'?'ba':t.status==='resolved'?'bt':'bg';
+    var bl=t.status==='active'?'Active':t.status==='resolved'?'Resolved':'Hidden';
+    h+='<div class="thread-i">';
+    h+='<div class="tdot" style="'+dc+'"></div>';
+    h+='<div style="flex:1;">';
+    h+='<div class="row" style="margin-bottom:4px;"><span style="font-size:13px;font-weight:600;flex:1;">'+t.title+'</span><span class="badge '+bc+'">'+bl+'</span></div>';
+    h+='<p style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:6px;">'+t.desc+'</p>';
+    if(t.con)h+='<div style="font-size:12px;color:var(--coral-tx);background:var(--coral-bg);border-radius:4px;padding:5px 10px;margin-bottom:6px;">⚠ '+t.con+'</div>';
+    h+='<div class="row" style="margin-top:6px;">';
+    h+='<select onchange="setTS('+i+',this.value)" style="font-size:12px;padding:4px 8px;width:130px;">';
+    h+='<option value="hidden"'+(t.status==='hidden'?' selected':'')+'>Hidden</option>';
+    h+='<option value="active"'+(t.status==='active'?' selected':'')+'>Active</option>';
+    h+='<option value="resolved"'+(t.status==='resolved'?' selected':'')+'>Resolved</option>';
+    h+='</select><button class="btn s d mla" onclick="delT('+i+')">✕</button></div></div></div>';
+  }
+  list.innerHTML=h;
+}
+function openTF(){
+  ['tf-title','tf-desc','tf-con'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('tf-st').value='hidden';
+  document.getElementById('tf-idx').textContent='-1';
+  show('tform');
+}
+function saveTF(){
+  var i=parseInt(document.getElementById('tf-idx').textContent);
+  var t={title:document.getElementById('tf-title').value,status:document.getElementById('tf-st').value,desc:document.getElementById('tf-desc').value,con:document.getElementById('tf-con').value};
+  if(i===-1)S.threads.push(t);else S.threads[i]=t;
+  SS();hide('tform');rT();
+}
+function setTS(i,v){S.threads[i].status=v;SS();rT();}
+function delT(i){S.threads.splice(i,1);SS();rT();}
+
+function rSes(){
+  var list=document.getElementById('slist');
+  if(!S.sessions.length){list.innerHTML='<div class="empty">No sessions logged yet.</div>';return;}
+  var h='';var rev=S.sessions.slice().reverse();
+  for(var ri=0;ri<rev.length;ri++){
+    var s=rev[ri];var i=S.sessions.length-1-ri;
+    h+='<div class="card">';
+    h+='<div class="row" style="margin-bottom:8px;"><span style="font-size:14px;font-weight:600;">Session '+s.num+'</span>';
+    if(s.date)h+='<span style="font-size:12px;color:var(--text2);">'+s.date+'</span>';
+    h+='<div class="mla" style="display:flex;gap:8px;"><button class="btn s" onclick="eS('+i+')">✎</button><button class="btn s d" onclick="delS('+i+')">✕</button></div></div>';
+    if(s.sum)h+='<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">'+s.sum+'</p>';
+    if(s.cliff)h+='<div style="font-size:13px;color:var(--amber-tx);background:var(--amber-bg);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;">▶ '+s.cliff+'</div>';
+    if(s.notes)h+='<div style="font-size:13px;color:var(--text2);background:var(--bg2);border-radius:var(--radius-sm);padding:8px 12px;">📝 '+s.notes+'</div>';
+    h+='</div>';
+  }
+  list.innerHTML=h;
+}
+function openSF(){
+  document.getElementById('sf-title').textContent='New Session';
+  document.getElementById('sf-num').value=S.sessions.length+1;
+  document.getElementById('sf-date').value=new Date().toISOString().split('T')[0];
+  ['sf-sum','sf-cliff','sf-notes'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('sf-idx').textContent='-1';
+  show('sform');
+}
+function eS(i){
+  var s=S.sessions[i];
+  document.getElementById('sf-title').textContent='Edit Session '+s.num;
+  document.getElementById('sf-num').value=s.num;
+  document.getElementById('sf-date').value=s.date||'';
+  document.getElementById('sf-sum').value=s.sum||'';
+  document.getElementById('sf-cliff').value=s.cliff||'';
+  document.getElementById('sf-notes').value=s.notes||'';
+  document.getElementById('sf-idx').textContent=i;
+  show('sform');
+}
+function saveSF(){
+  var i=parseInt(document.getElementById('sf-idx').textContent);
+  var s={num:document.getElementById('sf-num').value,date:document.getElementById('sf-date').value,sum:document.getElementById('sf-sum').value,cliff:document.getElementById('sf-cliff').value,notes:document.getElementById('sf-notes').value};
+  if(i===-1)S.sessions.push(s);else S.sessions[i]=s;
+  SS();hide('sform');rSes();
+}
+function delS(i){S.sessions.splice(i,1);SS();rSes();}
+
+function exportData(){
+  var data={players:S.players,ns:S.ns,sn:S.sn,npcs:S.npcs,threads:S.threads,sessions:S.sessions,nfilt:S.nfilt,combat:S.combat};
+  var json=JSON.stringify(data,null,2);
+  var blob=new Blob([json],{type:"application/json"});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement("a");
+  var d=new Date();
+  var stamp=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  a.href=url;
+  a.download="odl-campaign-"+stamp+".json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData(event){
+  var file=event.target.files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=JSON.parse(e.target.result);
+      if(!data.players&&!data.sessions&&!data.npcs){alert("Geen geldige campagne-data.");return;}
+      if(!confirm("Huidige data overschrijven met geimporteerde data?"))return;
+      ["players","ns","sn","npcs","threads","sessions","nfilt","combat"].forEach(function(k){if(data[k]!==undefined)S[k]=data[k];});
+      SS();rP();
+      alert("Data succesvol geladen!");
+    }catch(err){alert("Fout: "+err.message);}
+  };
+  reader.readAsText(file);
+  event.target.value="";
+}
+
+
+// ---- COMBAT ----
+var dragSrc=-1;
+
+function addMonster(){
+  var name=document.getElementById('ci-name').value.trim();
+  var init=parseInt(document.getElementById('ci-init').value)||0;
+  var hp=parseInt(document.getElementById('ci-hp').value)||10;
+  if(!name){document.getElementById('ci-name').focus();return;}
+  S.combat.combatants.push({id:Date.now()+'_'+Math.random(),name:name,init:init,hp:hp,maxHp:hp,isPlayer:false,active:true});
+  document.getElementById('ci-name').value='';
+  document.getElementById('ci-init').value='';
+  document.getElementById('ci-hp').value='';
+  SS();rCombat();
+  document.getElementById('ci-name').focus();
+}
+
+function addAllPlayers(){
+  var added=0;
+  for(var i=0;i<S.players.length;i++){
+    var p=S.players[i];
+    var pname=p.name?p.player+' ('+p.name+')':p.player;
+    var existing=S.combat.combatants.find(function(c){return c.playerId===i;});
+    if(existing)continue;
+    var init=parseInt(prompt('Initiative voor '+pname+'?','')||'0')||0;
+    var maxhp=parseInt(p.hp)||20;
+    S.combat.combatants.push({id:'pl_'+i,playerId:i,name:pname,init:init,hp:maxhp,maxHp:maxhp,isPlayer:true,active:true});
+    added++;
+  }
+  if(added>0){SS();rCombat();}
+}
+
+function sortByInit(){
+  S.combat.combatants.sort(function(a,b){return b.init-a.init;});
+  SS();rCombat();
+}
+
+function nextTurn(){
+  var c=S.combat.combatants;
+  if(!c.length)return;
+  var active=c.filter(function(x){return x.active;});
+  if(!active.length)return;
+  if(S.combat.current===-1){S.combat.current=0;S.combat.round=1;}
+  else {
+    var idx=S.combat.current;
+    idx++;
+    while(idx<c.length && !c[idx].active)idx++;
+    if(idx>=c.length){idx=0;while(idx<c.length&&!c[idx].active)idx++;S.combat.round++;}
+    S.combat.current=idx;
+  }
+  SS();rCombat();
+}
+
+function changeHP(idx,delta){
+  var c=S.combat.combatants[idx];
+  if(!c)return;
+  c.hp=Math.max(0,Math.min(c.maxHp,c.hp+delta));
+  if(c.hp===0)c.active=false;
+  SS();rCombat();
+}
+
+function setHP(idx){
+  var c=S.combat.combatants[idx];
+  if(!c)return;
+  var v=prompt('Set HP for '+c.name+' (max '+c.maxHp+'):',c.hp);
+  if(v===null)return;
+  var n=parseInt(v);
+  if(isNaN(n))return;
+  c.hp=Math.max(0,Math.min(c.maxHp,n));
+  c.active=(c.hp>0);
+  SS();rCombat();
+}
+
+function removeCombatant(idx){
+  S.combat.combatants.splice(idx,1);
+  if(S.combat.current>=S.combat.combatants.length)S.combat.current=S.combat.combatants.length-1;
+  SS();rCombat();
+}
+
+function clearCombat(){
+  var btn=document.getElementById('clear-btn');
+  if(btn&&btn.dataset.armed==='1'){
+    S.combat={combatants:[],current:-1,round:0};
+    btn.textContent='Clear all';
+    btn.dataset.armed='0';
+    SS();rCombat();
+  } else if(btn){
+    btn.textContent='Zeker? Klik nogmaals';
+    btn.dataset.armed='1';
+    setTimeout(function(){
+      if(btn.dataset.armed==='1'){
+        btn.textContent='Clear all';
+        btn.dataset.armed='0';
+      }
+    },3000);
+  }
+}
+
+function rCombat(){
+  var c=S.combat;
+  var rd=document.getElementById('round-disp');
+  rd.innerHTML=c.round>0?'<span class="round-badge">Round '+c.round+'</span>':'';
+  var list=document.getElementById('combat-list');
+  if(!c.combatants.length){list.innerHTML='<div class="empty">No combatants yet. Add monsters or players above.</div>';return;}
+  var h='';
+  for(var i=0;i<c.combatants.length;i++){
+    var x=c.combatants[i];
+    var isCurrent=(c.current===i);
+    var pct=x.maxHp>0?Math.round(x.hp/x.maxHp*100):0;
+    var hpColor=pct>50?'#4CAF50':pct>25?'#FF9800':'#f44336';
+    var cls='ci'+(isCurrent?' current-turn':'')+(x.active?'':' dead');
+    var arrow=isCurrent?'&#9658;':'';
+    var initBg=x.isPlayer?'var(--amber-bg)':'var(--bg2)';
+    var initColor=x.isPlayer?'var(--amber-tx)':'var(--text)';
+    h+='<div class="'+cls+'" draggable="true"'
+      +' ondragstart="dStart(event,'+i+')"'
+      +' ondragover="dOver(event,'+i+')"'
+      +' ondrop="dDrop(event,'+i+')"'
+      +' ondragend="dEnd(event)">';
+    h+='<div style="font-size:16px;color:#854F0B;width:20px;text-align:center;flex-shrink:0;">'+arrow+'</div>';
+    h+='<div class="ci-init" style="background:'+initBg+';color:'+initColor+';">'+x.init+'</div>';
+    h+='<div style="flex:1;min-width:0;">';
+    h+='<div class="ci-name">'+(x.active?'':'&#9760; ')+x.name+'</div>';
+    if(!x.isPlayer)h+='<div class="ci-sub">'+x.hp+' / '+x.maxHp+' HP</div>';
+    h+='</div>';
+    if(!x.isPlayer){
+      h+='<div class="hp-bar"><div class="hp-fill" style="width:'+pct+'%;background:'+hpColor+';"></div></div>';
+      h+='<div class="ci-btns">';
+      h+='<button class="btn s d" onclick="changeHP('+i+',-5)">-5</button>';
+      h+='<button class="btn s d" onclick="changeHP('+i+',-1)">-1</button>';
+      h+='<button class="btn s" onclick="setHP('+i+')">'+x.hp+'</button>';
+      h+='<button class="btn s p" onclick="changeHP('+i+',1)">+1</button>';
+      h+='<button class="btn s p" onclick="changeHP('+i+',5)">+5</button>';
+      h+='</div>';
+    }
+    h+='<button class="btn s" onclick="removeCombatant('+i+')" style="flex-shrink:0;">&#10005;</button>';
+    h+='</div>';
+  }
+  list.innerHTML=h;
+}
+
+function dStart(e,i){dragSrc=i;e.currentTarget.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function dOver(e,i){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('.ci').forEach(function(el){el.classList.remove('drag-over');});if(i!==dragSrc)e.currentTarget.classList.add('drag-over');}
+function dEnd(e){document.querySelectorAll('.ci').forEach(function(el){el.classList.remove('dragging','drag-over');});}
+function dDrop(e,i){
+  e.preventDefault();
+  if(dragSrc===i||dragSrc===-1)return;
+  var c=S.combat.combatants;
+  var moved=c.splice(dragSrc,1)[0];
+  c.splice(i,0,moved);
+  if(S.combat.current===dragSrc)S.combat.current=i;
+  else if(dragSrc<S.combat.current&&i>=S.combat.current)S.combat.current--;
+  else if(dragSrc>S.combat.current&&i<=S.combat.current)S.combat.current++;
+  dragSrc=-1;
+  SS();rCombat();
+}
+// ---- END COMBAT ----
+
+
+// ---- GITHUB SYNC ----
+var GKEY='odl-gh-cfg', DKEY='odl-dirty';
+var GH={owner:'',repo:'',path:'campaign.json',branch:'main',token:''};
+var ghSha=null, ghTimer=null, ghBusy=false, ghCommits=[], ghArmed=-1, ghBooting=true;
+
+function ghEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function hhmm(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+
+function ghLoadCfg(){try{var d=localStorage.getItem(GKEY);if(d){var p=JSON.parse(d);for(var k in GH){if(p[k]!==undefined)GH[k]=p[k];}}}catch(e){}}
+function ghSaveCfg(){try{localStorage.setItem(GKEY,JSON.stringify(GH));}catch(e){}}
+function ghOn(){return !!(GH.owner&&GH.repo&&GH.token);}
+function setDirty(v){try{v?localStorage.setItem(DKEY,'1'):localStorage.removeItem(DKEY);}catch(e){}}
+function isDirty(){try{return localStorage.getItem(DKEY)==='1';}catch(e){return false;}}
+
+function b64e(s){var b=new TextEncoder().encode(s),o='';for(var i=0;i<b.length;i+=0x8000){o+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));}return btoa(o);}
+function b64d(s){var bin=atob(String(s||'').replace(/\s/g,'')),b=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++){b[i]=bin.charCodeAt(i);}return new TextDecoder().decode(b);}
+
+function ghUrl(p){return 'https://api.github.com/repos/'+encodeURIComponent(GH.owner)+'/'+encodeURIComponent(GH.repo)+p;}
+function ghApi(url,opts){
+  opts=opts||{};
+  opts.headers={'Accept':'application/vnd.github+json','Authorization':'Bearer '+GH.token,'X-GitHub-Api-Version':'2022-11-28'};
+  return fetch(url,opts);
+}
+function ghErr(status,j){
+  if(status===401)return 'je token is ongeldig of verlopen. Maak een nieuwe aan en zet hem bij Verbinding.';
+  if(status===403)return 'geen toegang. Check of je token Contents op "Read and write" heeft voor deze repo.';
+  if(status===404)return 'repo of pad niet gevonden. Check eigenaar, repo-naam en branch bij Verbinding.';
+  return (j&&j.message)?j.message:('HTTP '+status);
+}
+
+function syncStat(cls,txt){var e=document.getElementById('syncPill');if(e){e.className='sync-pill '+cls;e.textContent=txt;}}
+function notice(kind,txt,btns){
+  var e=document.getElementById('ghNotice');
+  var h='<div>'+ghEsc(txt)+'</div>';
+  if(btns&&btns.length){h+='<div class="row" style="margin:8px 0 0;">'+btns.map(function(b){return '<button class="btn s" onclick="'+b.f+'">'+ghEsc(b.t)+'</button>';}).join('')+'</div>';}
+  e.innerHTML=h;e.className='notice '+kind;e.style.display='block';
+}
+function noticeOff(){var e=document.getElementById('ghNotice');if(e)e.style.display='none';}
+
+var SNAPKEYS=['players','ns','sn','npcs','threads','sessions','nfilt','combat'];
+function snap(){var o={};SNAPKEYS.forEach(function(k){o[k]=S[k];});return o;}
+function applySnap(d){SNAPKEYS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});}
+
+function ghPull(cb){
+  syncStat('busy','Ophalen…');
+  ghApi(ghUrl('/contents/'+encodeURIComponent(GH.path)+'?ref='+encodeURIComponent(GH.branch)+'&t='+Date.now()))
+  .then(function(r){
+    if(r.status===404){ghSha=null;if(cb)cb(null,'missing');return null;}
+    if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){throw new Error(ghErr(r.status,j));});
+    return r.json();
+  })
+  .then(function(j){if(!j)return;ghSha=j.sha;if(cb)cb(JSON.parse(b64d(j.content)),'ok');})
+  .catch(function(e){
+    syncStat('warn','Wacht op verbinding');
+    notice('warn',(!navigator.onLine||/failed to fetch|networkerror|load failed/i.test(e.message))
+      ?'Geen verbinding met GitHub. Je werkt lokaal verder; alles wordt opgeslagen zodra je weer online bent.'
+      :('Kon GitHub niet bereiken: '+e.message+' Je werkt lokaal verder.'));
+    if(cb)cb(null,'error');
+  });
+}
+
+function ghPush(force,cb){
+  if(!ghOn())return;
+  if(ghBusy){clearTimeout(ghTimer);ghTimer=setTimeout(function(){ghPush(force,cb);},1500);return;}
+  ghBusy=true;syncStat('busy','Opslaan…');
+  var body={message:'Sessie-update '+new Date().toLocaleString('nl-BE'),content:b64e(JSON.stringify(snap(),null,2)),branch:GH.branch};
+  if(ghSha)body.sha=ghSha;
+  ghApi(ghUrl('/contents/'+encodeURIComponent(GH.path)),{method:'PUT',body:JSON.stringify(body),keepalive:true})
+  .then(function(r){
+    if(r.status===409||r.status===422)throw new Error('CONFLICT');
+    if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){throw new Error(ghErr(r.status,j));});
+    return r.json();
+  })
+  .then(function(j){
+    ghBusy=false;ghSha=j.content.sha;setDirty(false);noticeOff();
+    syncStat('ok','Opgeslagen '+hhmm(new Date()));
+    if(cb)cb(true);
+  })
+  .catch(function(e){
+    ghBusy=false;
+    if(e.message==='CONFLICT'){
+      syncStat('err','Conflict');
+      notice('warn','De versie op GitHub is nieuwer dan wat hier openstaat — waarschijnlijk vanaf een ander toestel of tabblad. Kies welke versie wint.',
+        [{t:'Deze versie uploaden',f:'ghForce()'},{t:'GitHub-versie laden',f:'ghAdopt()'}]);
+    } else if(!navigator.onLine||/failed to fetch|networkerror|load failed/i.test(e.message)){
+      syncStat('warn','Wacht op verbinding');
+      notice('warn','Geen verbinding met GitHub. Je wijzigingen staan veilig op dit toestel en worden vanzelf opgeslagen zodra je weer online bent.');
+    } else {
+      syncStat('err','Niet opgeslagen');
+      notice('bad','Opslaan mislukt: '+e.message+' Je wijzigingen staan nog veilig op dit toestel.');
+    }
+    if(cb)cb(false);
+  });
+}
+
+function ghForce(){noticeOff();ghPull(function(d,st){if(st==='error')return;ghPush(true);});}
+function rActive(){
+  var t='characters';
+  ['characters','campaign','npcs','threads','sessions','combat'].forEach(function(x){
+    var b=document.getElementById('tb-'+x);
+    if(b&&b.classList.contains('on'))t=x;
+  });
+  ST(t);
+}
+function ghAdopt(){noticeOff();ghPull(function(d,st){if(!d)return;applySnap(d);localStorage.setItem(KEY,JSON.stringify(S));setDirty(false);syncStat('ok','Geladen '+hhmm(new Date()));rActive();});}
+function ghSyncNow(){if(!ghOn()){ghOpenCfg();return;}clearTimeout(ghTimer);ghPush();}
+
+var ghLastCheck=0;
+function ghCheck(manual){
+  if(!ghOn()){if(manual)ghOpenCfg();return;}
+  if(ghBusy)return;
+  var now=Date.now();
+  if(!manual&&now-ghLastCheck<10000)return;
+  ghLastCheck=now;
+  ghPull(function(d,st){
+    ghBooting=false;
+    if(st==='missing'){notice('warn','Er staat nog geen '+GH.path+' in de repo. Tik op het statusbolletje om je huidige campagne als eerste versie te uploaden.');syncStat('warn','Nog niet geüpload');return;}
+    if(st!=='ok')return;
+    if(JSON.stringify(d)===JSON.stringify(snap())){setDirty(false);noticeOff();syncStat('ok','Bij');return;}
+    if(isDirty()){
+      syncStat('warn','Verschil');
+      notice('warn','Dit toestel heeft wijzigingen die nog niet op GitHub staan, en op GitHub staat intussen een andere versie. Kies welke je wil houden.',
+        [{t:'Deze versie uploaden',f:'ghForce()'},{t:'GitHub-versie laden',f:'ghAdopt()'}]);
+    } else {
+      applySnap(d);localStorage.setItem(KEY,JSON.stringify(S));rActive();
+      noticeOff();syncStat('ok','Geladen '+hhmm(new Date()));
+    }
+  });
+}
+function ghBoot(){
+  ghLoadCfg();
+  if(!ghOn()){syncStat('off','Niet verbonden');ghBooting=false;return;}
+  ghCheck(true);
+}
+
+// ---- history ----
+function ghHistory(){
+  if(!ghOn()){ghOpenCfg();return;}
+  hide('ghCfg');show('ghHist');ghArmed=-1;
+  document.getElementById('ghHistList').innerHTML='<div class="empty">Laden…</div>';
+  ghApi(ghUrl('/commits?path='+encodeURIComponent(GH.path)+'&sha='+encodeURIComponent(GH.branch)+'&per_page=25'))
+  .then(function(r){if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){throw new Error(ghErr(r.status,j));});return r.json();})
+  .then(function(list){ghCommits=list;rHist();})
+  .catch(function(e){document.getElementById('ghHistList').innerHTML='<div class="empty">Kon de geschiedenis niet laden: '+ghEsc(e.message)+'</div>';});
+}
+function rHist(){
+  if(!ghCommits.length){document.getElementById('ghHistList').innerHTML='<div class="empty">Nog geen versies opgeslagen.</div>';return;}
+  var h='';
+  ghCommits.forEach(function(c,i){
+    var d=new Date(c.commit.author.date);
+    var when=d.toLocaleDateString('nl-BE',{day:'numeric',month:'short'})+' om '+hhmm(d);
+    h+='<div class="cm"><div style="flex:1;min-width:0;"><div style="font-weight:600;">'+ghEsc(when)+(i===0?' <span class="badge bt">nieuwste</span>':'')+'</div>'+
+       '<div style="color:var(--text2);font-size:11px;margin-top:2px;">'+ghEsc(c.sha.slice(0,7))+'</div></div>'+
+       (i===0?'':'<button class="btn s'+(ghArmed===i?' d':'')+'" onclick="ghRestore('+i+')">'+(ghArmed===i?'Zeker weten?':'Terugzetten')+'</button>')+'</div>';
+  });
+  document.getElementById('ghHistList').innerHTML=h;
+}
+function ghRestore(i){
+  if(ghArmed!==i){ghArmed=i;rHist();return;}
+  ghArmed=-1;
+  var sha=ghCommits[i].sha;
+  document.getElementById('ghHistList').innerHTML='<div class="empty">Terugzetten…</div>';
+  ghApi(ghUrl('/contents/'+encodeURIComponent(GH.path)+'?ref='+sha))
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+  .then(function(j){
+    applySnap(JSON.parse(b64d(j.content)));
+    localStorage.setItem(KEY,JSON.stringify(S));
+    hide('ghHist');rActive();
+    ghPush();
+    notice('warn','Versie teruggezet. De vorige stand is niet weg — hij staat gewoon een stap hoger in de geschiedenis.');
+  })
+  .catch(function(e){document.getElementById('ghHistList').innerHTML='<div class="empty">Terugzetten mislukt: '+ghEsc(e.message)+'</div>';});
+}
+
+// ---- settings ----
+function ghOpenCfg(){
+  hide('ghHist');show('ghCfg');
+  ghLoadCfg();
+  document.getElementById('gf-owner').value=GH.owner;
+  document.getElementById('gf-repo').value=GH.repo;
+  document.getElementById('gf-branch').value=GH.branch||'main';
+  document.getElementById('gf-path').value=GH.path||'campaign.json';
+  document.getElementById('gf-token').value=GH.token;
+  document.getElementById('gf-msg').textContent='';
+}
+function ghSaveCfgForm(){
+  GH.owner=document.getElementById('gf-owner').value.trim();
+  GH.repo=document.getElementById('gf-repo').value.trim();
+  GH.branch=document.getElementById('gf-branch').value.trim()||'main';
+  GH.path=document.getElementById('gf-path').value.trim()||'campaign.json';
+  GH.token=document.getElementById('gf-token').value.trim();
+  var m=document.getElementById('gf-msg');
+  if(!ghOn()){m.textContent='Vul eigenaar, repo en token in.';return;}
+  ghSaveCfg();
+  m.textContent='Verbinding testen…';
+  ghApi(ghUrl('')).then(function(r){
+    if(!r.ok)return r.json().catch(function(){return {};}).then(function(j){throw new Error(ghErr(r.status,j));});
+    return r.json();
+  }).then(function(repo){
+    m.textContent='Verbonden met '+repo.full_name+(repo.private?' (privé)':' — let op: deze repo is publiek');
+    hide('ghCfg');ghBoot();
+  }).catch(function(e){m.textContent='Mislukt: '+e.message;});
+}
+function ghDisconnect(){
+  GH={owner:'',repo:'',path:'campaign.json',branch:'main',token:''};
+  ghSaveCfg();ghSha=null;hide('ghCfg');noticeOff();syncStat('off','Niet verbonden');
+}
+// ---- END GITHUB SYNC ----
+
+ghLoadCfg();
+LS();
+rP();
+ghBoot();
+
+if(navigator.storage&&navigator.storage.persist){navigator.storage.persist();}
+if('serviceWorker' in navigator&&window.isSecureContext){navigator.serviceWorker.register('sw.js').catch(function(){});}
+document.addEventListener('visibilitychange',function(){
+  if(document.visibilityState==='hidden'){
+    if(isDirty()&&ghOn()){clearTimeout(ghTimer);ghPush();}
+  } else {
+    ghCheck(false);
+  }
+});
+window.addEventListener('focus',function(){ghCheck(false);});
+window.addEventListener('online',function(){if(isDirty()&&ghOn())ghPush();});
+</script>
+</body>
+</html>

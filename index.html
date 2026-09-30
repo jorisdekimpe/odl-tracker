@@ -222,6 +222,7 @@
   <div class="tabs">
     <button class="tab on" id="tb-characters" onclick="ST('characters')">Players</button>
     <button class="tab" id="tb-campaign" onclick="ST('campaign')">Campaign</button>
+    <button class="tab" id="tb-milestones" onclick="ST('milestones')">Milestones</button>
     <button class="tab" id="tb-npcs" onclick="ST('npcs')">NPCs</button>
     <button class="tab" id="tb-threads" onclick="ST('threads')">Plot Threads</button>
     <button class="tab" id="tb-sessions" onclick="ST('sessions')">Sessions</button>
@@ -268,6 +269,21 @@
       <span style="color:var(--text3);">Click a node to cycle its status</span>
     </div>
     <div id="tree"></div>
+  </div>
+
+  <!-- MILESTONES -->
+  <div id="tab-milestones" class="sec">
+    <div class="row" style="margin-bottom:6px;">
+      <h2 style="margin:0;">Milestone levels</h2>
+      <span id="ms-cur" class="round-badge mla"></span>
+    </div>
+    <div class="leg">
+      <div class="li"><div class="ld" style="background:var(--teal-bg);border:1px solid var(--teal-bd);"></div>Gehaald</div>
+      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px dashed #EF9F27;"></div>Eerstvolgende</div>
+      <div class="li"><div class="ld" style="background:var(--bg2);border:1px solid var(--border2);"></div>Nog niet</div>
+      <span style="color:var(--text3);">Tik een mijlpaal om het partijlevel daarop te zetten; nog eens tikken zet het een stap terug. Boek-richtlijn: <i>Milestones and Ideal Levels</i>, p. 27.</span>
+    </div>
+    <div id="mlist"></div>
   </div>
 
   <!-- NPCs -->
@@ -392,6 +408,29 @@ var PC=[{bg:'#FAEEDA',c:'#633806'},{bg:'#E1F5EE',c:'#085041'},{bg:'#FAECE7',c:'#
 var NC=[{bg:'#E1F5EE',c:'#085041'},{bg:'#FAECE7',c:'#993C1D'},{bg:'#EEEDFE',c:'#3C3489'},{bg:'#FAEEDA',c:'#633806'},{bg:'#E6F1FB',c:'#0C447C'},{bg:'#FBEAF0',c:'#72243E'},{bg:'#EAF3DE',c:'#27500A'},{bg:'#FCEBEB',c:'#A32D2D'},{bg:'#E6F1FB',c:'#185FA5'},{bg:'#EAF3DE',c:'#3B6D11'},{bg:'#FAEEDA',c:'#412402'},{bg:'#EEEDFE',c:'#26215C'}];
 var EPC={'Demi-God':'#FAEEDA|#633806','Vanished One':'#E1F5EE|#085041','Doomed One':'#FAECE7|#993C1D','Haunted One':'#EEEDFE|#3C3489','Gifted One':'#EAF3DE|#27500A','Lost One':'#E6F1FB|#0C447C','Cursed One':'#FBEAF0|#72243E','Dragonslayer':'#FCEBEB|#A32D2D'};
 var ACB={'Prologue':'#FAEEDA|#633806','Act 1':'#EAF3DE|#27500A','Act 2':'#E1F5EE|#085041','Act 3':'#E6F1FB|#0C447C','Act 4':'#FAECE7|#993C1D','Act 5':'#FCEBEB|#A32D2D'};
+
+var MILES=[
+ {lvl:1, t:'Sour Vintage, het Zwijn, Versi bevrijd', act:'Proloog', fame:0, note:''},
+ {lvl:2, t:'Aankomst in Estoria, na de zeven gesprekken', act:'Act 1', fame:2, note:''},
+ {lvl:3, t:'Eerste Arbeidsdaad voltooid (Mossy Temple)', act:'Act 1', fame:2, note:'Kyrenos krijgt zijn pseudodraak.'},
+ {lvl:4, t:'Tweede Arbeidsdaad voltooid', act:'Act 1', fame:4, note:''},
+ {lvl:5, t:'Derde Arbeidsdaad + de Ultros geclaimd', act:'Act 1→2', fame:6, note:'Ox: fel rood triggert vanaf hier automatisch zijn transformatie.'},
+ {lvl:6, t:'Mytros, het feest, de 60-dagen klok start', act:'Act 2', fame:6, note:'Vallus geeft het geheime drakenei (Wauros).'},
+ {lvl:7, t:'Eerste twee of drie eilanden van de Golf', act:'Act 3', fame:8, note:'Eieren komen uit. Spreid Kyrenos, Dragini en Wauros over verschillende sessies.'},
+ {lvl:8, t:'Yonder afgerond', act:'Act 3', fame:8, note:'Chondrus biedt Kyrenos de Dragonslayer aan; Dragini vindt de Cloak of the Bat; Sirius vindt Mikhael.'},
+ {lvl:9, t:'Fates, Themis, Scorpion Island', act:'Act 3', fame:10, note:'Orelles Breastplate aan het weefgetouw van de Fates; Ox krijgt de Belt van de Lotuswitch.'},
+ {lvl:10,t:'Aankomst in de Forgotten Sea', act:'Act 3', fame:10, note:''},
+ {lvl:11,t:'Garden of Helios of Typhon Island', act:'Act 3', fame:12, note:'Kyrenos tegen Helios; Wauros vindt de fortress; Ox springt in de Maw.'},
+ {lvl:12,t:'Praxys — Sydon geconfronteerd', act:'Act 3', fame:12, note:'Wauros bij Nephele; Orelle en Wauros staan er als familie.'},
+ {lvl:13,t:'Nether Sea — Lutheria’s zeis', act:'Act 3', fame:12, note:'Apollodorus’ familie vrij. Orelles derde-doodlimiet vervalt.'},
+ {lvl:14,t:'De Slag om Mytros begint', act:'Act 4', fame:14, note:''},
+ {lvl:15,t:'Slag overleefd', act:'Act 4', fame:14, note:''},
+ {lvl:16,t:'Aresia, Narsus bevrijd', act:'Act 5', fame:16, note:''},
+ {lvl:17,t:'De drie goddelijke artefacten', act:'Act 5', fame:16, note:''},
+ {lvl:18,t:'De Apokalypsis begint', act:'Act 5', fame:18, note:''},
+ {lvl:19,t:'Vier oermonsters onderschept', act:'Act 5', fame:18, note:''},
+ {lvl:20,t:'Empyrean Palace, vlak voor de Theogenesis', act:'Act 5', fame:18, note:''}
+];
 
 var TREE=[
   {id:'P',lbl:'Prologue — The Prophecy',sub:'The Sour Vintage in the Heartlands. Kyrah (vermomd als dichteres) roept de helden samen. Eindigt met de Drie Arbeidsdaden en de zeven gesprekken met Versi.',bg:'#FAEEDA',br:'#FAC775',tx:'#633806',lin:false,gate:null,
@@ -776,23 +815,24 @@ var DTHREADS=[
 
 var S={
   players:[
-    {"player": "Laura", "name": "Ox", "cls": "Barbarian 1", "race": "Thylean Minotaur", "path": "The Cursed One", "hp": 14, "fame": 0, "notes": "Ontsnapte arenaslaaf uit Mytros; 'Ox' is zijn arenanaam, niet zijn echte. ONZE LAAG (staat los van de vloek): onbegrensde Oath of Service aan een priester van de Orde van Sydon, hij weet dat niet. Priester heeft nog geen naam. CANON-KETEN: Versi stuurt hem naar DAMON in de Necropolis (Act 1); Damon kende zijn voorouder, zegt dat de vloek door SYDON EN LUTHERIA samen bedacht is, en geeft hem het LESSER item: gem of brightness. Damon stuurt hem naar de LOTUSWITCH (een sfinx) op SCORPION ISLAND (Act 3): vier vragen over Thylea, drie goed volstaat, dan geeft ze het GREATER item: BELT OF FIRE GIANT STRENGTH (met vuurresistentie, precies wat hij op Typhon nodig heeft). Zij onthult dat de vloek op TYPHON ISLAND ontstaat. Daar in de Maw springen, uitkomen op de asvlakten van HADES: de voorouder is een weerloze oude man bij een cerberus; hem doden heft alle vloeken op de hele familie op. TWEEDE, VERZWEGEN WEG: Sydon en Lutheria allebei doden lift de vloek ook, bevrijdt de voorouder en laadt de gem op. Fel rood triggert vanaf lvl 5 zijn transformatie. Divine boon: Damon teleporteert in, ruimt op, laat een raise dead-scroll achter."},
-    {"player": "Indy", "name": "Orelle", "cls": "Fighter 1 (Hoplite)", "race": "Thylean Siren", "path": "The Doomed One", "hp": "", "fame": 0, "notes": "Kusthopliet van Mytros. Bloedlijn van Sydon (canon monstrous-variant: een Titaan als voorouder). CANON: haar doem is GEEN wezen maar LUTHERIA. Bij haar geboorte eiste Lutheria haar op als offer bij een wijnfeest; van alle ouders weigerden alleen de hare, dus liet Lutheria hen afslachten en beval haar hele dienarenleger het kind eindeloos te kwellen - als grap. KENTIMANE IS NIET MEER HAAR DOEM. LUTHERIA'S JOKE (vanaf nu spelen): zolang Lutheria leeft richten haar dienaren zich zichtbaar op Orelle - goatlings, jackalwere, lamia, maenads en alle vijandige undead. Het hoort op te vallen. DRIE DOEN: de volledige profetie zegt dat ze drie keer moet sterven voor de Koningin van de Dood. Divine boon = 2x true resurrection; na de derde dood blijft ze dood, tenzij Lutheria eerst valt. Demetria (Mossy Temple, Act 1) geeft de halve waarheid. De Fates (Act 3) geven de volledige profetie, en aan HUN WEEFGETOUW wordt haar artefact gemaakt: BREASTPLATE OF INVULNERABILITY - onderhandelen met de hags of ze doden. Lutheria doet in de Nether Sea een ronde niets van het lachen. Wavering Emotions: rouw = geen vlucht."},
-    {"player": "Tiebe", "name": "Kyrenos Dragonbane", "cls": "Paladin 1 (Oath of the Dragonlord)", "race": "Thylean Centaur", "path": "The Dragonslayer", "hp": "", "fame": 0, "notes": "CANON-DOELWIT: HELIOS, de gouden draak van de Garden of Helios. NIET Argyn. De Fates vertelden Helios dat iemand uit Kyrenos' dorp of familie hem ooit zou doden, dus regende hij preventief vuur op dat dorp; Adara en de kudde stierven daardoor. Dit klopt weer met Tiebe's eigen tekst over drakenvuur. Helios wacht al jaren op hem en wil zijn fout rechtzetten. Versi stuurt hem naar de FORGEKEEPER in de Mithral Mines (Act 1): LESSER = RING OF RESISTANCE (FIRE) - correct element, want Helios is goud. De Forgekeeper zegt dat hij een wapen nodig heeft dat de gyganen van Yonder smeedden. De Fates (Act 3): zoek de Zonnegod onder het sterrenbeeld DE WAGEN. GREATER = DRAGONSLAYER (melee naar keuze) bij CHONDRUS op Yonder - hij biedt het zelf aan als deel van zijn koopje. Argyn blijft bestaan als Gaius' rijdier op Yonder, maar is niet langer zijn heroic task. Na de eed zijn metallieke draken zijn 'bloed' - een gouden draak dus ook. Pseudodraak op lvl 3, ei uit op lvl 7. Schrijft in het geheim liederen in Adara's boek (Kyrah-hook). Divine boon: Morta wekt hem eenmaal op."},
-    {"player": "Ruben", "name": "Dr. Sirius Reed / Smash", "cls": "Artificer 1 / Barbarian 1", "race": "Elf / Goliath", "path": "The Lost One", "hp": "", "fame": 0, "notes": "Archeoloog, schipbreuk op zoek naar de schatten van de Dragonlords, door vissers naar Mytros gebracht. CANON: PYTHOR in Estoria kent het spoor naar de schat maar werkt pas mee nadat ANORA van het offer gered is (Act 1); dan onthult hij dat ESTOR ARKELANDER de laatste bezitter was. VALLUS (Act 2): het Antikythera kan door een gygan-smid - STEROS, BRONT of GARZOON - omgebouwd worden tot een kaart door de Forgotten Sea naar de buitenwereld. Dat is zijn WEG NAAR HUIS, drie akten eerder dan Theogenesis. ESTOR eist eerste keuze uit de schat maar zegt pas wat hij wil na toestemming: hij neemt de xiphos of slaughter. De schat ligt in de spiegelgevangenis in de Nether Sea, bewaakt door HEZZEBAL. Zijn item: GEM OF SEEING. Divine boon: Estor bezit zijn lichaam en de speler speelt door. OPEN EN VAN ONS: de bemanning (canon geeft geen locaties), Smash' herkomst, de Woedemeter-huisregel. Nu Kentimane niet meer Orelles doem is, staat de sarcofaag-herkomst vrij om opnieuw te kiezen. YONDER (beslist 28/09): in Gaius' cellen zit MIKHAEL, laatste overlevende van een luchtschip-expeditie uit de buitenwereld die wél voorbij de Forgotten Sea raakte. Geen bemanningslid van Reed, wel een lotgenoot: het levende bewijs dat de weg naar huis bestaat."},
-    {"player": "Marthe", "name": "Dragini Led Vit", "cls": "Monk 1", "race": "Dragonborn (wit)", "path": "The Vanished One", "hp": 8, "fame": 0, "notes": "Originele Dragonlord, ~500 jaar in Versi's waakdroom. Winterwenswacht en Hoedim bestonden nooit. Tarotdeck = enige bezit. CANON: Versi geeft de informatie pas NA de eed van terugkeer - ze weigert hard tot er gezworen is. Speel dat zo. XANDER in de Necropolis draagt TWEE KRONEN en geeft er een aan haar en een aan Wauros (Act 1). Geen conflict, dat staat in het boek. Haar harnas is gestolen door GAIUS en ligt in zijn kamer op YONDER: CLOAK OF THE BAT - alleen zij kan attunen, en hij verandert haar in een pseudodraak in plaats van een vleermuis. Brass drakenei op FIRE ISLAND (V15) via Versi's visioen op de Ultros. HEZZEBAL in de Nether Sea herkent haar als Dragonlord en geeft haar de schuld van zijn eeuwenlange opsluiting: hij gelooft dat de Dragonlords draken enkel als gereedschap zagen. Zijn waanzin is te genezen met 3x greater restoration, wat hij als vijandige daad opvat. Zelfde scene als Sirius' schat. Divine boon: Versi kust haar terug tot leven. OPEN: nakomelingen - canon geeft daar niets voor."},
-    {"player": "Jarne", "name": "Apollodorus", "cls": "Bard 1", "race": "Halfling", "path": "The Haunted One", "hp": "", "fame": 0, "notes": "Merric Huebald Clovis Greenbottle. CANON: hij was voorspeld 'de macht van de dood te breken'. Lutheria joeg hem op en slachtte zijn familie af, maar de godin MYTROS greep in en wiste zijn hele bestaan uit het geheugen van de wereld om hem te redden - waarna Lutheria haar doel vergat en naar huis ging. De zielen zitten in Lutheria's kristallen zeis. LESSER = RING OF PROTECTION bij DEMETRIA in de Mossy Temple (Act 1), daar gebracht door een goatling. BIJ HET ATTUNEN hoort hij de stemmen van zijn familie; de stem van wie hij het meest liefhad is het luidst en wijst naar het volgende artefact. Dat is de motor van zijn hele boog. GREATER = DANCING SWORD bij koningin THESILEA op Themis (Act 3) - dit zwaard bevat de ziel van de stichter van de familie. Daarna zeggen de stemmen dat de Fates de waarheid kennen. TROONAANSPRAAK IS CANON: de Haunted One was voorbestemd de volgende heerser van Mytros te worden. LET OP: met de Dancing Sword in plaats van de Helm of Brilliance is het bewijs van de aanspraak nu de stichter zelf, die kan spreken. Sterker dan een kroon, en het maakt hem in Act 4 een probleem voor Acastus. Zeis breken = familie vrij en de wereld herinnert zich hen weer. Divine boon: de geesten bezitten hem eenmaal."},
-    {"player": "Jonas", "name": "Wauros", "cls": "Druid 1 (Circle of the Moon)", "race": "Thyleaans — Druïden van het Oldwood", "path": "The Gifted One", "hp": "", "fame": 0, "notes": "BESLIST 19/09: Circle of the Moon (niet het boek's Circle of Sacrifice); zijn volk zijn de Druïden van het Oldwood, dezelfde orde als Herkus. NOG OPEN: of hij zichzelf hernoemd heeft bij vertrek uit het dorp (raakt Ox' naamthema). GEEN centaur - dat is Tiebe. ZIJN HELE ACHTERGROND IS CANON: kleinkind van SYDON. Zijn grootmoeder was een sterfelijke tovenares op wie Sydon verliefd werd; Lutheria overtuigde hem dat die liefde hem bedierf, waarop Sydon haar vermoordde - zonder te weten dat ze al een dochter had. Versi onthult dit en geeft hem haar MEDAILLON (proloog). Een week later spreekt de geest voor het eerst: laat de Dragonlords herrijzen, maar neem eerst wraak op Sydon. Zijn wizardhaat is dus zelfhaat. XANDER geeft hem de TWEEDE KROON (Necropolis, Act 1). VALLUS (Act 2): de vesting is in het bezit van een draak in de Garden of Helios. Het geheime drakenei uit de bronzen kist gaat naar hem - NIET het ei van Fire Island, dat is van Dragini. INSTANT FORTRESS in de schathoop van Helios (Act 3). NEPHELE op Praxys: een clone uit het vlees van de zilveren draak BALMYTRIA, zielloos, nooit leren spreken; Sydon liet haar paren met een bronzen en een koperen draak en schonk het broedsel - waaronder ICARUS en ARGYN - aan Acastus en Gaius. Medaillon breken = grootmoeders ziel in Nephele: een volwassen zilveren draak als bondgenoot, arrogant en grillig, alleen bereid te helpen tegen Sydon - en haar stem is voorgoed weg. Sydon herkent hem en is teleurgesteld dat zijn nageslacht zo klein uitviel. Divine boon: Vallus wekt hem op met true resurrection. Dorp aan de Oldwood, de dam, fire bolt op zijn blote voeten, eerste ongecontroleerde wildshape (wolf), beet de student - die leeft en is nu meester aan de Academie."}
+    {"player": "Laura", "name": "Ox", "cls": "Barbarian 2", "race": "Thylean Minotaur", "path": "The Cursed One", "hp": 14, "fame": 0, "notes": "Ontsnapte arenaslaaf uit Mytros; 'Ox' is zijn arenanaam, niet zijn echte. ONZE LAAG (staat los van de vloek): onbegrensde Oath of Service aan een priester van de Orde van Sydon, hij weet dat niet. Priester heeft nog geen naam. CANON-KETEN: Versi stuurt hem naar DAMON in de Necropolis (Act 1); Damon kende zijn voorouder, zegt dat de vloek door SYDON EN LUTHERIA samen bedacht is, en geeft hem het LESSER item: gem of brightness. Damon stuurt hem naar de LOTUSWITCH (een sfinx) op SCORPION ISLAND (Act 3): vier vragen over Thylea, drie goed volstaat, dan geeft ze het GREATER item: BELT OF FIRE GIANT STRENGTH (met vuurresistentie, precies wat hij op Typhon nodig heeft). Zij onthult dat de vloek op TYPHON ISLAND ontstaat. Daar in de Maw springen, uitkomen op de asvlakten van HADES: de voorouder is een weerloze oude man bij een cerberus; hem doden heft alle vloeken op de hele familie op. TWEEDE, VERZWEGEN WEG: Sydon en Lutheria allebei doden lift de vloek ook, bevrijdt de voorouder en laadt de gem op. Fel rood triggert vanaf lvl 5 zijn transformatie. Divine boon: Damon teleporteert in, ruimt op, laat een raise dead-scroll achter."},
+    {"player": "Indy", "name": "Orelle", "cls": "Fighter 2 (Hoplite)", "race": "Thylean Siren", "path": "The Doomed One", "hp": "", "fame": 0, "notes": "Kusthopliet van Mytros. Bloedlijn van Sydon (canon monstrous-variant: een Titaan als voorouder). CANON: haar doem is GEEN wezen maar LUTHERIA. Bij haar geboorte eiste Lutheria haar op als offer bij een wijnfeest; van alle ouders weigerden alleen de hare, dus liet Lutheria hen afslachten en beval haar hele dienarenleger het kind eindeloos te kwellen - als grap. KENTIMANE IS NIET MEER HAAR DOEM. LUTHERIA'S JOKE (vanaf nu spelen): zolang Lutheria leeft richten haar dienaren zich zichtbaar op Orelle - goatlings, jackalwere, lamia, maenads en alle vijandige undead. Het hoort op te vallen. DRIE DOEN: de volledige profetie zegt dat ze drie keer moet sterven voor de Koningin van de Dood. Divine boon = 2x true resurrection; na de derde dood blijft ze dood, tenzij Lutheria eerst valt. Demetria (Mossy Temple, Act 1) geeft de halve waarheid. De Fates (Act 3) geven de volledige profetie, en aan HUN WEEFGETOUW wordt haar artefact gemaakt: BREASTPLATE OF INVULNERABILITY - onderhandelen met de hags of ze doden. Lutheria doet in de Nether Sea een ronde niets van het lachen. Wavering Emotions: rouw = geen vlucht."},
+    {"player": "Tiebe", "name": "Kyrenos Dragonbane", "cls": "Paladin 2 (Oath of the Dragonlord)", "race": "Thylean Centaur", "path": "The Dragonslayer", "hp": "", "fame": 0, "notes": "CANON-DOELWIT: HELIOS, de gouden draak van de Garden of Helios. NIET Argyn. De Fates vertelden Helios dat iemand uit Kyrenos' dorp of familie hem ooit zou doden, dus regende hij preventief vuur op dat dorp; Adara en de kudde stierven daardoor. Dit klopt weer met Tiebe's eigen tekst over drakenvuur. Helios wacht al jaren op hem en wil zijn fout rechtzetten. Versi stuurt hem naar de FORGEKEEPER in de Mithral Mines (Act 1): LESSER = RING OF RESISTANCE (FIRE) - correct element, want Helios is goud. De Forgekeeper zegt dat hij een wapen nodig heeft dat de gyganen van Yonder smeedden. De Fates (Act 3): zoek de Zonnegod onder het sterrenbeeld DE WAGEN. GREATER = DRAGONSLAYER (melee naar keuze) bij CHONDRUS op Yonder - hij biedt het zelf aan als deel van zijn koopje. Argyn blijft bestaan als Gaius' rijdier op Yonder, maar is niet langer zijn heroic task. Na de eed zijn metallieke draken zijn 'bloed' - een gouden draak dus ook. Pseudodraak op lvl 3, ei uit op lvl 7. Schrijft in het geheim liederen in Adara's boek (Kyrah-hook). Divine boon: Morta wekt hem eenmaal op."},
+    {"player": "Ruben", "name": "Dr. Sirius Reed / Smash", "cls": "Artificer 2 / Barbarian 2", "race": "Elf / Goliath", "path": "The Lost One", "hp": "", "fame": 0, "notes": "Archeoloog, schipbreuk op zoek naar de schatten van de Dragonlords, door vissers naar Mytros gebracht. CANON: PYTHOR in Estoria kent het spoor naar de schat maar werkt pas mee nadat ANORA van het offer gered is (Act 1); dan onthult hij dat ESTOR ARKELANDER de laatste bezitter was. VALLUS (Act 2): het Antikythera kan door een gygan-smid - STEROS, BRONT of GARZOON - omgebouwd worden tot een kaart door de Forgotten Sea naar de buitenwereld. Dat is zijn WEG NAAR HUIS, drie akten eerder dan Theogenesis. ESTOR eist eerste keuze uit de schat maar zegt pas wat hij wil na toestemming: hij neemt de xiphos of slaughter. De schat ligt in de spiegelgevangenis in de Nether Sea, bewaakt door HEZZEBAL. Zijn item: GEM OF SEEING. Divine boon: Estor bezit zijn lichaam en de speler speelt door. OPEN EN VAN ONS: de bemanning (canon geeft geen locaties), Smash' herkomst, de Woedemeter-huisregel. Nu Kentimane niet meer Orelles doem is, staat de sarcofaag-herkomst vrij om opnieuw te kiezen. YONDER (beslist 28/09): in Gaius' cellen zit MIKHAEL, laatste overlevende van een luchtschip-expeditie uit de buitenwereld die wél voorbij de Forgotten Sea raakte. Geen bemanningslid van Reed, wel een lotgenoot: het levende bewijs dat de weg naar huis bestaat."},
+    {"player": "Marthe", "name": "Dragini Led Vit", "cls": "Monk 2", "race": "Dragonborn (wit)", "path": "The Vanished One", "hp": 8, "fame": 0, "notes": "Originele Dragonlord, ~500 jaar in Versi's waakdroom. Winterwenswacht en Hoedim bestonden nooit. Tarotdeck = enige bezit. CANON: Versi geeft de informatie pas NA de eed van terugkeer - ze weigert hard tot er gezworen is. Speel dat zo. XANDER in de Necropolis draagt TWEE KRONEN en geeft er een aan haar en een aan Wauros (Act 1). Geen conflict, dat staat in het boek. Haar harnas is gestolen door GAIUS en ligt in zijn kamer op YONDER: CLOAK OF THE BAT - alleen zij kan attunen, en hij verandert haar in een pseudodraak in plaats van een vleermuis. Brass drakenei op FIRE ISLAND (V15) via Versi's visioen op de Ultros. HEZZEBAL in de Nether Sea herkent haar als Dragonlord en geeft haar de schuld van zijn eeuwenlange opsluiting: hij gelooft dat de Dragonlords draken enkel als gereedschap zagen. Zijn waanzin is te genezen met 3x greater restoration, wat hij als vijandige daad opvat. Zelfde scene als Sirius' schat. Divine boon: Versi kust haar terug tot leven. OPEN: nakomelingen - canon geeft daar niets voor."},
+    {"player": "Jarne", "name": "Apollodorus", "cls": "Bard 2", "race": "Halfling", "path": "The Haunted One", "hp": "", "fame": 0, "notes": "Merric Huebald Clovis Greenbottle. CANON: hij was voorspeld 'de macht van de dood te breken'. Lutheria joeg hem op en slachtte zijn familie af, maar de godin MYTROS greep in en wiste zijn hele bestaan uit het geheugen van de wereld om hem te redden - waarna Lutheria haar doel vergat en naar huis ging. De zielen zitten in Lutheria's kristallen zeis. LESSER = RING OF PROTECTION bij DEMETRIA in de Mossy Temple (Act 1), daar gebracht door een goatling. BIJ HET ATTUNEN hoort hij de stemmen van zijn familie; de stem van wie hij het meest liefhad is het luidst en wijst naar het volgende artefact. Dat is de motor van zijn hele boog. GREATER = DANCING SWORD bij koningin THESILEA op Themis (Act 3) - dit zwaard bevat de ziel van de stichter van de familie. Daarna zeggen de stemmen dat de Fates de waarheid kennen. TROONAANSPRAAK IS CANON: de Haunted One was voorbestemd de volgende heerser van Mytros te worden. LET OP: met de Dancing Sword in plaats van de Helm of Brilliance is het bewijs van de aanspraak nu de stichter zelf, die kan spreken. Sterker dan een kroon, en het maakt hem in Act 4 een probleem voor Acastus. Zeis breken = familie vrij en de wereld herinnert zich hen weer. Divine boon: de geesten bezitten hem eenmaal."},
+    {"player": "Jonas", "name": "Wauros", "cls": "Druid 2 (Circle of the Moon)", "race": "Thyleaans — Druïden van het Oldwood", "path": "The Gifted One", "hp": "", "fame": 0, "notes": "BESLIST 19/09: Circle of the Moon (niet het boek's Circle of Sacrifice); zijn volk zijn de Druïden van het Oldwood, dezelfde orde als Herkus. NOG OPEN: of hij zichzelf hernoemd heeft bij vertrek uit het dorp (raakt Ox' naamthema). GEEN centaur - dat is Tiebe. ZIJN HELE ACHTERGROND IS CANON: kleinkind van SYDON. Zijn grootmoeder was een sterfelijke tovenares op wie Sydon verliefd werd; Lutheria overtuigde hem dat die liefde hem bedierf, waarop Sydon haar vermoordde - zonder te weten dat ze al een dochter had. Versi onthult dit en geeft hem haar MEDAILLON (proloog). Een week later spreekt de geest voor het eerst: laat de Dragonlords herrijzen, maar neem eerst wraak op Sydon. Zijn wizardhaat is dus zelfhaat. XANDER geeft hem de TWEEDE KROON (Necropolis, Act 1). VALLUS (Act 2): de vesting is in het bezit van een draak in de Garden of Helios. Het geheime drakenei uit de bronzen kist gaat naar hem - NIET het ei van Fire Island, dat is van Dragini. INSTANT FORTRESS in de schathoop van Helios (Act 3). NEPHELE op Praxys: een clone uit het vlees van de zilveren draak BALMYTRIA, zielloos, nooit leren spreken; Sydon liet haar paren met een bronzen en een koperen draak en schonk het broedsel - waaronder ICARUS en ARGYN - aan Acastus en Gaius. Medaillon breken = grootmoeders ziel in Nephele: een volwassen zilveren draak als bondgenoot, arrogant en grillig, alleen bereid te helpen tegen Sydon - en haar stem is voorgoed weg. Sydon herkent hem en is teleurgesteld dat zijn nageslacht zo klein uitviel. Divine boon: Vallus wekt hem op met true resurrection. Dorp aan de Oldwood, de dam, fire bolt op zijn blote voeten, eerste ongecontroleerde wildshape (wolf), beet de student - die leeft en is nu meester aan de Academie."}
   ],
   ns:{},sn:{},
   npcs:JSON.parse(JSON.stringify(DNPCS)),
   threads:JSON.parse(JSON.stringify(DTHREADS)),
   sessions:[],nal:-1,nfilt:'All',
-  combat:{combatants:[],current:-1,round:0}
+  combat:{combatants:[],current:-1,round:0},
+  lvl:1
 };
 
 var KEY='odl-dm-tracker-v2';
-function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
+function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat','lvl'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
 function SS(){
   try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Opslaan op dit toestel mislukt: '+e.message);}
   if(typeof ghOn==='function'&&ghOn()&&!ghBooting){
@@ -806,7 +846,7 @@ function show(id){document.getElementById(id).style.display='block';}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase()||'?';}
 
 function ST(t){
-  ['characters','campaign','npcs','threads','sessions','combat'].forEach(function(x){
+  ['characters','campaign','milestones','npcs','threads','sessions','combat'].forEach(function(x){
     document.getElementById('tab-'+x).classList.remove('on');
     document.getElementById('tb-'+x).classList.remove('on');
   });
@@ -814,6 +854,7 @@ function ST(t){
   document.getElementById('tb-'+t).classList.add('on');
   if(t==='characters')rP();
   if(t==='campaign')rC();
+  if(t==='milestones')rM();
   if(t==='npcs')rN();
   if(t==='threads')rT();
   if(t==='sessions')rSes();
@@ -1046,6 +1087,35 @@ function addLog(){
   document.getElementById('nl-input').value='';SS();rNL();
 }
 
+// ---- MILESTONES ----
+function curLvl(){var v=parseInt(S.lvl,10);return (v>=1&&v<=20)?v:1;}
+function setLvl(n){
+  if(curLvl()===n){n=n-1;}
+  S.lvl=Math.max(1,Math.min(20,n));
+  SS();rM();
+}
+function rM(){
+  var cur=curLvl(),h='',lastAct='';
+  document.getElementById('ms-cur').textContent='Partijlevel '+cur;
+  for(var i=0;i<MILES.length;i++){
+    var m=MILES[i],st=m.lvl<=cur?'done':m.lvl===cur+1?'next':'todo';
+    var bg=st==='done'?'var(--teal-bg)':st==='next'?'var(--amber-bg)':'var(--bg2)';
+    var bd=st==='done'?'1px solid var(--teal-bd)':st==='next'?'1px dashed #EF9F27':'1px solid var(--border2)';
+    var tx=st==='done'?'var(--teal-tx)':st==='next'?'var(--amber-tx)':'var(--text2)';
+    if(m.act!==lastAct){h+='<div style="font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);margin:14px 0 6px;">'+m.act+'</div>';lastAct=m.act;}
+    h+='<div class="card" onclick="setLvl('+m.lvl+')" style="cursor:pointer;margin-bottom:6px;padding:9px 11px;background:'+bg+';border:'+bd+';">';
+    h+='<div class="row" style="gap:10px;align-items:flex-start;margin:0;">';
+    h+='<div style="min-width:40px;font-weight:700;font-size:17px;color:'+tx+';">'+m.lvl+'</div>';
+    h+='<div style="flex:1;min-width:0;">';
+    h+='<div style="font-weight:600;font-size:13px;color:'+(st==='todo'?'var(--text2)':'#1a1a18')+';">'+m.t+'</div>';
+    h+='<div style="font-size:11px;color:'+(st==='todo'?'var(--text2)':tx)+';margin-top:2px;">'+(m.fame?'Fame '+m.fame:'Start')+(st==='next'?' · eerstvolgende':'')+'</div>';
+    if(m.note)h+='<div style="font-size:12px;color:'+(st==='todo'?'var(--text2)':'#444441')+';margin-top:4px;">'+m.note+'</div>';
+    h+='</div></div></div>';
+  }
+  document.getElementById('mlist').innerHTML=h;
+}
+// ---- END MILESTONES ----
+
 function rT(){
   var list=document.getElementById('tlist');
   if(!S.threads.length){list.innerHTML='<div class="empty">No plot threads yet.</div>';return;}
@@ -1130,7 +1200,7 @@ function saveSF(){
 function delS(i){S.sessions.splice(i,1);SS();rSes();}
 
 function exportData(){
-  var data={players:S.players,ns:S.ns,sn:S.sn,npcs:S.npcs,threads:S.threads,sessions:S.sessions,nfilt:S.nfilt,combat:S.combat};
+  var data={players:S.players,ns:S.ns,sn:S.sn,npcs:S.npcs,threads:S.threads,sessions:S.sessions,nfilt:S.nfilt,combat:S.combat,lvl:S.lvl};
   var json=JSON.stringify(data,null,2);
   var blob=new Blob([json],{type:"application/json"});
   var url=URL.createObjectURL(blob);
@@ -1152,7 +1222,7 @@ function importData(event){
       var data=JSON.parse(e.target.result);
       if(!data.players&&!data.sessions&&!data.npcs){alert("Geen geldige campagne-data.");return;}
       if(!confirm("Huidige data overschrijven met geimporteerde data?"))return;
-      ["players","ns","sn","npcs","threads","sessions","nfilt","combat"].forEach(function(k){if(data[k]!==undefined)S[k]=data[k];});
+      ["players","ns","sn","npcs","threads","sessions","nfilt","combat","lvl"].forEach(function(k){if(data[k]!==undefined)S[k]=data[k];});
       SS();rP();
       alert("Data succesvol geladen!");
     }catch(err){alert("Fout: "+err.message);}
@@ -1548,7 +1618,7 @@ function notice(kind,txt,btns){
 }
 function noticeOff(){var e=document.getElementById('ghNotice');if(e)e.style.display='none';}
 
-var SNAPKEYS=['players','ns','sn','npcs','threads','sessions','nfilt','combat'];
+var SNAPKEYS=['players','ns','sn','npcs','threads','sessions','nfilt','combat','lvl'];
 function snap(){var o={};SNAPKEYS.forEach(function(k){o[k]=S[k];});return o;}
 function applySnap(d){SNAPKEYS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});}
 
@@ -1607,7 +1677,7 @@ function ghPush(force,cb){
 function ghForce(){noticeOff();ghPull(function(d,st){if(st==='error')return;ghPush(true);});}
 function rActive(){
   var t='characters';
-  ['characters','campaign','npcs','threads','sessions','combat'].forEach(function(x){
+  ['characters','campaign','milestones','npcs','threads','sessions','combat'].forEach(function(x){
     var b=document.getElementById('tb-'+x);
     if(b&&b.classList.contains('on'))t=x;
   });

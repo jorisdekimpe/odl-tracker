@@ -78,6 +78,8 @@ details[open]>summary .chev{transform:rotate(90deg)}
 .filters button.on{background:var(--rust);border-color:var(--rust);color:#fff8ee}
 .npc .att{width:10px;height:10px;border-radius:50%;flex:none;margin-top:6px}
 .att.vriendelijk{background:var(--good)} .att.vijandig{background:var(--bad)} .att.neutraal{background:#c9a227} .att.onbekend{background:var(--ink3)}
+.lore{margin-top:8px;padding:8px 10px;border-left:3px solid var(--rule);background:var(--parch);border-radius:0 8px 8px 0;font-size:14px;font-style:italic;color:var(--ink2)}
+.lore .kicker{font-style:normal;display:block;margin-bottom:2px;font-size:10px}
 .note{margin-top:8px;border-top:1px dashed var(--rule);padding-top:8px}
 .note textarea{min-height:56px;font-size:14px}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
@@ -380,11 +382,11 @@ function renderNpcs(){
   var q=($('npcQ').value||'').toLowerCase().trim(),notes=lsGet('zs.npcnotes',{});
   var L=D.npcs.filter(function(n){
     if(npcFilter!=='alle'&&n.status!==npcFilter&&n.houding!==npcFilter)return false;
-    if(q&&(n.naam+' '+n.wie+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase().indexOf(q)<0)return false;return true;
+    if(q&&(n.naam+' '+n.wie+' '+(n.lore||'')+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase().indexOf(q)<0)return false;return true;
   });
   $('npcList').innerHTML=L.length?L.map(function(n){
     var st=n.status==='dood'?'<span class="chip b">dood</span>':n.status==='bij naam'?'<span class="chip">bij naam</span>':'';
-    return '<details class="card npc"><summary><div class="row" style="align-items:flex-start"><span class="att '+esc(n.houding)+'" title="'+esc(n.houding)+'"></span><div class="grow"><div class="row"><h3 class="grow" style="margin:0">'+esc(n.naam)+'</h3>'+st+'</div><div class="muted">'+esc(n.waar)+' · '+esc(n.eerst)+'</div></div></div></summary><div style="margin-top:8px" class="small">'+esc(n.wie)+'</div><div class="note"><label class="f" style="margin-top:0">Mijn notitie (enkel op dit toestel)</label><textarea data-npc="'+esc(n.naam)+'" oninput="saveNpcNote(this)" placeholder="Wat weet jij nog over '+esc(n.naam)+'?">'+esc(notes[n.naam]||'')+'</textarea></div></details>';
+    return '<details class="card npc"><summary><div class="row" style="align-items:flex-start"><span class="att '+esc(n.houding)+'" title="'+esc(n.houding)+'"></span><div class="grow"><div class="row"><h3 class="grow" style="margin:0">'+esc(n.naam)+'</h3>'+st+'</div><div class="muted">'+esc(n.waar)+' · '+esc(n.eerst)+'</div></div></div></summary><div style="margin-top:8px" class="small">'+esc(n.wie)+'</div>'+(n.lore?'<div class="lore"><span class="kicker">Wat men zegt</span><div>'+esc(n.lore)+'</div></div>':'')+'<div class="note"><label class="f" style="margin-top:0">Mijn notitie (enkel op dit toestel)</label><textarea data-npc="'+esc(n.naam)+'" oninput="saveNpcNote(this)" placeholder="Wat weet jij nog over '+esc(n.naam)+'?">'+esc(notes[n.naam]||'')+'</textarea></div></details>';
   }).join(''):'<div class="empty">Niemand gevonden.</div>';
 }
 function saveNpcNote(el){var n=lsGet('zs.npcnotes',{});n[el.getAttribute('data-npc')]=el.value;lsSet('zs.npcnotes',n);}

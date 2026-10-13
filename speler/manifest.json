@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "De Zeven — Speler",
+  "short_name": "De Zeven",
+  "description": "Spelersapp voor Odyssey of the Dragonlords: verhaal, NPC's, inventaris en character sheet.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6EEDC",
+  "theme_color": "#8C3A1E",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

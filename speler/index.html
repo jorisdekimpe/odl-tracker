@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>De Zeven — Speler</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8C3A1E">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --parch:#F6EEDC; --card:#FCF7EA; --ink:#2E2418; --ink2:#5A5142; --ink3:#8d826f;
+  --rust:#8C3A1E; --rust-soft:#f0dccb; --rule:#C9B489; --rule2:#e3d6b6;
+  --good:#4f6b2c; --good-soft:#e5ebd3; --bad:#a3321f; --bad-soft:#f5d9d0; --mid:#6b6250; --mid-soft:#ebe4d2;
+  --shadow:0 1px 0 rgba(46,36,24,.06), 0 2px 8px rgba(46,36,24,.06);
+  --serif: 'Caladea', Cambria, Georgia, 'Times New Roman', serif;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --parch:#1b1611; --card:#251e17; --ink:#efe5d2; --ink2:#c2b59b; --ink3:#8a7d66;
+    --rust:#d9835a; --rust-soft:#3d2619; --rule:#5a4a33; --rule2:#3a3024;
+    --good:#a9c47c; --good-soft:#283120; --bad:#e8826a; --bad-soft:#3d211a; --mid:#b5a98f; --mid-soft:#2f281f;
+    --shadow:none;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--parch);color:var(--ink)}
+body{font-family:var(--sans);font-size:15px;line-height:1.45;min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:var(--parch);border-bottom:1px solid var(--rule);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:10px}
+.top h1{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:.01em}
+.top .sub{font-size:12px;color:var(--ink3)}
+.top .gear{margin-left:auto;background:none;border:1px solid var(--rule);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;color:var(--ink2)}
+.sync{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink3);margin-right:6px;vertical-align:middle}
+.sync.ok{background:var(--good)} .sync.busy{background:#c9a227} .sync.err{background:var(--bad)}
+.meander{height:6px;background:repeating-linear-gradient(90deg,var(--rule) 0 6px,transparent 6px 12px);opacity:.55}
+main{max-width:680px;margin:0 auto;padding:14px 16px}
+.sec{display:none}.sec.on{display:block}
+h2{font-family:var(--serif);font-size:19px;margin:18px 0 8px;color:var(--ink)}
+h2:first-child{margin-top:4px}
+h3{font-family:var(--serif);font-size:16px;margin-bottom:4px}
+.card{background:var(--card);border:1px solid var(--rule2);border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
+.card.hero{border-color:var(--rule);background:linear-gradient(180deg,var(--card),var(--parch))}
+.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);font-weight:600}
+.muted{color:var(--ink3);font-size:13px}
+.small{font-size:13px;color:var(--ink2)}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--mid-soft);color:var(--mid);white-space:nowrap}
+.chip.g{background:var(--good-soft);color:var(--good)} .chip.b{background:var(--bad-soft);color:var(--bad)} .chip.r{background:var(--rust-soft);color:var(--rust)}
+.row{display:flex;align-items:center;gap:8px}
+.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.btn{border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer;min-height:40px}
+.btn.p{background:var(--rust);border-color:var(--rust);color:#fff8ee}
+.btn.s{min-height:32px;padding:4px 10px;font-size:13px}
+.btn.g{background:none;border-color:transparent;color:var(--ink2)}
+.btn:disabled{opacity:.5}
+input,textarea,select{width:100%;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:9px 11px;font-size:15px}
+input:focus,textarea:focus{outline:2px solid var(--rust);outline-offset:-1px}
+textarea{min-height:80px;resize:vertical}
+label.f{display:block;font-size:12px;color:var(--ink2);margin:8px 0 4px}
+details>summary{cursor:pointer;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary .chev{transition:transform .15s;display:inline-block;color:var(--ink3)}
+details[open]>summary .chev{transform:rotate(90deg)}
+.steps{margin:8px 0 0 0;list-style:none}
+.steps li{padding:4px 0 4px 22px;position:relative;font-size:14px}
+.steps li::before{content:"";position:absolute;left:2px;top:9px;width:10px;height:10px;border:1.5px solid var(--rust);border-radius:2px;transform:rotate(45deg)}
+.steps li.done::before{background:var(--rust)}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--rule);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;background:none;border:none;padding:8px 0 9px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--ink3);cursor:pointer}
+.nav button svg{width:22px;height:22px}
+.nav button.on{color:var(--rust);font-weight:600}
+.search{margin-bottom:8px}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
+.filters button{border:1px solid var(--rule);background:var(--card);border-radius:999px;padding:5px 12px;font-size:13px;white-space:nowrap;cursor:pointer}
+.filters button.on{background:var(--rust);border-color:var(--rust);color:#fff8ee}
+.npc .att{width:10px;height:10px;border-radius:50%;flex:none;margin-top:6px}
+.att.vriendelijk{background:var(--good)} .att.vijandig{background:var(--bad)} .att.neutraal{background:#c9a227} .att.onbekend{background:var(--ink3)}
+.note{margin-top:8px;border-top:1px dashed var(--rule);padding-top:8px}
+.note textarea{min-height:56px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
+.stat{background:var(--card);border:1px solid var(--rule2);border-radius:12px;padding:8px 10px;text-align:center}
+.stat .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:600}
+.stat .val{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.1;margin:2px 0}
+.stat .val input{font-family:var(--serif);font-size:24px;font-weight:700;text-align:center;border:none;background:none;padding:0;width:3.2ch}
+.stat .ctl{display:flex;justify-content:center;gap:6px}
+.stat .ctl button{width:34px;height:30px;border-radius:8px;border:1px solid var(--rule);background:var(--parch);cursor:pointer;font-size:16px}
+.hpbar{height:6px;border-radius:3px;background:var(--rule2);overflow:hidden;margin-top:4px}
+.hpbar i{display:block;height:100%;background:var(--good)}
+.item{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--rule2)}
+.item:last-child{border-bottom:none}
+.item .nm{font-weight:600}
+.item .qty{display:flex;align-items:center;gap:4px}
+.item .qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--rule);background:var(--parch);cursor:pointer}
+.item .qty span{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
+.ico{background:none;border:none;cursor:pointer;color:var(--ink3);padding:4px;border-radius:6px;display:inline-grid;place-items:center}
+.ico.on{color:var(--rust)}
+.ico svg{width:18px;height:18px}
+.heroes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.heroes button{text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;cursor:pointer}
+.heroes button b{display:block;font-family:var(--serif);font-size:16px}
+.sheet{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule2)}
+.sheet:last-child{border-bottom:none}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(20,15,10,.55);display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.modal .box{background:var(--parch);width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+.viewer{position:fixed;inset:0;z-index:30;background:#111;display:none;flex-direction:column}
+.viewer.on{display:flex}
+.viewer .vt{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;color:#eee}
+.viewer .vt .btn{background:#2a2a2a;border-color:#444;color:#eee}
+.viewer .vb{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px}
+.viewer canvas,.viewer img{display:block;margin:0 auto 8px;background:#fff;max-width:none}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--parch);padding:8px 14px;border-radius:999px;font-size:13px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.on{opacity:1}
+.empty{text-align:center;color:var(--ink3);padding:18px 8px;font-size:14px}
+.pmember{cursor:pointer}
+.lock{font-size:11px;color:var(--rust)}
+a{color:var(--rust)}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>De Zeven</h1>
+    <div class="sub"><span class="sync" id="syncDot"></span><span id="subline">Odyssey of the Dragonlords</span></div>
+  </div>
+  <button class="gear" onclick="openSettings()" aria-label="Instellingen">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</header>
+<div class="meander"></div>
+
+<main>
+  <section class="sec on" id="s-verhaal"></section>
+  <section class="sec" id="s-npcs">
+    <input class="search" id="npcQ" type="search" placeholder="Zoek een naam of plek…" oninput="renderNpcs()">
+    <div class="filters" id="npcF"></div>
+    <div id="npcList"></div>
+  </section>
+  <section class="sec" id="s-held"></section>
+  <section class="sec" id="s-party"></section>
+</main>
+
+<nav class="nav" id="nav">
+  <button data-t="verhaal" class="on" onclick="tab('verhaal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2.5zM4 19.5A2 2 0 0 0 6 21h13"/><path d="M9 7h6M9 11h6"/></svg>Verhaal</button>
+  <button data-t="npcs" onclick="tab('npcs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.6c2.6.1 4.6 1.8 5.3 4.9"/></svg>NPC's</button>
+  <button data-t="held" onclick="tab('held')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l7 3v6c0 5-3.5 9-7 11-3.5-2-7-6-7-11V5z"/></svg>Mijn held</button>
+  <button data-t="party" onclick="tab('party')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3M3 12h18"/></svg>Party</button>
+</nav>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="modalBox"></div></div>
+<div class="viewer" id="viewer">
+  <div class="vt"><button class="btn s" onclick="closeViewer()">Sluiten</button><span class="grow" id="vTitle" style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><button class="btn s" onclick="zoom(-1)">−</button><button class="btn s" onclick="zoom(1)">+</button></div>
+  <div class="vb" id="vBody"></div>
+</div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" class="hide" accept="application/pdf,image/*" onchange="onSheetFile(this)">
+
+<script>
+'use strict';
+/* ============ basis ============ */
+var DEFAULT_REPO='jorisdekimpe/odl-spelers';
+var MAX_ATTUNE=3;
+var D=null;               // spelers.json
+var party={};             // id -> remote inventaris (Party-tab)
+var partyAt=0;
+var curTab='verhaal';
+var npcFilter='alle';
+
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function now(){return Date.now();}
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){toast('Opslaan op dit toestel mislukt');}}
+var toastT;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on');},2600);}
+function typing(){var a=document.activeElement;return !!a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA');}
+function ago(t){if(!t)return'nooit';var s=Math.round((now()-t)/1000);if(s<60)return'net nu';if(s<3600)return Math.round(s/60)+' min geleden';if(s<86400)return Math.round(s/3600)+' u geleden';return new Date(t).toLocaleDateString('nl-BE',{day:'numeric',month:'short'});}
+
+var ICON={
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  starOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>'
+};
+
+/* ============ held / sync-config ============ */
+function heroId(){return lsGet('zs.held',null);}
+function isDM(){return heroId()==='dm';}
+function heroInfo(id){if(!D)return null;for(var i=0;i<D.helden.length;i++)if(D.helden[i].id===id)return D.helden[i];return null;}
+function syncCfg(){return lsGet('zs.sync',{repo:DEFAULT_REPO,token:''});}
+function syncOn(){var c=syncCfg();return !!(c.token&&c.repo);}
+
+/* ============ inventaris-model (mergebaar) ============ */
+/* fields: {key:{v,t}}  items/sheets: [{id,t,del?,...}] */
+function blankInv(id){return {held:id,f:{},items:[],sheets:[],updated:0};}
+function inv(){var id=heroId();if(!id||id==='dm')return null;var x=lsGet('zs.inv.'+id,null);if(!x){x=blankInv(id);}return x;}
+function saveInv(x,skipPush){x.updated=now();lsSet('zs.inv.'+x.held,x);lsSet('zs.dirty.'+x.held,true);if(!skipPush)schedulePush();}
+function fv(x,k,d){return x&&x.f&&x.f[k]?x.f[k].v:d;}
+function setF(x,k,v){x.f[k]={v:v,t:now()};}
+function mergeList(a,b){var m={};(a||[]).forEach(function(o){m[o.id]=o;});(b||[]).forEach(function(o){if(!m[o.id]||(o.t||0)>(m[o.id].t||0))m[o.id]=o;});return Object.keys(m).map(function(k){return m[k];}).sort(function(p,q){return (p.c||0)-(q.c||0);});}
+function merge(a,b){
+  if(!a)return b; if(!b)return a;
+  var f={},k;for(k in a.f)f[k]=a.f[k];for(k in b.f){if(!f[k]||b.f[k].t>f[k].t)f[k]=b.f[k];}
+  return {held:a.held||b.held,f:f,items:mergeList(a.items,b.items),sheets:mergeList(a.sheets,b.sheets),updated:Math.max(a.updated||0,b.updated||0)};
+}
+function same(a,b){return JSON.stringify(strip(a))===JSON.stringify(strip(b));}
+function strip(x){if(!x)return x;return {f:x.f,items:x.items,sheets:(x.sheets||[]).map(function(s){return {id:s.id,t:s.t,del:s.del,path:s.path,name:s.name,type:s.type,c:s.c};})};}
+
+/* ============ GitHub ============ */
+function b64enc(s){return btoa(unescape(encodeURIComponent(s)));}
+function b64dec(s){return decodeURIComponent(escape(atob(String(s).replace(/\s/g,''))));}
+function gh(path,opt){
+  var c=syncCfg();opt=opt||{};
+  var h={'Accept':opt.raw?'application/vnd.github.raw':'application/vnd.github+json','Authorization':'Bearer '+c.token};
+  if(opt.body)h['Content-Type']='application/json';
+  return fetch('https://api.github.com/repos/'+c.repo+'/contents/'+path+(opt.method?'':'?t='+now()),{method:opt.method||'GET',headers:h,body:opt.body?JSON.stringify(opt.body):undefined,cache:'no-store'});
+}
+function ghGetJson(path){
+  return gh(path).then(function(r){
+    if(r.status===404)return {data:null,sha:null};
+    if(!r.ok)throw new Error('GitHub '+r.status);
+    return r.json().then(function(j){return {data:JSON.parse(b64dec(j.content)),sha:j.sha};});
+  });
+}
+function ghPutRaw(path,b64,sha,msg){
+  return gh(path,{method:'PUT',body:{message:msg,content:b64,sha:sha||undefined}}).then(function(r){
+    if(!r.ok)return r.text().then(function(t){var e=new Error('GitHub '+r.status);e.status=r.status;e.body=t;throw e;});
+    return r.json();
+  });
+}
+function ghSha(path){return gh(path).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error('GitHub '+r.status);return r.json().then(function(j){return j.sha;});});}
+function ghDelete(path){return ghSha(path).then(function(sha){if(!sha)return;return gh(path,{method:'DELETE',body:{message:'Verwijder '+path,sha:sha}});});}
+
+var pushT=null,busy=false;
+function setDot(s){var d=$('syncDot');d.className='sync'+(s?' '+s:'');}
+function schedulePush(){if(!syncOn())return;clearTimeout(pushT);pushT=setTimeout(syncOwn,2500);setDot('busy');}
+function syncOwn(){
+  var x=inv();if(!x||!syncOn())return Promise.resolve();
+  if(busy){schedulePush();return Promise.resolve();}
+  if(!navigator.onLine){setDot('err');return Promise.resolve();}
+  busy=true;setDot('busy');
+  var path='inventaris/'+x.held+'.json',needRender=false;
+  return uploadPendingSheets(x).then(function(){
+    x=inv();
+    return ghGetJson(path);
+  }).then(function(rem){
+    var m=merge(x,rem.data);
+    var changed=!same(m,rem.data);
+    if(!same(m,x))needRender=true;
+    if(heroId()===x.held){lsSet('zs.inv.'+x.held,m);}
+    if(!changed){lsSet('zs.dirty.'+x.held,false);return;}
+    var info=heroInfo(x.held);
+    return ghPutRaw(path,b64enc(JSON.stringify(m,null,1)),rem.sha,'Inventaris '+(info?info.naam:x.held)).then(function(){lsSet('zs.dirty.'+x.held,false);});
+  }).then(function(){busy=false;setDot('ok');lsSet('zs.lastSync',now());if(needRender&&curTab==='held'&&!typing())renderHeld();},function(e){
+    busy=false;setDot('err');
+    if(e&&e.status===409){schedulePush();return;}
+    if(e&&(e.status===401||e.status===403))toast('Sync geweigerd — controleer de sleutel');
+    else if(e&&e.status===404)toast('Repo niet gevonden — controleer instellingen');
+    else toast('Sync mislukt, ik probeer later opnieuw');
+  });
+}
+
+/* ============ sheets (IndexedDB) ============ */
+var idbP=null;
+function idb(){if(idbP)return idbP;idbP=new Promise(function(res,rej){var r=indexedDB.open('zs-sheets',1);r.onupgradeneeded=function(){r.result.createObjectStore('f');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});return idbP;}
+function idbPut(k,v){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=res;t.onerror=function(){rej(t.error);};});});}
+function idbGet(k){return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f');var q=t.objectStore('f').get(k);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};});});}
+function idbDel(k){return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f','readwrite');t.objectStore('f').delete(k);t.oncomplete=res;t.onerror=res;});});}
+function blobB64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1]);};r.onerror=rej;r.readAsDataURL(b);});}
+function shrinkImage(file){
+  return new Promise(function(res){
+    var url=URL.createObjectURL(file),img=new Image();
+    img.onload=function(){var M=2000,w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,M/Math.max(w,h));var c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){res(b||file);},'image/jpeg',.85);};
+    img.onerror=function(){URL.revokeObjectURL(url);res(file);};
+    img.src=url;
+  });
+}
+function pickSheet(){$('fileIn').value='';$('fileIn').click();}
+function onSheetFile(el){
+  var f=el.files&&el.files[0];if(!f)return;var x=inv();if(!x)return;
+  var isPdf=f.type==='application/pdf'||/\.pdf$/i.test(f.name);
+  if(!isPdf&&!/^image\//.test(f.type)){toast('Enkel PDF of foto');return;}
+  (isPdf?Promise.resolve(f):shrinkImage(f)).then(function(b){
+    if(b.size>8*1024*1024){toast('Bestand te groot (max 8 MB)');return;}
+    var id=uid(),ext=isPdf?'pdf':'jpg';
+    var s={id:id,c:now(),t:now(),name:f.name.replace(/\.[^.]+$/,'')||'Sheet',type:isPdf?'pdf':'img',path:'sheets/'+x.held+'/'+id+'.'+ext,up:false};
+    return idbPut(x.held+'/'+id,b).then(function(){x=inv();x.sheets.push(s);saveInv(x);renderHeld();toast(syncOn()?'Toegevoegd, wordt gesynct':'Toegevoegd op dit toestel');});
+  });
+}
+function uploadPendingSheets(x){
+  var todo=(x.sheets||[]).filter(function(s){return !s.del&&!s.up;});
+  var gone=(x.sheets||[]).filter(function(s){return s.del&&s.up&&!s.gone;});
+  var p=Promise.resolve();
+  todo.forEach(function(s){p=p.then(function(){return idbGet(x.held+'/'+s.id);}).then(function(b){if(!b)return;return blobB64(b).then(function(b64){return ghSha(s.path).then(function(sha){return ghPutRaw(s.path,b64,sha,'Sheet '+s.name);});}).then(function(){var y=inv();y.sheets.forEach(function(q){if(q.id===s.id){q.up=true;q.t=now();}});lsSet('zs.inv.'+y.held,y);});});});
+  gone.forEach(function(s){p=p.then(function(){return ghDelete(s.path);}).then(function(){var y=inv();y.sheets.forEach(function(q){if(q.id===s.id){q.gone=true;q.t=now();}});lsSet('zs.inv.'+y.held,y);});});
+  return p;
+}
+function loadSheetBlob(owner,s){
+  return idbGet(owner+'/'+s.id).then(function(b){
+    if(b)return b;
+    if(!syncOn())throw new Error('Niet op dit toestel en geen sync');
+    return gh(s.path,{raw:true}).then(function(r){if(!r.ok)throw new Error('GitHub '+r.status);return r.blob();}).then(function(b){return idbPut(owner+'/'+s.id,b).then(function(){return b;});});
+  });
+}
+
+/* ============ viewer ============ */
+var vState={scale:1,doc:null,url:null,kind:null};
+function loadPdfJs(){
+  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+  return new Promise(function(res,rej){var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';s.onload=function(){window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';res(window.pdfjsLib);};s.onerror=function(){rej(new Error('PDF-lezer kon niet laden (offline?)'));};document.head.appendChild(s);});
+}
+function openSheet(owner,sid){
+  var x=owner===heroId()?inv():party[owner];if(!x)return;
+  var s=null;x.sheets.forEach(function(q){if(q.id===sid)s=q;});if(!s)return;
+  $('vTitle').textContent=s.name;$('vBody').innerHTML='<div class="empty" style="color:#bbb">Laden…</div>';$('viewer').classList.add('on');
+  vState={scale:1,doc:null,url:null,kind:s.type};
+  loadSheetBlob(owner,s).then(function(b){
+    if(s.type==='img'){vState.url=URL.createObjectURL(b);renderViewer();return;}
+    return loadPdfJs().then(function(lib){return b.arrayBuffer().then(function(buf){return lib.getDocument({data:buf}).promise;});}).then(function(doc){vState.doc=doc;renderViewer();});
+  }).catch(function(e){$('vBody').innerHTML='<div class="empty" style="color:#bbb">'+esc(e.message)+'</div>';});
+}
+function renderViewer(){
+  var body=$('vBody'),W=Math.min(window.innerWidth-16,1000)*vState.scale;
+  if(vState.kind==='img'){body.innerHTML='<img src="'+vState.url+'" style="width:'+W+'px">';return;}
+  body.innerHTML='';var doc=vState.doc,dpr=window.devicePixelRatio||1,p=Promise.resolve();
+  for(var i=1;i<=doc.numPages;i++)(function(n){p=p.then(function(){return doc.getPage(n);}).then(function(pg){var v0=pg.getViewport({scale:1}),sc=W/v0.width,vp=pg.getViewport({scale:sc*dpr});var c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=W+'px';body.appendChild(c);return pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;});})(i);
+}
+function zoom(d){vState.scale=Math.max(.6,Math.min(3,vState.scale*(d>0?1.25:.8)));if(vState.doc||vState.url)renderViewer();}
+function closeViewer(){$('viewer').classList.remove('on');if(vState.url)URL.revokeObjectURL(vState.url);vState={scale:1};$('vBody').innerHTML='';}
+
+/* ============ tabs ============ */
+function tab(t){
+  curTab=t;
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.toggle('on',s.id==='s-'+t);});
+  document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-t')===t);});
+  window.scrollTo(0,0);render();
+  if(t==='party'&&now()-partyAt>60000)pullParty();
+}
+function render(){
+  if(!D){$('s-verhaal').innerHTML='<div class="empty">Verhaal laden…</div>';return;}
+  var h=heroInfo(heroId());
+  $('subline').textContent=isDM()?'DM-modus':(h?h.naam+' · level '+D.level:'Level '+D.level+' · kies je held');
+  if(curTab==='verhaal')renderVerhaal();
+  if(curTab==='npcs')renderNpcs();
+  if(curTab==='held')renderHeld();
+  if(curTab==='party')renderParty();
+}
+
+/* ============ verhaal ============ */
+function statusChip(s){return s==='actief'?'<span class="chip r">actief</span>':s==='afgerond'?'<span class="chip g">afgerond</span>':'<span class="chip">'+esc(s)+'</span>';}
+function questCard(q,open){
+  var st=q.stappen?'<ul class="steps">'+q.stappen.map(function(s){return '<li class="'+(s.klaar?'done':'')+'">'+esc(s.t)+'</li>';}).join('')+'</ul>':'';
+  return '<details class="card"'+(open?' open':'')+'><summary><div class="row"><span class="chev">›</span><h3 class="grow">'+esc(q.titel)+'</h3>'+statusChip(q.status)+'</div></summary><div style="margin-top:6px"><div class="small">'+esc(q.tekst)+'</div>'+st+(q.bron?'<div class="muted" style="margin-top:6px">Bron: '+esc(q.bron)+'</div>':'')+'</div></details>';
+}
+function renderVerhaal(){
+  var w=D.waar,h=[];
+  h.push('<div class="card hero"><div class="kicker">Waar we zijn · sessie '+esc(w.sessie)+'</div><h2 style="margin:4px 0 2px">'+esc(w.plek)+'</h2><div class="small">'+esc(w.tekst)+'</div><div class="row wrap" style="margin-top:10px;gap:6px"><span class="chip r">Level '+esc(D.level)+'</span><span class="chip">Bijgewerkt '+esc(new Date(D.bijgewerkt).toLocaleDateString('nl-BE',{day:'numeric',month:'long'}))+'</span></div></div>');
+  var act=D.quests.filter(function(q){return q.status==='actief';}),open=D.quests.filter(function(q){return q.status==='open vraag';}),done=D.quests.filter(function(q){return q.status==='afgerond';});
+  h.push('<h2>Opdrachten</h2>'+act.map(function(q,i){return questCard(q,i===0);}).join(''));
+  if(open.length)h.push('<h2>Open vragen</h2>'+open.map(function(q){return questCard(q,false);}).join(''));
+  if(done.length)h.push('<h2>Afgerond</h2>'+done.map(function(q){return questCard(q,false);}).join(''));
+  h.push('<h2>Party-buit</h2><div class="card">'+D.buit.map(function(b,i){return '<div class="item"><div class="grow"><div class="nm">'+esc(b.item)+'</div><div class="muted">'+esc(b.bij)+' · '+esc(b.bron)+'</div></div>'+(heroId()&&!isDM()?'<button class="btn s" onclick="lootToInv('+i+')">+ Inventaris</button>':'')+'</div>';}).join('')+'</div>');
+  h.push('<h2>Sessies</h2>'+D.sessies.slice().reverse().map(function(s,i){return '<details class="card"'+(i===0?' open':'')+'><summary><div class="row"><span class="chev">›</span><span class="kicker" style="min-width:58px">Sessie '+esc(s.num)+'</span><h3 class="grow" style="margin:0">'+esc(s.titel)+'</h3></div></summary><div class="small" style="margin-top:6px">'+esc(s.tekst)+'</div></details>';}).join(''));
+  if(D.recapLink)h.push('<p style="margin:10px 0 4px;text-align:center"><a href="'+esc(D.recapLink)+'" target="_blank" rel="noopener">Volledige spelersrecap (Homebrewery) →</a></p>');
+  $('s-verhaal').innerHTML=h.join('');
+}
+function lootToInv(i){var x=inv();if(!x){tab('held');return;}var b=D.buit[i],nm=b.item.replace(/\s*×\d+$/,''),m=b.item.match(/×(\d+)$/);x.items.push({id:uid(),c:now(),t:now(),naam:nm,aantal:m?+m[1]:1,notitie:'Van: '+b.bron});saveInv(x);toast(nm+' toegevoegd');}
+
+/* ============ NPC's ============ */
+var NF=[['alle','Alle'],['ontmoet','Ontmoet'],['bij naam','Enkel bij naam'],['dood','Dood'],['vriendelijk','Vriendelijk'],['vijandig','Vijandig']];
+function renderNpcs(){
+  if(!D)return;
+  $('npcF').innerHTML=NF.map(function(f){return '<button class="'+(npcFilter===f[0]?'on':'')+'" onclick="npcFilter=\''+f[0]+'\';renderNpcs()">'+f[1]+'</button>';}).join('');
+  var q=($('npcQ').value||'').toLowerCase().trim(),notes=lsGet('zs.npcnotes',{});
+  var L=D.npcs.filter(function(n){
+    if(npcFilter!=='alle'&&n.status!==npcFilter&&n.houding!==npcFilter)return false;
+    if(q&&(n.naam+' '+n.wie+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase().indexOf(q)<0)return false;return true;
+  });
+  $('npcList').innerHTML=L.length?L.map(function(n){
+    var st=n.status==='dood'?'<span class="chip b">dood</span>':n.status==='bij naam'?'<span class="chip">bij naam</span>':'';
+    return '<details class="card npc"><summary><div class="row" style="align-items:flex-start"><span class="att '+esc(n.houding)+'" title="'+esc(n.houding)+'"></span><div class="grow"><div class="row"><h3 class="grow" style="margin:0">'+esc(n.naam)+'</h3>'+st+'</div><div class="muted">'+esc(n.waar)+' · '+esc(n.eerst)+'</div></div></div></summary><div style="margin-top:8px" class="small">'+esc(n.wie)+'</div><div class="note"><label class="f" style="margin-top:0">Mijn notitie (enkel op dit toestel)</label><textarea data-npc="'+esc(n.naam)+'" oninput="saveNpcNote(this)" placeholder="Wat weet jij nog over '+esc(n.naam)+'?">'+esc(notes[n.naam]||'')+'</textarea></div></details>';
+  }).join(''):'<div class="empty">Niemand gevonden.</div>';
+}
+function saveNpcNote(el){var n=lsGet('zs.npcnotes',{});n[el.getAttribute('data-npc')]=el.value;lsSet('zs.npcnotes',n);}
+
+/* ============ mijn held ============ */
+function heroPicker(){
+  return '<h2>Wie speel jij?</h2><div class="heroes">'+D.helden.map(function(h){return '<button onclick="chooseHero(\''+h.id+'\')"><b>'+esc(h.naam)+'</b><span class="muted">'+esc(h.speler)+' · '+esc(h.klasse)+'</span></button>';}).join('')+'</div><p class="muted" style="margin-top:14px;text-align:center">Je inventaris en sheet worden aan deze held gekoppeld. Wisselen kan later via ⚙.</p><p style="text-align:center;margin-top:8px"><button class="btn g s" onclick="askDM()">Ik ben de DM</button></p>';
+}
+function chooseHero(id){lsSet('zs.held',id);render();if(syncOn())syncOwn();}
+function stepper(k,label,val,extra){return '<div class="stat"><div class="lbl">'+label+'</div><div class="val"><input inputmode="numeric" placeholder="—" value="'+esc(val)+'" onchange="setStat(\''+k+'\',this.value)"></div><div class="ctl"><button onclick="bump(\''+k+'\',-1)">−</button><button onclick="bump(\''+k+'\',1)">+</button></div>'+(extra||'')+'</div>';}
+function renderHeld(){
+  var el=$('s-held');if(!D)return;
+  var id=heroId();
+  if(!id){el.innerHTML=heroPicker();return;}
+  if(id==='dm'){el.innerHTML='<div class="card"><h3>DM-modus</h3><div class="small">Je ziet in het Party-tabblad alle inventarissen, ook privé-items, en kan alle character sheets openen.</div><div class="row" style="margin-top:10px"><button class="btn p" onclick="tab(\'party\')">Naar Party</button><button class="btn" onclick="lsSet(\'zs.held\',null);render()">Stop DM-modus</button></div></div>';return;}
+  var h=heroInfo(id),x=inv(),hp=fv(x,'hp',''),hpm=fv(x,'hpmax','');
+  var pct=hpm>0?Math.max(0,Math.min(100,Math.round(hp/hpm*100))):0;
+  var items=x.items.filter(function(i){return !i.del;}),att=items.filter(function(i){return i.att;}).length;
+  var sheets=x.sheets.filter(function(s){return !s.del;});
+  var o=[];
+  o.push('<div class="card hero"><div class="kicker">'+esc(h.speler)+' · level '+esc(D.level)+'</div><h2 style="margin:2px 0 0">'+esc(h.naam)+'</h2><div class="small">'+esc(h.ras)+' · '+esc(h.klasse)+'</div></div>');
+  o.push('<div class="stats">'+stepper('hp','HP',hp,'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--bad)':pct<=50?'#c9a227':'var(--good)')+'"></i></div>')+stepper('hpmax','Max HP',hpm)+stepper('ac','AC',fv(x,'ac',''))+stepper('goud','Goud (gp)',fv(x,'goud',0))+stepper('thp','Temp HP',fv(x,'thp',0))+stepper('insp','Inspiration',fv(x,'insp',0))+'</div>');
+  o.push('<h2>Inventaris <span class="muted" style="font-family:var(--sans);font-size:13px;font-weight:400">· '+att+'/'+MAX_ATTUNE+' attuned</span></h2>');
+  o.push('<div class="card"><div class="row"><input id="newItem" placeholder="Nieuw item…" onkeydown="if(event.key===\'Enter\')addItem()"><input id="newQty" inputmode="numeric" value="1" style="width:60px;text-align:center"><button class="btn p" onclick="addItem()">+</button></div>');
+  o.push(items.length?items.map(function(it){
+    return '<div class="item"><div class="grow"><div class="nm">'+esc(it.naam)+(it.priv?' <span class="lock">· privé</span>':'')+(it.att?' <span class="chip r">attuned</span>':'')+'</div>'+(it.notitie?'<div class="muted">'+esc(it.notitie)+'</div>':'')+'<div class="row" style="gap:2px;margin-top:2px"><button class="ico'+(it.att?' on':'')+'" title="Attuned" onclick="toggleItem(\''+it.id+'\',\'att\')">'+(it.att?ICON.starOn:ICON.star)+'</button><button class="ico'+(it.priv?' on':'')+'" title="Privé (enkel jij en de DM)" onclick="toggleItem(\''+it.id+'\',\'priv\')">'+ICON.lock+'</button><button class="ico" title="Bewerk" onclick="editItem(\''+it.id+'\')">'+ICON.edit+'</button></div></div><div class="qty"><button onclick="qty(\''+it.id+'\',-1)">−</button><span>'+esc(it.aantal)+'</span><button onclick="qty(\''+it.id+'\',1)">+</button></div></div>';
+  }).join(''):'<div class="empty">Nog niets. Voeg items toe of neem ze over uit de party-buit.</div>');
+  o.push('</div>');
+  o.push('<h2>Character sheet</h2><div class="card"><label class="f" style="margin-top:0">D&amp;D Beyond-link</label><div class="row"><input id="ddb" type="url" placeholder="https://www.dndbeyond.com/characters/…" value="'+esc(fv(x,'ddb',''))+'" onchange="setDdb(this.value)">'+(fv(x,'ddb','')?'<a class="btn s" style="display:inline-flex;align-items:center;text-decoration:none" href="'+esc(fv(x,'ddb',''))+'" target="_blank" rel="noopener">Open</a>':'')+'</div>');
+  o.push('<label class="f">PDF of foto van je sheet</label>'+(sheets.length?sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a><span class="muted">'+(s.up?'gesynct':(syncOn()?'wacht…':'lokaal'))+'</span><button class="ico" onclick="renameSheet(\''+s.id+'\')">'+ICON.edit+'</button><button class="ico" onclick="delSheet(\''+s.id+'\')">'+ICON.del+'</button></div>';}).join(''):'')+'<button class="btn" style="margin-top:8px;width:100%" onclick="pickSheet()">Upload PDF of foto…</button><div class="muted" style="margin-top:6px">Op papier? Neem per pagina een foto. Enkel jij en de DM kunnen je sheet openen.</div></div>');
+  o.push('<h2>Notities</h2><div class="card"><textarea id="myNotes" oninput="lsSet(\'zs.notes.'+id+'\',this.value)" placeholder="Enkel op dit toestel — ook de DM ziet dit niet.">'+esc(lsGet('zs.notes.'+id,''))+'</textarea></div>');
+  o.push('<p class="muted" style="text-align:center;margin:10px 0">'+(syncOn()?'Sync: '+ago(lsGet('zs.lastSync',0))+' · <a href="#" onclick="syncOwn();return false">nu syncen</a>':'Alleen op dit toestel · <a href="#" onclick="openSettings();return false">sync koppelen</a>')+'</p>');
+  el.innerHTML=o.join('');
+}
+function setStat(k,v){var x=inv(),n=parseInt(v,10);setF(x,k,isNaN(n)?'':n);saveInv(x);renderHeld();}
+function bump(k,d){var x=inv(),v=parseInt(fv(x,k,0),10)||0;v+=d;if(k==='hp'){var m=parseInt(fv(x,'hpmax',0),10);if(m>0)v=Math.min(v,m);}if(k!=='goud'&&v<0)v=0;setF(x,k,v);saveInv(x);renderHeld();}
+function setDdb(v){var x=inv();v=v.trim();if(v&&!/^https?:\/\//i.test(v))v='https://'+v;setF(x,'ddb',v);saveInv(x);renderHeld();}
+function findItem(x,id){for(var i=0;i<x.items.length;i++)if(x.items[i].id===id)return x.items[i];return null;}
+function addItem(){var n=$('newItem').value.trim();if(!n)return;var q=parseInt($('newQty').value,10)||1;var x=inv();x.items.push({id:uid(),c:now(),t:now(),naam:n,aantal:q});saveInv(x);renderHeld();setTimeout(function(){$('newItem').focus();},0);}
+function qty(id,d){var x=inv(),it=findItem(x,id);if(!it)return;it.aantal=Math.max(0,(it.aantal||0)+d);it.t=now();if(it.aantal===0&&!confirm(it.naam+' op 0 — verwijderen?')){it.aantal=1;}else if(it.aantal===0){it.del=true;}saveInv(x);renderHeld();}
+function toggleItem(id,k){var x=inv(),it=findItem(x,id);if(!it)return;if(k==='att'&&!it.att&&x.items.filter(function(i){return i.att&&!i.del;}).length>=MAX_ATTUNE){toast('Je kan maar '+MAX_ATTUNE+' items attunen');return;}it[k]=!it[k];it.t=now();saveInv(x);renderHeld();}
+function editItem(id){
+  var x=inv(),it=findItem(x,id);if(!it)return;
+  $('modalBox').innerHTML='<h2 style="margin-top:0">Item bewerken</h2><label class="f">Naam</label><input id="eN" value="'+esc(it.naam)+'"><label class="f">Aantal</label><input id="eQ" inputmode="numeric" value="'+esc(it.aantal)+'"><label class="f">Notitie</label><textarea id="eT">'+esc(it.notitie||'')+'</textarea><div class="row" style="margin-top:12px"><button class="btn" style="color:var(--bad)" onclick="delItem(\''+id+'\')">Verwijderen</button><span class="grow"></span><button class="btn" onclick="closeModal()">Annuleer</button><button class="btn p" onclick="saveItem(\''+id+'\')">Bewaar</button></div>';
+  openModal();
+}
+function saveItem(id){var x=inv(),it=findItem(x,id);if(!it)return;it.naam=$('eN').value.trim()||it.naam;it.aantal=Math.max(0,parseInt($('eQ').value,10)||0);it.notitie=$('eT').value.trim();it.t=now();saveInv(x);closeModal();renderHeld();}
+function delItem(id){var x=inv(),it=findItem(x,id);if(!it)return;it.del=true;it.t=now();saveInv(x);closeModal();renderHeld();toast(it.naam+' verwijderd');}
+function renameSheet(sid){var x=inv();x.sheets.forEach(function(s){if(s.id===sid){var n=prompt('Naam van deze sheet',s.name);if(n){s.name=n.trim();s.t=now();}}});saveInv(x);renderHeld();}
+function delSheet(sid){if(!confirm('Deze sheet verwijderen?'))return;var x=inv();x.sheets.forEach(function(s){if(s.id===sid){s.del=true;s.t=now();}});saveInv(x);idbDel(x.held+'/'+sid);renderHeld();}
+
+/* ============ party ============ */
+function pullParty(){
+  if(!syncOn()||!D){renderParty();return Promise.resolve();}
+  partyAt=now();setDot('busy');
+  return Promise.all(D.helden.map(function(h){return ghGetJson('inventaris/'+h.id+'.json').then(function(r){party[h.id]=r.data;},function(){});})).then(function(){
+    setDot('ok');
+    var me=heroId();if(me&&me!=='dm'&&party[me]){var m=merge(inv(),party[me]);lsSet('zs.inv.'+me,m);}
+    if(curTab==='party')renderParty();
+  });
+}
+function renderParty(){
+  var el=$('s-party');if(!D)return;
+  var dm=isDM(),me=heroId();
+  var o=['<div class="row"><h2 class="grow" style="margin:4px 0 8px">De Zeven</h2>'+(syncOn()?'<button class="btn s" onclick="pullParty()">Ververs</button>':'')+'</div>'];
+  if(!syncOn())o.push('<div class="card"><div class="small">Koppel de sync om de inventaris van de rest van de party te zien.</div><button class="btn p" style="margin-top:8px" onclick="openSettings()">Sync koppelen</button></div>');
+  D.helden.forEach(function(h){
+    var x=h.id===me?inv():party[h.id];
+    var hp=fv(x,'hp',null),hpm=fv(x,'hpmax',null),pct=hpm>0?Math.max(0,Math.min(100,Math.round(hp/hpm*100))):0;
+    var items=x?x.items.filter(function(i){return !i.del&&(dm||h.id===me||!i.priv);}):[];
+    var sheets=x?x.sheets.filter(function(s){return !s.del&&s.up;}):[];
+    var showSheets=dm&&sheets.length;
+    o.push('<details class="card pmember"'+(h.id===me?' open':'')+'><summary><div class="row"><span class="chev">›</span><div class="grow"><h3 style="margin:0">'+esc(h.naam)+(h.id===me?' <span class="chip r">jij</span>':'')+'</h3><div class="muted">'+esc(h.speler)+' · '+esc(h.klasse)+'</div></div><div style="text-align:right;min-width:86px">'+(x?'<div style="font-family:var(--serif);font-weight:700">'+(hp!==null&&hp!==''?esc(hp)+'/'+esc(hpm||'?'):'—')+' HP</div><div class="muted">AC '+esc(fv(x,'ac','—'))+' · '+esc(fv(x,'goud',0))+' gp</div>':'<div class="muted">geen data</div>')+'</div></div>'+(x&&hpm>0?'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--bad)':pct<=50?'#c9a227':'var(--good)')+'"></i></div>':'')+'</summary>');
+    o.push('<div style="margin-top:8px">'+(items.length?items.map(function(it){return '<div class="item"><div class="grow"><span class="nm">'+esc(it.naam)+'</span>'+(it.att?' <span class="chip r">attuned</span>':'')+(it.priv?' <span class="lock">· privé</span>':'')+(it.notitie?'<div class="muted">'+esc(it.notitie)+'</div>':'')+'</div><span class="muted">×'+esc(it.aantal)+'</span></div>';}).join(''):'<div class="muted">Geen zichtbare items.</div>'));
+    if(showSheets)o.push('<div style="margin-top:8px">'+sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+h.id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a></div>';}).join('')+'</div>');
+    if(dm&&x&&fv(x,'ddb',''))o.push('<a class="btn s" style="display:inline-block;margin-top:8px;text-decoration:none" href="'+esc(fv(x,'ddb',''))+'" target="_blank" rel="noopener">D&amp;D Beyond</a>');
+    if(x&&x.updated)o.push('<div class="muted" style="margin-top:6px">Bijgewerkt '+ago(x.updated)+'</div>');
+    o.push('</div></details>');
+  });
+  el.innerHTML=o.join('');
+}
+
+/* ============ instellingen ============ */
+function openModal(){$('modal').classList.add('on');}
+function closeModal(){$('modal').classList.remove('on');}
+function openSettings(){
+  var c=syncCfg(),h=heroInfo(heroId());
+  $('modalBox').innerHTML='<h2 style="margin-top:0">Instellingen</h2>'+
+  '<div class="card"><h3>Held</h3><div class="small">'+(isDM()?'DM-modus':h?esc(h.naam)+' ('+esc(h.speler)+')':'Nog niet gekozen')+'</div><button class="btn s" style="margin-top:8px" onclick="lsSet(\'zs.held\',null);closeModal();tab(\'held\')">Andere held kiezen</button></div>'+
+  '<div class="card"><h3>Sync</h3><div class="small">Plak hier de sleutel die je van de DM kreeg. Daarmee worden je inventaris en sheet gedeeld met de DM en zie je de rest van de party.</div><label class="f">Sleutel</label><input id="cfgTok" type="password" autocomplete="off" value="'+esc(c.token)+'" placeholder="github_pat_…"><details style="margin-top:8px"><summary class="muted">Geavanceerd</summary><label class="f">Repo</label><input id="cfgRepo" value="'+esc(c.repo)+'"></details><div class="row" style="margin-top:10px"><button class="btn p" onclick="saveCfg()">Bewaar &amp; test</button>'+(c.token?'<button class="btn" onclick="clearCfg()">Ontkoppel</button>':'')+'</div><div id="cfgMsg" class="muted" style="margin-top:6px"></div></div>'+
+  '<div class="card"><h3>Back-up</h3><div class="small">Je inventaris als bestand bewaren of terugzetten.</div><div class="row" style="margin-top:8px"><button class="btn s" onclick="exportInv()">Exporteer</button><button class="btn s" onclick="importInv()">Importeer</button></div></div>'+
+  '<div class="row"><span class="grow muted">Verhaal bijgewerkt '+(D?esc(D.bijgewerkt):'—')+'</span><button class="btn" onclick="closeModal()">Sluiten</button></div>';
+  openModal();
+}
+function saveCfg(){
+  var c={token:$('cfgTok').value.trim(),repo:($('cfgRepo').value||DEFAULT_REPO).trim()};lsSet('zs.sync',c);
+  $('cfgMsg').textContent='Testen…';
+  fetch('https://api.github.com/repos/'+c.repo,{headers:{'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'}}).then(function(r){
+    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld ✓';setDot('ok');syncOwn().then(pullParty);});
+    $('cfgMsg').textContent=r.status===404?'Repo niet gevonden of geen toegang.':'Sleutel geweigerd ('+r.status+').';setDot('err');
+  },function(){$('cfgMsg').textContent='Geen verbinding.';});
+}
+function clearCfg(){lsSet('zs.sync',{repo:DEFAULT_REPO,token:''});setDot('');closeModal();render();}
+function exportInv(){var x=inv();if(!x){toast('Kies eerst een held');return;}var b=new Blob([JSON.stringify(x,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='inventaris-'+x.held+'.json';a.click();}
+function importInv(){var i=document.createElement('input');i.type='file';i.accept='application/json,.json';i.onchange=function(){var f=i.files[0];if(!f)return;f.text().then(function(t){var y=JSON.parse(t),x=inv();if(!x||y.held!==x.held){toast('Dit bestand hoort bij een andere held');return;}saveInv(merge(x,y));closeModal();renderHeld();toast('Teruggezet');}).catch(function(){toast('Ongeldig bestand');});};i.click();}
+function sha256(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}
+function askDM(){var p=prompt('DM-pincode');if(!p)return;sha256('zeven:'+p.trim()).then(function(h){if(D&&h===D.dmPinHash){lsSet('zs.held','dm');toast('DM-modus aan');tab('party');}else toast('Verkeerde code');});}
+
+/* ============ start ============ */
+function loadData(){
+  return fetch('spelers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d;lsSet('zs.data',d);},function(){D=lsGet('zs.data',null);if(!D)$('s-verhaal').innerHTML='<div class="empty">Geen verbinding en nog niets opgeslagen.</div>';});
+}
+loadData().then(function(){
+  render();
+  if(syncOn()){setDot('ok');syncOwn().then(function(){return pullParty();});}
+});
+window.addEventListener('online',function(){if(syncOn()&&lsGet('zs.dirty.'+heroId(),false))syncOwn();});
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){loadData().then(function(){if(!typing())render();});if(syncOn())syncOwn();}});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+</body>
+</html>

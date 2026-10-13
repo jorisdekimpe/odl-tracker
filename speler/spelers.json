@@ -1,0 +1,115 @@
+{
+  "versie": 1,
+  "bijgewerkt": "2026-10-13",
+  "level": 2,
+  "dmPinHash": "af8dce31b58609cd0d49080f3202d18e0adfb46788f58c6fc294775a44a26db4",
+  "recapLink": "https://homebrewery.naturalcrit.com/share/bSZt6RG0z2HH",
+  "waar": {
+    "sessie": 5,
+    "titel": "Dieper in de Mossy Temple",
+    "plek": "Mossy Temple, Old Woods",
+    "tekst": "De Zeven zijn tot aan de Nursing Chamber geraakt, diep in de gygan-tempel. De Horn of Balmytria is nog altijd zoek; Demetria en Loreus zijn nog niet ontmoet. In Estoria tikt intussen de klok voor Anora."
+  },
+  "helden": [
+    { "id": "orelle", "naam": "Orelle", "speler": "Indy", "ras": "Thylean Siren", "klasse": "Fighter 2 (Hoplite)" },
+    { "id": "kyrenos", "naam": "Kyrenos Dragonbane", "speler": "Tiebe", "ras": "Thylean Centaur", "klasse": "Paladin 2 (Oath of the Dragonlord)" },
+    { "id": "dragini", "naam": "Dragini Led Vit", "speler": "Marthe", "ras": "Dragonborn (wit)", "klasse": "Monk 2" },
+    { "id": "apollodorus", "naam": "Apollodorus", "speler": "Jarne", "ras": "Halfling", "klasse": "Bard 2" },
+    { "id": "sirius", "naam": "Dr. Sirius Reed", "speler": "Ruben", "ras": "Elf", "klasse": "Artificer 2" },
+    { "id": "ox", "naam": "Ox", "speler": "Laura", "ras": "Thylean Minotaur", "klasse": "Barbarian 2" },
+    { "id": "wauros", "naam": "Wauros", "speler": "Jonas", "ras": "Thylean", "klasse": "Druid 2 (Circle of the Moon)" }
+  ],
+  "quests": [
+    {
+      "titel": "De drie Great Labors",
+      "status": "actief",
+      "bron": "Versi, the Oracle",
+      "tekst": "Het Orakel gaf de Zeven drie opdrachten.",
+      "stappen": [
+        { "t": "Horn of Balmytria — gestolen uit de Dragon Shrine van Estoria. Het spoor van de goatlings leidde naar de Mossy Temple.", "klaar": false },
+        { "t": "De Mithral Forge — ligging nog onbekend.", "klaar": false },
+        { "t": "Weapons of the Dragonlords — in de Necropolis van Telamok, in de Mithral Mountains.", "klaar": false }
+      ]
+    },
+    {
+      "titel": "Prinses Anora",
+      "status": "actief",
+      "bron": "King Pythor, Estoria",
+      "tekst": "Anora, de dochter van King Pythor, wordt bij volle maan aan Sydon geofferd op de Rock of Estor. Vier mogelijke aanpakken besproken, nog niets beslist."
+    },
+    {
+      "titel": "Sydons centaurenwarbands",
+      "status": "actief",
+      "bron": "Misha & Mocho",
+      "tekst": "Na het gesprek van Misha met Sydon zijn centaurenwarbands op zoek naar de Zeven om hen te 'escorteren'. Hun hero ligt al dood langs de weg."
+    },
+    {
+      "titel": "Waarom Orelle?",
+      "status": "open vraag",
+      "bron": "Mossy Temple",
+      "tekst": "De goatlings, dienaren van Lutheria, gingen opvallend en gericht achter Orelle aan."
+    },
+    {
+      "titel": "Losse eindjes in de Mossy Temple",
+      "status": "open vraag",
+      "bron": "Sessie 4",
+      "tekst": "Dingen die de Zeven gezien maar (nog) niet uitgezocht hebben.",
+      "stappen": [
+        { "t": "Wat is er met Herkus gebeurd, en waarom is hij een eekhoorn?", "klaar": false },
+        { "t": "Het gebroken bronzen Dragonlord-schild (ruiter tegen zesarmige cyclopen) — gevonden en achtergelaten.", "klaar": false },
+        { "t": "De kwaadaardige aanwezigheid aan de tempelingang die zich terugtrok.", "klaar": false },
+        { "t": "Een bewusteloze goatling, nog niet ondervraagd.", "klaar": false }
+      ]
+    },
+    {
+      "titel": "Sydons dochter",
+      "status": "open vraag",
+      "bron": "Brief bij Heleka",
+      "tekst": "Een brief van Sydon droeg de sea hag Heleka op zijn dochter naar Praxys te brengen. Wie en waar die dochter is, weet niemand."
+    },
+    {
+      "titel": "Bevrijd het Orakel",
+      "status": "afgerond",
+      "bron": "Proloog",
+      "tekst": "De priester van Sydon en zijn hoplites verslagen, Heleka gedood, Versi bevrijd. Zij gaf iedereen een persoonlijke voorspelling."
+    },
+    {
+      "titel": "Oath of Fellowship",
+      "status": "afgerond",
+      "bron": "Sessie 3",
+      "tekst": "De Zeven zwoeren elkaar trouw. Ze zijn geen vreemden meer."
+    }
+  ],
+  "npcs": [
+    { "naam": "Kyrah", "wie": "Goddess of Music, vermomd als rondtrekkende dichteres. Begeleidt de Zeven en schrijft hun daden op.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
+    { "naam": "Versi, the Oracle", "wie": "Het Orakel. Bevrijd uit de grot onder haar tempel; gaf de voorspellingen en de drie Great Labors.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 2" },
+    { "naam": "Proteus", "wie": "Priester van de Temple of the Oracle. In zijn vertrekken lagen zes Potions of Healing.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 2" },
+    { "naam": "Heleka", "wie": "Sea hag die het Orakel gevangen hield. Had een brief van Sydon bij zich.", "waar": "Grot onder de Temple of the Oracle", "houding": "vijandig", "status": "dood", "eerst": "Sessie 2" },
+    { "naam": "Misha & Mocho", "wie": "Twee cyclopen in dienst van Sydon. Sirius praatte hen om met een 'geheime missie voor Sydon'; ze gaven eten en onderdak. Misha sprak 's nachts met Sydon.", "waar": "Langs de weg naar Estoria", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "King Pythor", "wie": "Koning van Estoria. Stomdronken toen de Zeven hem ontmoetten; Kyrah las hem de les.", "waar": "Estoria — paleis", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "Princess Anora", "wie": "Dochter van Pythor. Moet bij volle maan aan Sydon geofferd worden.", "waar": "Estoria", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "Aesop", "wie": "Keeper of the Dragon Shrine. Meldde de diefstal van de Horn of Balmytria door goatlings.", "waar": "Estoria — Dragon Shrine", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "Corinna", "wie": "Dochter van Thericles. Gered van zes goatlings in de Old Woods; noemde de namen Loreus en Demetria.", "waar": "Old Woods", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4" },
+    { "naam": "Herkus", "wie": "Krankzinnige eekhoorn die met nootjes gooide; toonde zich even als gnoom-druïde. Zit nu op Apollodorus' schouder en bekogelt vijanden.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4" },
+    { "naam": "Thericles", "wie": "Vader van Corinna.", "waar": "Onbekend", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
+    { "naam": "Loreus", "wie": "Een satyr, genoemd door Corinna.", "waar": "Mossy Temple?", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
+    { "naam": "Demetria", "wie": "Genoemd door Corinna.", "waar": "Mossy Temple?", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
+    { "naam": "Sydon", "wie": "Titan, Lord of Storms. Houdt de regen tegen; zijn priesters, hoplites en cyclopen zitten de Zeven dwars.", "waar": "Praxys", "houding": "vijandig", "status": "bij naam", "eerst": "Proloog" },
+    { "naam": "Lutheria", "wie": "De godin die de goatlings dienen.", "waar": "Onbekend", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 3" },
+    { "naam": "Vallus", "wie": "Godheid aan wie het zwijn uit de eerste jacht geofferd werd.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 1" }
+  ],
+  "sessies": [
+    { "num": "1", "titel": "The Sour Harvest", "tekst": "Zeven vreemden ontmoeten elkaar in de Sour Harvest. Een monsterlijk zwijn wordt verslagen en aan Vallus geofferd. Bij de Temple of the Oracle verslaan ze Sydons hoplites, zijn priester en bevrijden ze de gijzelaars." },
+    { "num": "2", "titel": "The Oracle's Prophecy", "tekst": "Wauros, een gevangen druïde uit de Old Woods, sluit zich aan. Onder de tempel: geanimeerde zwaarden, een mimic-deur en de sea hag Heleka. Versi is vrij en geeft haar voorspellingen en drie Great Labors." },
+    { "num": "3", "titel": "The Road to Estoria", "tekst": "Oath of Fellowship. Langs een griffioen gesloten, de cyclopen Misha & Mocho omgepraat, een centaur hero gedood. In Estoria: droogte, een dronken koning, Anora's offer en een gestolen Hoorn. Het spoor van de goatlings leidt naar de Old Woods." },
+    { "num": "4", "titel": "Into the Mossy Temple", "tekst": "Corinna gered, Herkus gevangen, de tempel binnengegaan. Sydons standbeeld van adamantine bekeken, een gebroken Dragonlord-schild gevonden, de flooded baths vrijgemaakt." },
+    { "num": "5", "titel": "Dieper in de Mossy Temple", "tekst": "Tot aan de Nursing Chamber geraakt." }
+  ],
+  "buit": [
+    { "item": "Potion of Healing", "bij": "iedereen (1 per held)", "bron": "Versi, the Oracle" },
+    { "item": "Potion of Healing ×6", "bij": "party", "bron": "Vertrekken van Proteus" },
+    { "item": "Koperen sleutel", "bij": "party", "bron": "Zaal met de zwaarden" },
+    { "item": "Pike van de centaur hero", "bij": "Orelle", "bron": "Weg naar Estoria" },
+    { "item": "Luitsnaren (uit de priester)", "bij": "Apollodorus", "bron": "Temple of the Oracle" }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "versie": 2,
-  "bijgewerkt": "2026-10-13",
+  "bijgewerkt": "2026-10-18",
   "level": 2,
   "dmPinHash": "af8dce31b58609cd0d49080f3202d18e0adfb46788f58c6fc294775a44a26db4",
   "recapLink": "https://homebrewery.naturalcrit.com/share/bSZt6RG0z2HH",
@@ -40,7 +40,7 @@
     {
       "titel": "Sydons centaurenwarbands",
       "status": "actief",
-      "bron": "Misha & Mocho",
+      "bron": "Misha & Mosho",
       "tekst": "Misha ging met Sydon spreken en zei daarna dat er centaurenwarbands op komst waren. De Zeven vertrokken vroeg; een centaur hero ligt al dood langs de weg."
     },
     {
@@ -70,12 +70,6 @@
       "tekst": "Sydon houdt de regen tegen. Boeren brengen hun vee naar de stad als offer. Komt de regen ooit terug?"
     },
     {
-      "titel": "Sydons dochter",
-      "status": "open vraag",
-      "bron": "Brief bij Heleka",
-      "tekst": "In de spullen van Heleka zat een bericht van Sydon: hij herinnerde haar aan haar eed en droeg haar op zijn dochter via de Forgotten Sea naar Praxys te brengen. Wie en waar die dochter is, weet niemand."
-    },
-    {
       "titel": "Bevrijd het Orakel",
       "status": "afgerond",
       "bron": "Proloog",
@@ -90,10 +84,10 @@
   ],
   "npcs": [
     { "naam": "Kyrah", "wie": "Goddess of Music, vermomd als rondtrekkende dichteres. Leidde de Zeven vanuit de Sour Harvest naar het Orakel en las een dronken King Pythor de les.", "lore": "Hofdichteres van de koningin van Mytros. Ze schrijft slechte gedichten nog liever dan goede, gewoon om de reacties, en neemt geen enkele criticus iets kwalijk.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
-    { "naam": "Versi, the Oracle", "wie": "Het Orakel. Werd gevangen gehouden door Heleka in de grot onder haar tempel. Na haar bevrijding gaf ze ieder een persoonlijke voorspelling en de groep drie Great Labors.", "lore": "In heel Thylea al 'het Orakel' sinds vóór de stichting van Mytros. Ze voorspelde de komst van de Dragonlords en hielp de Oath of Peace tot stand te brengen. Draagt een gouden diadeem.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 2" },
+    { "naam": "Versi, the Oracle", "wie": "Het Orakel. Werd gevangen gehouden door Heleka in de grot onder haar tempel. Na haar bevrijding gaf ze ieder een persoonlijke voorspelling en de groep drie Great Labors. Ze is een dochter van Sydon: in zijn brief aan Heleka droeg hij de heks op haar naar Praxys te brengen.", "lore": "In heel Thylea al 'het Orakel' sinds vóór de stichting van Mytros. Ze voorspelde de komst van de Dragonlords en hielp de Oath of Peace tot stand te brengen. Draagt een gouden diadeem.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 2" },
     { "naam": "Proteus", "wie": "Priester van de Temple of the Oracle. In zijn vertrekken lagen zes healing potions.", "lore": "De oudste tempeldienaar. Kent de geografie en de gebruiken van Thylea goed, maar twijfelt of de Great Labors wel haalbaar zijn.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
     { "naam": "Heleka", "wie": "Sea hag die onder eed Sydon diende en het Orakel gevangen hield. Haar blik doodde Orelle bijna.", "lore": "Ze vermoordde de tempeldienaars één voor één, alleen om het Orakel te kwellen.", "waar": "Grot onder de Temple of the Oracle", "houding": "vijandig", "status": "dood", "eerst": "Sessie 2" },
-    { "naam": "Misha & Mocho", "wie": "Twee cyclopen die van Sydon reizigers moesten offeren. Sirius praatte hen om met een 'geheime missie voor Sydon'. Misha ging daarna met Sydon spreken.", "waar": "Langs de weg naar Estoria", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "Misha & Mosho", "wie": "Twee cyclopen die van Sydon reizigers moesten offeren. Sirius praatte hen om met een 'geheime missie voor Sydon'. Misha ging daarna met Sydon spreken.", "waar": "Langs de weg naar Estoria", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 3" },
     { "naam": "King Pythor", "wie": "Koning van Estoria. Een indrukwekkende man van zo'n 1,95 meter in zware wapenrusting, en stomdronken toen de Zeven hem ontmoetten.", "lore": "De Estorianen noemen hem de legendarische god van de strijd; veel liederen bezingen zijn daden in de First War. Tegenwoordig vooral bekend om zijn drankgebruik en nostalgische verhalen over vroeger.", "waar": "Estoria — paleis", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
     { "naam": "Princess Anora", "wie": "Dochter van Pythor. Moet bij de volgende volle maan op de Rock of Estor aan Sydon geofferd worden.", "lore": "Pythors lievelingsdochter en de trots van de stad.", "waar": "Estoria", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
     { "naam": "Aesop", "wie": "Priester van Mytros en Keeper of the Dragon Shrine. Meldde de diefstal van de Horn of Balmytria; de goatlings lieten hoefsporen achter.", "lore": "Een elf die de schrijn al eeuwen bewaakt. Bestudeert de geschiedenis, houdt de profetieën in het oog en geldt als een van de wijste stervelingen van het land.", "waar": "Estoria — Dragon Shrine", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
@@ -109,7 +103,7 @@
   "sessies": [
     { "num": "1", "titel": "The Sour Harvest", "tekst": "Zeven vreemden ontmoeten elkaar in de Sour Harvest; een dichteres, in werkelijkheid de godin van de muziek, leidt hen naar het Orakel. Een monsterlijk zwijn sterft met de waarschuwing dat geen profetie hen zal redden, en wordt aan Vallus geofferd. Een mist mephit, vier hoplites van Sydon en zijn priester sneuvelen; de gijzelaars in de tempel zijn vrij." },
     { "num": "2", "titel": "The Oracle's Prophecy", "tekst": "Wauros, een druïde uit de Old Woods, wordt bevrijd uit de handen van Sydons troepen en sluit zich aan. Onder de tempel: geanimeerde zwaarden rond een koperen sleutel, een mimic in de vorm van een deur met Sydons gezicht, een tapijt dat ontsnapt, en de sea hag Heleka. Versi is vrij en spreekt haar voorspellingen uit." },
-    { "num": "3", "titel": "The Road to Estoria", "tekst": "Oath of Fellowship. Langs een griffioen geslopen, de cyclopen Misha & Mocho omgepraat, een centaur hero gedood. In Estoria: droogte, offervee, een dronken koning en een prinses die geofferd moet worden. De Horn of Balmytria is gestolen; het spoor van de goatlings leidt naar de Old Woods." },
+    { "num": "3", "titel": "The Road to Estoria", "tekst": "Oath of Fellowship. Langs een griffioen geslopen, de cyclopen Misha & Mosho omgepraat, een centaur hero gedood. In Estoria: droogte, offervee, een dronken koning en een prinses die geofferd moet worden. De Horn of Balmytria is gestolen; het spoor van de goatlings leidt naar de Old Woods." },
     { "num": "4", "titel": "Into the Mossy Temple", "tekst": "Corinna gered van zes goatlings die het op Orelle gemunt hadden. Herkus gevangen bij de oude druïdenkring. In de tempel van de gygans: een standbeeld van Sydon met adamantine, een gebroken Dragonlord-schild en de flooded baths, waar roestende oozes en levende wortels verslagen werden. Orelle ging voor de tweede keer neer." },
     { "num": "5", "titel": "Dieper in de Mossy Temple", "tekst": "Tot aan de Nursing Chamber geraakt. De volledige recap volgt." }
   ],

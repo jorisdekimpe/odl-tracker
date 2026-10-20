@@ -272,7 +272,8 @@ function syncOwn(){
 var idbP=null;
 function idb(){if(idbP)return idbP;idbP=new Promise(function(res,rej){var r=indexedDB.open('zs-sheets',1);r.onupgradeneeded=function(){r.result.createObjectStore('f');};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});return idbP;}
 function idbPut(k,v){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction('f','readwrite');t.objectStore('f').put(v,k);t.oncomplete=res;t.onerror=function(){rej(t.error);};});});}
-function idbGet(k){return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f');var q=t.objectStore('f').get(k);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};});});}
+var memBlobs={};
+function idbGet(k){if(memBlobs[k])return Promise.resolve(memBlobs[k]);return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f');var q=t.objectStore('f').get(k);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};});}).catch(function(){return null;});}
 function idbDel(k){return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f','readwrite');t.objectStore('f').delete(k);t.oncomplete=res;t.onerror=res;});});}
 function blobB64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1]);};r.onerror=rej;r.readAsDataURL(b);});}
 function shrinkImage(file){
@@ -284,25 +285,37 @@ function shrinkImage(file){
   });
 }
 function pickSheet(){$('fileIn').value='';$('fileIn').click();}
+function sniff(f){return f.slice(0,8).arrayBuffer().then(function(buf){var u=new Uint8Array(buf),t=String.fromCharCode.apply(null,u.subarray(0,5));if(t==='%PDF-')return 'pdf';if(u[0]===0xFF&&u[1]===0xD8)return 'img';if(u[0]===0x89&&u[1]===0x50)return 'img';return null;}).catch(function(){return null;});}
 function onSheetFile(el){
   var f=el.files&&el.files[0];if(!f)return;var x=inv();if(!x)return;
-  var isPdf=f.type==='application/pdf'||/\.pdf$/i.test(f.name);
-  if(!isPdf&&!/^image\//.test(f.type)){toast('Enkel PDF of foto');return;}
-  (isPdf?Promise.resolve(f):shrinkImage(f)).then(function(b){
-    if(b.size>8*1024*1024){toast('Bestand te groot (max 8 MB)');return;}
-    var id=uid(),ext=isPdf?'pdf':'jpg';
-    var s={id:id,c:now(),t:now(),name:f.name.replace(/\.[^.]+$/,'')||'Sheet',type:isPdf?'pdf':'img',path:'sheets/'+x.held+'/'+id+'.'+ext,up:false};
-    return idbPut(x.held+'/'+id,b).then(function(){x=inv();x.sheets.push(s);saveInv(x);renderHeld();toast(syncOn()?'Toegevoegd, wordt gesynct':'Toegevoegd op dit toestel');});
-  });
+  sniff(f).then(function(kind){
+    var isPdf=kind==='pdf'||f.type==='application/pdf'||/\.pdf$/i.test(f.name);
+    var isImg=!isPdf&&(kind==='img'||/^image\//.test(f.type));
+    if(!isPdf&&!isImg){toast('Dit bestand herken ik niet als PDF of foto');return;}
+    return (isPdf?Promise.resolve(f):shrinkImage(f)).then(function(b){
+      if(b.size>8*1024*1024){toast('Bestand te groot ('+(b.size/1048576).toFixed(1)+' MB, max 8 MB)');return;}
+      var id=uid(),ext=isPdf?'pdf':'jpg',key=x.held+'/'+id;
+      var s={id:id,c:now(),t:now(),name:(f.name||'').replace(/\.[^.]+$/,'')||'Sheet',type:isPdf?'pdf':'img',path:'sheets/'+x.held+'/'+id+'.'+ext,up:false};
+      return idbPut(key,b).catch(function(){memBlobs[key]=b;}).then(function(){x=inv();x.sheets.push(s);saveInv(x);renderHeld();toast(syncOn()?'Toegevoegd, wordt gesynct…':'Toegevoegd op dit toestel (geen sync ingesteld)');});
+    });
+  }).catch(function(e){toast('Toevoegen mislukt: '+((e&&e.message)||e));});
 }
+function sheetErr(e){if(!e)return 'onbekende fout';if(e.status===413)return 'te groot voor GitHub';if(e.status===401||e.status===403)return 'sleutel geweigerd';if(e.status===422)return 'GitHub weigerde het bestand';return e.message||String(e);}
+function markSheet(held,sid,fn){var y=inv();if(!y||y.held!==held)return;y.sheets.forEach(function(q){if(q.id===sid)fn(q);});lsSet('zs.inv.'+y.held,y);}
 function uploadPendingSheets(x){
-  var todo=(x.sheets||[]).filter(function(s){return !s.del&&!s.up;});
+  var todo=(x.sheets||[]).filter(function(s){return !s.del&&!s.up&&!s.err;});
   var gone=(x.sheets||[]).filter(function(s){return s.del&&s.up&&!s.gone;});
-  var p=Promise.resolve();
-  todo.forEach(function(s){p=p.then(function(){return idbGet(x.held+'/'+s.id);}).then(function(b){if(!b)return;return blobB64(b).then(function(b64){return ghSha(s.path).then(function(sha){return ghPutRaw(s.path,b64,sha,'Sheet '+s.name);});}).then(function(){var y=inv();y.sheets.forEach(function(q){if(q.id===s.id){q.up=true;q.t=now();}});lsSet('zs.inv.'+y.held,y);});});});
-  gone.forEach(function(s){p=p.then(function(){return ghDelete(s.path);}).then(function(){var y=inv();y.sheets.forEach(function(q){if(q.id===s.id){q.gone=true;q.t=now();}});lsSet('zs.inv.'+y.held,y);});});
-  return p;
+  var p=Promise.resolve(),fails=[];
+  todo.forEach(function(s){p=p.then(function(){return idbGet(x.held+'/'+s.id);}).then(function(b){
+    if(!b){markSheet(x.held,s.id,function(q){q.err='bestand staat niet meer op dit toestel, verwijder en upload opnieuw';});fails.push(s.name);return;}
+    return blobB64(b).then(function(b64){return ghSha(s.path).then(function(sha){return ghPutRaw(s.path,b64,sha,'Sheet '+s.name);});})
+      .then(function(){markSheet(x.held,s.id,function(q){q.up=true;delete q.err;q.t=now();});delete memBlobs[x.held+'/'+s.id];})
+      .catch(function(e){markSheet(x.held,s.id,function(q){q.err=sheetErr(e);});fails.push(s.name);});
+  });});
+  gone.forEach(function(s){p=p.then(function(){return ghDelete(s.path);}).then(function(){markSheet(x.held,s.id,function(q){q.gone=true;q.t=now();});}).catch(function(){});});
+  return p.then(function(){if(fails.length)toast('Sheet niet geüpload: '+fails.join(', ')+'. Inventaris is wel gesynct.');if(todo.length&&curTab==='held'&&!typing())renderHeld();});
 }
+function retrySheet(sid){var x=inv();x.sheets.forEach(function(s){if(s.id===sid)delete s.err;});lsSet('zs.inv.'+x.held,x);renderHeld();if(syncOn()){toast('Opnieuw proberen…');syncOwn();}}
 function loadSheetBlob(owner,s){
   return idbGet(owner+'/'+s.id).then(function(b){
     if(b)return b;
@@ -416,7 +429,7 @@ function renderHeld(){
   }).join(''):'<div class="empty">Nog niets. Voeg items toe of neem ze over uit de party-buit.</div>');
   o.push('</div>');
   o.push('<h2>Character sheet</h2><div class="card"><label class="f" style="margin-top:0">D&amp;D Beyond-link</label><div class="row"><input id="ddb" type="url" placeholder="https://www.dndbeyond.com/characters/…" value="'+esc(fv(x,'ddb',''))+'" onchange="setDdb(this.value)">'+(fv(x,'ddb','')?'<a class="btn s" style="display:inline-flex;align-items:center;text-decoration:none" href="'+esc(fv(x,'ddb',''))+'" target="_blank" rel="noopener">Open</a>':'')+'</div>');
-  o.push('<label class="f">PDF of foto van je sheet</label>'+(sheets.length?sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a><span class="muted">'+(s.up?'gesynct':(syncOn()?'wacht…':'lokaal'))+'</span><button class="ico" onclick="renameSheet(\''+s.id+'\')">'+ICON.edit+'</button><button class="ico" onclick="delSheet(\''+s.id+'\')">'+ICON.del+'</button></div>';}).join(''):'')+'<button class="btn" style="margin-top:8px;width:100%" onclick="pickSheet()">Upload PDF of foto…</button><div class="muted" style="margin-top:6px">Op papier? Neem per pagina een foto. Enkel jij en de DM kunnen je sheet openen.</div></div>');
+  o.push('<label class="f">PDF of foto van je sheet</label>'+(sheets.length?sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a>'+(s.up?'<span class="muted">gesynct</span>':s.err?'<button class="btn s" style="color:var(--bad)" onclick="retrySheet(\''+s.id+'\')">Opnieuw</button>':'<span class="muted">'+(syncOn()?'wacht…':'lokaal')+'</span>')+'<button class="ico" onclick="renameSheet(\''+s.id+'\')">'+ICON.edit+'</button><button class="ico" onclick="delSheet(\''+s.id+'\')">'+ICON.del+'</button></div>';}).join(''):'')+sheets.filter(function(q){return q.err&&!q.up;}).map(function(q){return '<div class="small" style="color:var(--bad);margin-top:4px">'+esc(q.name)+': '+esc(q.err)+'</div>';}).join('')+'<button class="btn" style="margin-top:8px;width:100%" onclick="pickSheet()">Upload PDF of foto…</button><div class="muted" style="margin-top:6px">Op papier? Neem per pagina een foto. Enkel jij en de DM kunnen je sheet openen.</div></div>');
   o.push('<h2>Notities</h2><div class="card"><textarea id="myNotes" oninput="lsSet(\'zs.notes.'+id+'\',this.value)" placeholder="Enkel op dit toestel — ook de DM ziet dit niet.">'+esc(lsGet('zs.notes.'+id,''))+'</textarea></div>');
   o.push('<p class="muted" style="text-align:center;margin:10px 0">'+(syncOn()?'Sync: '+ago(lsGet('zs.lastSync',0))+' · <a href="#" onclick="syncOwn();return false">nu syncen</a>':'Alleen op dit toestel · <a href="#" onclick="openSettings();return false">sync koppelen</a>')+'</p>');
   el.innerHTML=o.join('');

@@ -1,14 +1,14 @@
 {
   "versie": 2,
-  "bijgewerkt": "2026-10-18",
+  "bijgewerkt": "2026-10-20",
   "level": 2,
   "dmPinHash": "af8dce31b58609cd0d49080f3202d18e0adfb46788f58c6fc294775a44a26db4",
   "recapLink": "https://homebrewery.naturalcrit.com/share/bSZt6RG0z2HH",
   "waar": {
     "sessie": 5,
-    "titel": "Dieper in de Mossy Temple",
+    "titel": "Beneath the Mossy Temple",
     "plek": "Mossy Temple, Old Woods",
-    "tekst": "De Zeven zijn tot aan de Nursing Chamber geraakt, diep in de tempel van de gygans. De Horn of Balmytria is nog altijd zoek, en waar Demetria en Loreus zitten weet niemand. In Estoria nadert intussen de volle maan voor Anora."
+    "tekst": "De Zeven hebben ternauwernood twee maenads verslagen in de Nursing Chamber, diep in de tempel van de gygans. De Horn of Balmytria is nog altijd zoek en Demetria hebben ze nog niet gezien. Acht tieners wachten in een paddenstoelengrot op hun 'initiatie'; Sostrates en Corinna wachten aan de ingang. In Estoria nadert de volle maan voor Anora."
   },
   "helden": [
     { "id": "orelle", "naam": "Orelle", "speler": "Indy", "ras": "Thylean Siren", "klasse": "Fighter 2 (Hoplite)" },
@@ -38,6 +38,12 @@
       "tekst": "Anora, de dochter van King Pythor, wordt bij de volgende volle maan op de Rock of Estor vastgeketend en aan Sydon geofferd. Er zijn opties besproken, onder meer onderhandelen of duelleren met de centaurenleider. Nog niets beslist."
     },
     {
+      "titel": "Demetria's tieners",
+      "status": "actief",
+      "bron": "Corinna, Lorius",
+      "tekst": "Demetria lokte jongeren uit Estoria naar de Mossy Temple met beloften van rijkdom, schoonheid en roem. Sostrates is gered en wacht met Corinna aan de ingang. Acht anderen zitten high van Madon-paddenstoelen in een grot en willen niet weg: ze wachten op hun 'initiatie'."
+    },
+    {
       "titel": "Sydons centaurenwarbands",
       "status": "actief",
       "bron": "Misha & Mosho",
@@ -47,19 +53,19 @@
       "titel": "Waarom wil Lutheria Orelle dood?",
       "status": "open vraag",
       "bron": "Mossy Temple",
-      "tekst": "De goatlings, dienaren van Lutheria, richtten zich doelbewust op Orelle: ze grepen en beten haar tot ze neerging. Lutheria wil haar dood. Maar waarom zij?"
+      "tekst": "De goatlings, dienaren van Lutheria, richtten zich doelbewust op Orelle: in het Oldwood grepen en beten ze haar tot ze neerging, en in de grotten onder de tempel gebeurde het opnieuw. Lorius vertelde dat ook Demetria in Lutheria's dienst staat. Lutheria wil Orelle dood. Maar waarom zij?"
     },
     {
       "titel": "Losse eindjes in de Mossy Temple",
       "status": "open vraag",
-      "bron": "Sessie 4",
+      "bron": "Sessie 4-5",
       "tekst": "Dingen die de Zeven gezien maar (nog) niet uitgezocht hebben.",
       "stappen": [
-        { "t": "Waar zijn Demetria en Loreus, en wat hebben ze met de tempel te maken?", "klaar": false },
-        { "t": "Wat is er gebeurd met de anderen die naar de tempel gelokt werden?", "klaar": false },
+        { "t": "Waar is Demetria? Lorius waarschuwde voor haar; ze is nog niet gezien.", "klaar": false },
+        { "t": "De gelokte tieners: Sostrates is gered, acht anderen wachten stoned in de paddenstoelengrot op hun 'initiatie'.", "klaar": false },
         { "t": "Wat scheelt er met Herkus?", "klaar": false },
-        { "t": "Het gebroken bronzen schild: een Dragonlord te paard tegen zesarmige cyclopen. Achtergelaten.", "klaar": false },
-        { "t": "De kwaadaardige magie aan de tempel, die zich terugtrok toen ze werd opgemerkt.", "klaar": false },
+        { "t": "Het gebroken bronzen schild: Estor Arkelander, met buigende gygans.", "klaar": true },
+        { "t": "De kwaadaardige magie aan de tempel, die zich terugtrok toen ze werd opgemerkt. Demetria's magie hangt over het hele complex.", "klaar": false },
         { "t": "Een bewusteloze goatling, nog in leven en niet ondervraagd.", "klaar": false }
       ]
     },
@@ -83,7 +89,7 @@
     }
   ],
   "npcs": [
-    { "naam": "Kyrah", "wie": "Goddess of Music, vermomd als rondtrekkende dichteres. Leidde de Zeven vanuit de Sour Harvest naar het Orakel en las een dronken King Pythor de les.", "lore": "Hofdichteres van de koningin van Mytros. Ze schrijft slechte gedichten nog liever dan goede, gewoon om de reacties, en neemt geen enkele criticus iets kwalijk.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
+    { "naam": "Kyrah", "wie": "Goddess of Music, vermomd als rondtrekkende dichteres. Leidde de Zeven vanuit de Sour Harvest naar het Orakel en las een dronken King Pythor de les. Was niet blij toen Orelle in de Mossy Temple tot Sydon bad.", "lore": "Hofdichteres van de koningin van Mytros. Ze schrijft slechte gedichten nog liever dan goede, gewoon om de reacties, en neemt geen enkele criticus iets kwalijk.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
     { "naam": "Aetala", "wie": "Herbergierster van de Sour Harvest, waar de Zeven elkaar voor het eerst ontmoetten.", "lore": "Een gepensioneerde jageres die de Heartlands beter kent dan de meesten.", "waar": "Sour Harvest", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
     { "naam": "Taneias & Javon", "wie": "De twee jagers die over het monsterlijke zwijn vertelden en de Zeven op de jacht begeleidden.", "waar": "De Heartlands", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 1" },
     { "naam": "Versi, the Oracle", "wie": "Het Orakel. Werd gevangen gehouden door Heleka in de grot onder haar tempel. Na haar bevrijding gaf ze ieder een persoonlijke voorspelling en de groep drie Great Labors. Ze is een dochter van Sydon: in zijn brief aan Heleka droeg hij de heks op haar naar Praxys te brengen.", "lore": "In heel Thylea al 'het Orakel' sinds vóór de stichting van Mytros. Ze voorspelde de komst van de Dragonlords en hielp de Oath of Peace tot stand te brengen. Draagt een gouden diadeem.", "waar": "Temple of the Oracle", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 2" },
@@ -98,28 +104,33 @@
     { "naam": "Princess Anora", "wie": "Dochter van Pythor. Moet bij de volgende volle maan op de Rock of Estor aan Sydon geofferd worden.", "lore": "Pythors lievelingsdochter en de trots van de stad.", "waar": "Estoria", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
     { "naam": "Aesop", "wie": "Priester van Mytros en Keeper of the Dragon Shrine. Meldde de diefstal van de Horn of Balmytria; de goatlings lieten hoefsporen achter.", "lore": "Een elf die de schrijn al eeuwen bewaakt. Bestudeert de geschiedenis, houdt de profetieën in het oog en geldt als een van de wijste stervelingen van het land.", "waar": "Estoria — Dragon Shrine", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 3" },
     { "naam": "Oude sater (naamloos)", "wie": "Botste in Estoria tegen Ox aan. Orelle sprong ertussen voor het uit de hand liep.", "waar": "Estoria", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 3" },
-    { "naam": "Corinna (Korina)", "wie": "Jong meisje dat op de vlucht was voor zes goatlings in de Old Woods; door de Zeven gered. Dochter van Thericles. Noemde de satyr Loreus en een vrouw, Demetria, als betrokken bij wat er in de tempel gebeurt.", "lore": "Ze weet zich goed te redden in het bos.", "waar": "Old Woods", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4" },
+    { "naam": "Corinna (Korina)", "wie": "Jong meisje dat op de vlucht was voor zes goatlings in de Old Woods; door de Zeven gered. Dochter van Thericles. Noemde de satyr Loreus en een vrouw, Demetria, als betrokken bij wat er in de tempel gebeurt. Wacht nu aan de ingang van de tempel met Sostrates.", "lore": "Ze weet zich goed te redden in het bos.", "waar": "Ingang van de Mossy Temple", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4" },
+    { "naam": "Sostrates", "wie": "Een van de vermiste tieners. Door de Zeven gered van goatlings in de grotten onder de tempel; wacht nu met Corinna aan de ingang.", "waar": "Ingang van de Mossy Temple", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 5" },
+    { "naam": "De tieners in de paddenstoelengrot", "wie": "Acht tieners, vier jongens en vier meisjes, high van Madon-paddenstoelen. Demetria beloofde hen rijkdom, schoonheid en roem; ze wachten blij op hun 'initiatie'. Voorlopig achtergelaten.", "waar": "Mossy Temple, paddenstoelengrot", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 5" },
     { "naam": "Herkus", "wie": "Gnoom-druïde die bij de Mossy Temple hoort. Bij een oude druïdenkring gooide hij als warrige eekhoorn met nootjes; Apollodorus ving hem met Mage Hand. Zijn geest lijkt aangetast. Zit nu op Apollodorus' schouder en bekogelt vijanden.", "lore": "Bewaart zijn munitie in zijn wangen.", "waar": "Reist met de party mee", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4" },
-    { "naam": "Goatlings", "wie": "Klein, verwrongen satervolk dat Lutheria dient. Bij de Dragon Shrine werd er een gespot. Op het nachtelijke spoor viel er een aan (Orelle schoot hem neer); in het Oldwood richtten zes zich op Orelle. Eén ligt nog bewusteloos.", "waar": "Estoria en het Oldwood", "houding": "vijandig", "status": "ontmoet", "eerst": "Sessie 3" },
+    { "naam": "Goatlings", "wie": "Klein, verwrongen satervolk dat Lutheria dient. Bij de Dragon Shrine werd er een gespot. Op het nachtelijke spoor viel er een aan (Orelle schoot hem neer); in het Oldwood richtten zes zich op Orelle. Eén ligt nog bewusteloos. Onder de tempel joegen er zes op Sostrates en daarna weer op Orelle; in de Nursing Chamber zaten jonge goatlings bij hun maenad-moeders.", "waar": "Estoria en het Oldwood", "houding": "vijandig", "status": "ontmoet", "eerst": "Sessie 3", "lore": "Ze worden geboren uit een sater en een maenad." },
+    { "naam": "Maenads", "wie": "Twee maenads in de Nursing Chamber, met hun jonge goatlings. Hun wilde magie dreef Dragini tegen de eigen groep; Orelle, Apollodorus en Sirius gingen neer. Verslagen.", "lore": "Ook de Raving Ones genoemd: dienaressen van Lutheria die reizigers in de gedaante van jonkvrouwen in nood naar hun hol lokken. Zij zijn de moeders van de goatlings.", "waar": "Mossy Temple, Nursing Chamber", "houding": "vijandig", "status": "dood", "eerst": "Sessie 5" },
+    { "naam": "Gargoyle-wachters", "wie": "Twee van de vier gygan-standbeelden bij de trap waren levende wachters. Orelles offer en gebed aan Sydon hielden ze stil.", "waar": "Mossy Temple", "houding": "neutraal", "status": "ontmoet", "eerst": "Sessie 5" },
     { "naam": "Thericles", "wie": "Vader van Corinna.", "waar": "Estoria", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
-    { "naam": "Loreus (Lorius)", "wie": "Een satyr, door Corinna genoemd in verband met de tempel.", "waar": "Onbekend", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
-    { "naam": "Demetria", "wie": "Een vrouw, door Corinna genoemd in verband met de tempel.", "waar": "Onbekend", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 4" },
-    { "naam": "Sydon", "wie": "Titan, Lord of Storms. Houdt de regen boven Estoria tegen. Zijn priesters, hoplites, cyclopen en centauren zitten de Zeven dwars.", "waar": "Praxys, zijn vesting", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 1" },
-    { "naam": "Lutheria", "wie": "Heeft haar eigen plannen. De goatlings dienen haar, en ze wil Orelle dood.", "waar": "Onbekend", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 2" },
+    { "naam": "Lorius (Loreus)", "wie": "Een sater die de Zeven ontmoetten in een groene grot onder de tempel, samen met een nimf en twee andere saters. Waarschuwde voor Demetria en vertelde over haar zus, Estor Arkelander en hoe Demetria bij Lutheria terechtkwam.", "waar": "Mossy Temple", "houding": "vriendelijk", "status": "ontmoet", "eerst": "Sessie 4", "lore": "Nieuwsgierig naar stervelingen, en vooral naar helden." },
+    { "naam": "Demetria", "wie": "Heerst over de Mossy Temple en lokte tieners uit Estoria met beloften van rijkdom, schoonheid en roem. Haar zus stierf toen Estor Arkelander haar heilige boom liet kappen voor een schip; uit rouw werd haat op stervelingen, en zo kwam ze bij Lutheria. Haar magie hangt over het hele complex. Nog niet ontmoet.", "waar": "Ergens in de Mossy Temple", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 4" },
+    { "naam": "Sydon", "wie": "Titan, Lord of Storms. Houdt de regen boven Estoria tegen. Zijn priesters, hoplites, cyclopen en centauren zitten de Zeven dwars. In de Mossy Temple bad Orelle tot hem om de stenen wachters stil te houden.", "waar": "Praxys, zijn vesting", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 1" },
+    { "naam": "Lutheria", "wie": "Heeft haar eigen plannen. De goatlings en de maenads dienen haar, Demetria ook, en ze wil Orelle dood.", "waar": "Onbekend", "houding": "vijandig", "status": "bij naam", "eerst": "Sessie 2" },
     { "naam": "Vallus", "wie": "Goddess of Wisdom, een van de Five Gods. Aan haar werd het zwijn van de eerste jacht geofferd.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 1" },
     { "naam": "Mytros", "wie": "Goddess of Dawn, een van de Five Gods. De stad Mytros draagt haar naam.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" },
     { "naam": "Volkan", "wie": "God of the Forge, een van de Five Gods.", "waar": "Onbekend", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" },
     { "naam": "Balmytria", "wie": "Beroemde zilveren draak die sneuvelde in de strijd tegen de gygans. Van haar hoorn werd de Horn of Balmytria gemaakt.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" },
     { "naam": "Estor", "wie": "Naamgever van de Rock of Estor, waar Anora geofferd moet worden. Meer weten de Zeven nog niet.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 3" },
-    { "naam": "De Dragonlords", "wie": "Drakenrijdende helden uit Thylea's verleden die tegen de Titans vochten. Hun wapens liggen begraven in Telamok. In de Mossy Temple lag een gebroken schild met een (nog onbekende) Dragonlord tegen zesarmige cyclopen.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" },
-    { "naam": "De gygans", "wie": "Oud volk van zesarmige cyclopen dat de Titans diende. Zij bouwden de Mossy Temple, vandaar de reusachtige zalen.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" }
+    { "naam": "Estor Arkelander", "wie": "Dragonlord, afgebeeld op het gebroken bronzen schild in de Mossy Temple met buigende gygans aan zijn voeten. Liet de heilige boom van Demetria's zus kappen om er een schip van te bouwen.", "lore": "Kapitein van de Ultros, het grootste oorlogsschip van de Dragonlords. Hij zou tot in de diepten van de onderwereld gezeild zijn, waar Lutheria slaapt.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 5" },
+    { "naam": "De Dragonlords", "wie": "Drakenrijdende helden uit Thylea's verleden die tegen de Titans vochten. Hun wapens liggen begraven in Telamok. In de Mossy Temple lag een gebroken schild met Estor Arkelander en buigende zesarmige gygans.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" },
+    { "naam": "De gygans", "wie": "Oud volk van zesarmige cyclopen dat de Titans diende. Zij bouwden de Mossy Temple, vandaar de reusachtige zalen. Vier gygan-standbeelden bewaken een trap in de tempel; twee ervan waren gargoyle-wachters.", "waar": "—", "houding": "onbekend", "status": "bij naam", "eerst": "Sessie 2" }
   ],
   "sessies": [
     { "num": "1", "titel": "The Sour Harvest", "tekst": "Zeven vreemden ontmoeten elkaar in de Sour Harvest; een dichteres, in werkelijkheid de godin van de muziek, leidt hen naar het Orakel. Een monsterlijk zwijn sterft met de waarschuwing dat geen profetie hen zal redden, en wordt aan Vallus geofferd. Een mist mephit, vier hoplites van Sydon en zijn priester sneuvelen; de gijzelaars in de tempel zijn vrij." },
     { "num": "2", "titel": "The Oracle's Prophecy", "tekst": "Wauros, een druïde uit de Old Woods, wordt bevrijd uit de handen van Sydons troepen en sluit zich aan. Onder de tempel: geanimeerde zwaarden rond een koperen sleutel, een mimic in de vorm van een deur met Sydons gezicht, een tapijt dat ontsnapt, en de sea hag Heleka. Versi is vrij en spreekt haar voorspellingen uit." },
     { "num": "3", "titel": "The Road to Estoria", "tekst": "Oath of Fellowship. Langs een griffioen geslopen, de cyclopen Misha & Mosho omgepraat, een centaur hero gedood. In Estoria: droogte, offervee, een dronken koning en een prinses die geofferd moet worden. De Horn of Balmytria is gestolen; het spoor van de goatlings leidt naar de Old Woods." },
     { "num": "4", "titel": "Into the Mossy Temple", "tekst": "Corinna gered van zes goatlings die het op Orelle gemunt hadden. Herkus gevangen bij de oude druïdenkring. In de tempel van de gygans: een standbeeld van Sydon met adamantine, een gebroken Dragonlord-schild en de flooded baths, waar roestende oozes en levende wortels verslagen werden. Orelle ging voor de tweede keer neer." },
-    { "num": "5", "titel": "Dieper in de Mossy Temple", "tekst": "Tot aan de Nursing Chamber geraakt. De volledige recap volgt." }
+    { "num": "5", "titel": "Beneath the Mossy Temple", "tekst": "Het gebroken schild toont Estor Arkelander, met buigende gygans aan zijn voeten. Orelles offer en gebed aan Sydon houden twee gargoyle-wachters stil (tot ongenoegen van Kyrah). In de grotten: kruiden en Sunril-bessen geoogst, Sostrates gered van zes goatlings, acht stonede tieners gevonden in een paddenstoelengrot. Lorius vertelt hoe Estor de boom van Demetria's zus liet kappen voor een schip, en hoe haar rouw haar bij Lutheria bracht. In de Nursing Chamber drijven twee maenads Dragini tegen de groep: Orelle, Apollodorus en Sirius gaan neer, maar de Zeven houden stand." }
   ],
   "buit": [
     { "item": "Potion of Healing", "bij": "iedereen (1 per held)", "bron": "Versi, the Oracle" },
@@ -127,6 +138,9 @@
     { "item": "Koperen sleutel", "bij": "Orelle", "bron": "Zaal met de geanimeerde zwaarden" },
     { "item": "Bericht van Sydon aan Heleka", "bij": "party", "bron": "Spullen van Heleka" },
     { "item": "Pike van de centaur hero", "bij": "Orelle", "bron": "Weg naar Estoria" },
-    { "item": "Darmen van de priester (voor luitsnaren)", "bij": "Apollodorus", "bron": "Temple of the Oracle" }
+    { "item": "Darmen van de priester (voor luitsnaren)", "bij": "Apollodorus", "bron": "Temple of the Oracle" },
+    { "item": "Madon-paddenstoelen", "bij": "party", "bron": "Paddenstoelengrot, Mossy Temple" },
+    { "item": "Ethereum-planten en aconite", "bij": "party", "bron": "Ondergrondse tuin, Mossy Temple" },
+    { "item": "Sunril-bessen (werken als goodberries; een deel ging op na het gevecht met de maenads)", "bij": "party", "bron": "Ondergrondse tuin, Mossy Temple" }
   ]
 }

@@ -1,4 +1,4 @@
-var CACHE='odl-shell-v8';
+var CACHE='odl-shell-v9';
 var SHELL=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',function(e){

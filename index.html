@@ -238,6 +238,48 @@
   .cm:last-child { border-bottom:none; }
   .hint { font-size:12px; color:var(--text3); line-height:1.5; margin-top:4px; }
   @media (max-width:560px){ .header { flex-wrap:wrap; } .tabs { overflow-x:auto; } }
+
+  /* ---- NAVIGATIE (fase 4) ---- */
+  .top { display:flex; align-items:center; gap:20px; }
+  .brand { display:flex; flex-direction:column; gap:1px; min-width:170px; }
+  .brand h1 { font-family:var(--font-titel); font-size:22px; font-weight:700; color:var(--zee); margin:0; }
+  .brand span { font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--inkt3); }
+  .nav { display:flex; gap:4px; flex:1; justify-content:center; }
+  .nav .tab { height:44px; padding:0 16px; border-radius:22px; display:flex; align-items:center; gap:8px; font-size:15px; font-weight:500; color:var(--inkt2); background:transparent; border:0; margin:0; }
+  .nav .tab:hover { background:var(--vlak2); color:var(--inkt); }
+  .nav .tab.on { background:var(--zee); color:var(--zee-op); font-weight:600; }
+  .topr { display:flex; align-items:center; gap:6px; position:relative; }
+  .sync { height:44px; padding:0 14px; border-radius:22px; border:1px solid var(--lijn); background:var(--grond); display:flex; align-items:center; gap:8px; font-size:13px; color:var(--inkt); cursor:pointer; font-family:inherit; text-align:left; }
+  .sync .dot { width:9px; height:9px; border-radius:50%; background:var(--fout); flex:none; }
+  .sync.ok .dot { background:var(--bewaard); } .sync.pend .dot, .sync.busy .dot, .sync.warn .dot { background:var(--wacht); }
+  .sync .sl { display:flex; flex-direction:column; line-height:1.15; }
+  .sync strong { font-weight:600; } .sync small { font-size:12px; color:var(--inkt3); }
+  .syncmenu { position:absolute; right:0; top:52px; z-index:60; background:var(--vlak); border:1px solid var(--lijn); border-radius:12px; box-shadow:var(--schaduw); padding:6px; display:flex; flex-direction:column; min-width:220px; }
+  .syncmenu[hidden] { display:none; }
+  .syncmenu button, .syncmenu label { min-height:44px; border:0; background:transparent; text-align:left; padding:0 12px; border-radius:8px; font-size:14px; color:var(--inkt); cursor:pointer; display:flex; align-items:center; margin:0; font-family:inherit; }
+  .syncmenu button:hover, .syncmenu label:hover { background:var(--vlak2); }
+  .vh-zoom { margin-bottom:12px; }
+  .ms-strip { display:flex; flex-wrap:wrap; gap:6px; margin:-4px 0 10px; }
+  .ms-chip { min-height:40px; border-radius:10px; padding:4px 10px; border:1px solid var(--lijn-sterk); background:var(--vlak); color:var(--inkt2); font-size:13px; cursor:pointer; text-align:left; display:flex; align-items:center; gap:8px; font-family:inherit; }
+  .ms-chip b { font-size:15px; min-width:20px; }
+  .ms-chip.done { background:var(--check-bg); border-color:var(--check-bd); color:var(--check-tx); }
+  .ms-chip.next { background:var(--nu-bg); border:1px dashed var(--wacht); color:var(--vertel-tx); }
+  .npc-flits { box-shadow:0 0 0 3px var(--zee) !important; transition:box-shadow .3s; }
+  .vh-npc { background:none; border:0; padding:0; font:inherit; font-weight:650; color:var(--zee) !important; text-decoration:underline; cursor:pointer; min-height:32px; }
+  @media (max-width:1100px) { .nav .tab { padding:0 12px; } .brand { min-width:0; } }
+  @media (max-width:900px) {
+    .top { gap:10px; }
+    .brand span { display:none; }
+    .nav { position:fixed; left:0; right:0; bottom:0; z-index:50; height:68px; display:grid; grid-template-columns:repeat(5,1fr); gap:0; background:var(--vlak); border-top:1px solid var(--lijn); padding-bottom:env(safe-area-inset-bottom); }
+    .nav .tab { height:100%; border-radius:0; flex-direction:column; justify-content:center; gap:3px; font-size:12px; padding:0; border-top:3px solid transparent; }
+    .nav .tab .ico { width:22px; height:22px; }
+    .nav .tab.on { background:transparent; color:var(--zee); border-top-color:var(--zee); }
+    .topr { margin-left:auto; }
+    body { padding-bottom:76px; }
+    .fz-toast { bottom:84px; }
+  }
+  @media (max-width:520px) { .sync .sl small { display:none; } .sync { padding:0 10px; } }
+  /* ---- END NAVIGATIE ---- */
   /* ---- VERHAAL ---- (herontwerp fase 1–2) */
   body.vh-wide .wrap { max-width:1400px; }
   #tab-verhaal, #tab-draden { background:var(--grond); color:var(--inkt); border-radius:16px; padding:14px; font-family:var(--font-tekst); }
@@ -458,19 +500,29 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="header">
-    <h1>De Zeven</h1>
-    <span>DM · Odyssey of the Dragonlords</span>
-    <div style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+  <header class="top">
+    <div class="brand"><h1>De Zeven</h1><span>DM · Odyssey of the Dragonlords</span></div>
+    <nav class="nav" id="nav" aria-label="Hoofdmenu">
+      <button class="tab" id="tb-verhaal" onclick="ST('verhaal')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h11"/></svg><span>Verhaal</span></button>
+      <button class="tab" id="tb-draden" onclick="ST('draden')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h4l4 6h10M3 18h4l4-6M15 6h6M15 18h6"/></svg><span>Draden</span></button>
+      <button class="tab" id="tb-combat" onclick="ST('combat')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/></svg><span>Gevecht</span></button>
+      <button class="tab" id="tb-personen" onclick="ST('personen')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg><span>Personen</span></button>
+      <button class="tab" id="tb-sessions" onclick="ST('sessions')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 7h6M9 11h6"/></svg><span>Logboek</span></button>
+    </nav>
+    <div class="topr">
+      <button class="sync off" id="syncPill" onclick="syncKlik(event)" aria-haspopup="true"><i class="dot"></i><span class="sl"><strong id="sync1">Niet verbonden</strong><small id="sync2">tik om te koppelen</small></span></button>
+      <button class="thema" onclick="zoekKnop()" aria-label="Zoeken" title="Zoeken in het verhaal"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
       <button class="thema" id="themaKnop" onclick="themaWissel()" aria-label="Donkere modus"></button>
-      <button class="sync-pill off" id="syncPill" onclick="ghSyncNow()" title="Nu opslaan naar GitHub">Niet verbonden</button>
-      <button class="btn s" onclick="ghCheck(true)" title="Haal de versie van GitHub op">↻ Ophalen</button>
-      <button class="btn s" onclick="ghHistory()">Geschiedenis</button>
-      <button class="btn s" onclick="ghOpenCfg()">Verbinding</button>
-      <button class="btn s" onclick="exportData()" title="Download je data als JSON-bestand">⬇ Export</button>
-      <label class="btn s" style="cursor:pointer;margin:0;" title="Laad een eerder geëxporteerd JSON-bestand">⬆ Import<input type="file" accept=".json" onchange="importData(event)" style="display:none;"></label>
+      <div class="syncmenu" id="syncMenu" hidden>
+        <button onclick="syncMenuDicht();ghSyncNow()">Nu bewaren</button>
+        <button onclick="syncMenuDicht();ghCheck(true)">Ophalen van GitHub</button>
+        <button onclick="syncMenuDicht();ghHistory()">Geschiedenis</button>
+        <button onclick="syncMenuDicht();ghOpenCfg()">Verbinding</button>
+        <button onclick="syncMenuDicht();exportData()">Exporteren (JSON)</button>
+        <label>Importeren (JSON)<input type="file" accept=".json" onchange="syncMenuDicht();importData(event)" style="display:none;"></label>
+      </div>
     </div>
-  </div>
+  </header>
   <svg class="meander" aria-hidden="true" preserveAspectRatio="none"><defs><pattern id="meander" width="20" height="12" patternUnits="userSpaceOnUse"><path d="M0 11.25H20M2 11.25V1H16V8H7V4H12" style="fill:none;stroke:var(--zee);stroke-width:1.4"/></pattern></defs><rect width="100%" height="12" fill="url(#meander)"/></svg>
   <div id="ghNotice" class="notice"></div>
   <div id="ghCfg" class="card" style="display:none;">
@@ -496,135 +548,113 @@
     <div class="hint" style="margin-bottom:4px;">Elke opslag is een aparte versie. Terugzetten maakt een nieuwe versie bovenop — er gaat niets verloren.</div>
     <div id="ghHistList"></div>
   </div>
-  <div class="tabs">
-    <button class="tab on" id="tb-characters" onclick="ST('characters')">Players</button>
-    <button class="tab" id="tb-campaign" onclick="ST('campaign')">Campaign</button>
-    <button class="tab" id="tb-verhaal" onclick="ST('verhaal')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h11"/></svg>Verhaal</button>
-    <button class="tab" id="tb-milestones" onclick="ST('milestones')">Milestones</button>
-    <button class="tab" id="tb-npcs" onclick="ST('npcs')">NPCs</button>
-    <button class="tab" id="tb-draden" onclick="ST('draden')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h4l4 6h10M3 18h4l4-6M15 6h6M15 18h6"/></svg>Draden</button>
-    <button class="tab" id="tb-sessions" onclick="ST('sessions')">Sessions</button>
-    <button class="tab" id="tb-combat" onclick="ST('combat')"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/></svg>Combat</button>
-  </div>
 
-  <!-- PLAYERS -->
-  <div id="tab-characters" class="sec on">
-    <h2>Player Characters</h2>
-    <div id="pgrid" class="g2"></div>
+  <!-- PERSONEN -->
+  <div id="tab-personen" class="sec">
+    <div class="row" style="margin-bottom:12px;flex-wrap:wrap;gap:12px;">
+      <h2 style="margin:0;">Personen</h2>
+      <div class="vh-seg" role="group" aria-label="Wie"><button id="ps-helden" class="open" onclick="persView('helden')">Helden</button><button id="ps-npc" class="open" onclick="persView('npc')">NPC's</button></div>
+      <button class="btn s p mla" id="ps-add" onclick="openNF(-1)">+ NPC toevoegen</button>
+    </div>
+    <div id="pers-helden">
+      <div id="pgrid" class="g2"></div>
     <div id="pedit" class="card" style="display:none;">
-      <h3 id="pe-title">Edit</h3>
+      <h3 id="pe-title">Bewerken</h3>
       <div class="g2" style="margin-top:10px;">
-        <div><label>Player</label><input id="pe-player"/></div>
-        <div><label>Character name</label><input id="pe-name"/></div>
-        <div><label>Class & Level</label><input id="pe-class" placeholder="e.g. Paladin 1"/></div>
-        <div><label>Race</label><input id="pe-race" placeholder="e.g. Thylean Siren"/></div>
-        <div><label>Epic Path</label>
+        <div><label>Speler</label><input id="pe-player"/></div>
+        <div><label>Naam van het personage</label><input id="pe-name"/></div>
+        <div><label>Klasse en level</label><input id="pe-class" placeholder="bv. Paladin 1"/></div>
+        <div><label>Ras</label><input id="pe-race" placeholder="bv. Thylean Siren"/></div>
+        <div><label>Epic path</label>
           <select id="pe-path">
-            <option value="">— none —</option>
+            <option value="">— geen —</option>
             <option>The Cursed One</option><option>The Demi-God</option><option>The Doomed One</option>
             <option>The Dragonslayer</option><option>The Gifted One</option><option>The Haunted One</option>
             <option>The Lost One</option><option>The Vanished One</option>
           </select>
         </div>
-        <div><label>HP Max</label><input id="pe-hp" type="number"/></div>
+        <div><label>Max HP</label><input id="pe-hp" type="number"/></div>
       </div>
-      <div style="margin-top:10px;"><label>Notes (backstory, oaths, bonds)</label><textarea id="pe-notes"></textarea></div>
+      <div style="margin-top:10px;"><label>Notities (achtergrond, eden, banden)</label><textarea id="pe-notes"></textarea></div>
       <div class="row" style="margin-top:12px;">
-        <button class="btn p" onclick="savePlayer()">Save</button>
-        <button class="btn" onclick="hide('pedit')">Cancel</button>
+        <button class="btn p" onclick="savePlayer()">Bewaren</button>
+        <button class="btn" onclick="hide('pedit')">Annuleren</button>
         <span id="pe-idx" style="display:none;"></span>
       </div>
     </div>
-  </div>
-
-  <!-- CAMPAIGN -->
-  <div id="tab-campaign" class="sec">
-    <div class="leg">
-      <div class="li"><div class="ld" style="background:var(--gray-bg);border:1px solid var(--lijn-sterk);"></div>Not started</div>
-      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px solid var(--amber-bd);"></div>Active</div>
-      <div class="li"><div class="ld" style="background:var(--teal-bg);border:1px solid var(--teal-bd);"></div>Done</div>
-      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px dashed var(--wacht);"></div>Key gate (★)</div>
-      <span style="color:var(--text3);">Click a node to cycle its status</span>
     </div>
-    <div id="tree"></div>
-  </div>
-
-  <!-- MILESTONES -->
-  <div id="tab-milestones" class="sec">
-    <div class="row" style="margin-bottom:6px;">
-      <h2 style="margin:0;">Milestone levels</h2>
-      <span id="ms-cur" class="round-badge mla"></span>
-    </div>
-    <div class="leg">
-      <div class="li"><div class="ld" style="background:var(--teal-bg);border:1px solid var(--teal-bd);"></div>Gehaald</div>
-      <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px dashed var(--wacht);"></div>Eerstvolgende</div>
-      <div class="li"><div class="ld" style="background:var(--bg2);border:1px solid var(--border2);"></div>Nog niet</div>
-      <span style="color:var(--text3);">Tik een mijlpaal om het partijlevel daarop te zetten; nog eens tikken zet het een stap terug. Boek-richtlijn: <i>Milestones and Ideal Levels</i>, p. 27.</span>
-    </div>
-    <div id="mlist"></div>
-  </div>
-
-  <!-- NPCs -->
-  <div id="tab-npcs" class="sec">
-    <div class="row" style="margin-bottom:10px;"><h2 style="margin:0;">NPCs</h2><button class="btn s p mla" onclick="openNF(-1)">+ Add NPC</button></div>
-    <div class="frow" id="nfrow"></div>
+    <div id="pers-npc" style="display:none;">
+      <div class="frow" id="nfrow"></div>
     <div id="nlist"></div>
     <div id="nform" class="card" style="display:none;margin-top:12px;">
-      <h3 id="nf-title">Add NPC</h3>
+      <h3 id="nf-title">NPC toevoegen</h3>
       <div class="g2" style="margin-top:10px;">
-        <div><label>Name</label><input id="nf-name"/></div>
-        <div><label>Role</label><input id="nf-role"/></div>
-        <div><label>Location</label><input id="nf-loc"/></div>
-        <div><label>First appears in</label>
-          <select id="nf-act"><option>Prologue</option><option>Act 1</option><option>Act 2</option><option>Act 3</option><option>Act 4</option><option>Act 5</option></select>
+        <div><label>Naam</label><input id="nf-name"/></div>
+        <div><label>Rol</label><input id="nf-role"/></div>
+        <div><label>Locatie</label><input id="nf-loc"/></div>
+        <div><label>Verschijnt eerst in</label>
+          <select id="nf-act"><option value="Prologue">Proloog</option><option value="Act 1">Akte 1</option><option value="Act 2">Akte 2</option><option value="Act 3">Akte 3</option><option value="Act 4">Akte 4</option><option value="Act 5">Akte 5</option></select>
         </div>
-        <div><label>Disposition</label>
-          <select id="nf-att"><option>Friendly</option><option>Neutral</option><option>Hostile</option><option>Unknown</option></select>
+        <div><label>Houding</label>
+          <select id="nf-att"><option value="Friendly">Vriendelijk</option><option value="Neutral">Neutraal</option><option value="Hostile">Vijandig</option><option value="Unknown">Onbekend</option></select>
         </div>
       </div>
-      <div style="margin-top:10px;"><label>Epic paths connected (comma separated, e.g. "Demi-God, Lost One")</label><input id="nf-paths"/></div>
-      <div style="margin-top:10px;"><label>DM secrets (players don't know this)</label><textarea id="nf-sec"></textarea></div>
+      <div style="margin-top:10px;"><label>Verbonden epic paths (met komma's, bv. "Doomed One, Lost One")</label><input id="nf-paths"/></div>
+      <div style="margin-top:10px;"><label>DM-geheimen (de spelers weten dit niet)</label><textarea id="nf-sec"></textarea></div>
       <div class="row" style="margin-top:12px;">
-        <button class="btn p" onclick="saveNPC()">Save</button>
-        <button class="btn" onclick="hide('nform')">Cancel</button>
+        <button class="btn p" onclick="saveNPC()">Bewaren</button>
+        <button class="btn" onclick="hide('nform')">Annuleren</button>
         <span id="nf-idx" style="display:none;"></span>
       </div>
     </div>
     <div id="nlog" class="card" style="display:none;margin-top:12px;">
-      <div class="row"><h3 id="nl-title" style="margin:0;"></h3><button class="btn s mla" onclick="closeNL()">Close</button></div>
+      <div class="row"><h3 id="nl-title" style="margin:0;"></h3><button class="btn s mla" onclick="closeNL()">Sluiten</button></div>
       <div id="nl-entries" style="margin-top:10px;max-height:220px;overflow-y:auto;"></div>
       <div class="hr"></div>
-      <label>Log interaction</label>
+      <label>Interactie noteren</label>
       <textarea id="nl-input" style="min-height:52px;"></textarea>
       <div class="row" style="margin-top:8px;">
         <select id="nl-player" style="flex:1;font-size:12px;"></select>
-        <button class="btn s p" onclick="addLog()">Log it</button>
+        <button class="btn s p" onclick="addLog()">Noteren</button>
       </div>
+    </div>
     </div>
   </div>
 
   <!-- SESSIONS -->
   <div id="tab-sessions" class="sec">
-    <div class="row"><h2 style="margin:0;">Session Log</h2><button class="btn s p mla" onclick="openSF()">+ New Session</button></div>
+    <div class="row"><h2 style="margin:0;">Logboek</h2><button class="btn s p mla" onclick="openSF()">+ Nieuwe sessie</button></div>
     <div id="slist" style="margin-top:12px;"></div>
     <div id="sform" class="card" style="display:none;margin-top:12px;">
-      <h3 id="sf-title">New Session</h3>
+      <h3 id="sf-title">Nieuwe sessie</h3>
       <div class="g2" style="margin-top:10px;">
-        <div><label>Session #</label><input id="sf-num" type="number"/></div>
-        <div><label>Date</label><input id="sf-date" type="date"/></div>
+        <div><label>Sessie nr.</label><input id="sf-num" type="number"/></div>
+        <div><label>Datum</label><input id="sf-date" type="date"/></div>
       </div>
-      <div style="margin-top:10px;"><label>Summary — what happened</label><textarea id="sf-sum"></textarea></div>
-      <div style="margin-top:10px;"><label>Cliffhanger / open questions for next session</label><textarea id="sf-cliff" style="min-height:48px;"></textarea></div>
-      <div style="margin-top:10px;"><label>DM notes (prep, what worked)</label><textarea id="sf-notes" style="min-height:48px;"></textarea></div>
+      <div style="margin-top:10px;"><label>Samenvatting — wat er gebeurde</label><textarea id="sf-sum"></textarea></div>
+      <div style="margin-top:10px;"><label>Cliffhanger en open vragen voor de volgende sessie</label><textarea id="sf-cliff" style="min-height:48px;"></textarea></div>
+      <div style="margin-top:10px;"><label>DM-notities (prep, wat werkte)</label><textarea id="sf-notes" style="min-height:48px;"></textarea></div>
       <div class="row" style="margin-top:12px;">
-        <button class="btn p" onclick="saveSF()">Save</button>
-        <button class="btn" onclick="hide('sform')">Cancel</button>
+        <button class="btn p" onclick="saveSF()">Bewaren</button>
+        <button class="btn" onclick="hide('sform')">Annuleren</button>
         <span id="sf-idx" style="display:none;"></span>
       </div>
     </div>
   </div>
   <!-- VERHAAL -->
   <div id="tab-verhaal" class="sec">
+    <div class="vh-zoom"><div class="vh-seg" role="group" aria-label="Zoomniveau"><button id="vz-sc" class="open" onclick="vhZoom('scenes')">Scènes</button><button id="vz-ak" class="open" onclick="vhZoom('akte')">Akte-overzicht</button></div></div>
+    <div id="vh-akte" style="display:none;">
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:var(--gray-bg);border:1px solid var(--lijn-sterk);"></div>Nog niet</div>
+        <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px solid var(--amber-bd);"></div>Actief</div>
+        <div class="li"><div class="ld" style="background:var(--teal-bg);border:1px solid var(--teal-bd);"></div>Klaar</div>
+        <div class="li"><div class="ld" style="background:var(--amber-bg);border:1px dashed var(--wacht);"></div>Sleutelmoment (★)</div>
+        <span class="li" style="color:var(--inkt3);">Tik een knoop om de status te wisselen · tik een level om het partijlevel te zetten</span>
+        <span id="ms-cur" class="round-badge mla"></span>
+      </div>
+      <div id="tree"></div>
+    </div>
     <div class="vh-bar">
       <label class="vh-zoek"><svg class="vh-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="vh-q" type="search" placeholder="Zoek scène, NPC, monster" aria-label="Zoek scène, NPC, monster" autocomplete="off"></label>
       <button class="vh-knop" id="vh-open" title="Verberg wat gespeeld of overgeslagen is">Enkel open</button>
@@ -671,22 +701,22 @@
   <!-- COMBAT -->
   <div id="tab-combat" class="sec">
     <div class="row" style="margin-bottom:12px;">
-      <h2 style="margin:0;">Initiative Tracker</h2>
+      <h2 style="margin:0;">Gevecht</h2>
       <span id="round-disp" style="margin-left:8px;"></span>
       <div class="mla" style="display:flex;gap:6px;">
         <button class="btn s p" onclick="nextTurn()"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5l11 7-11 7z"/></svg> Volgende beurt</button>
-        <button class="btn s" onclick="sortByInit()">Sort by init</button>
-        <button class="btn s d" id="clear-btn" onclick="clearCombat()">Clear all</button>
+        <button class="btn s" onclick="sortByInit()">Sorteer op initiative</button>
+        <button class="btn s d" id="clear-btn" onclick="clearCombat()">Alles wissen</button>
       </div>
     </div>
     <div class="card" style="margin-bottom:12px;">
       <div style="display:grid;grid-template-columns:1fr 80px 80px auto;gap:8px;align-items:end;">
-        <div><label>Name</label><input id="ci-name" placeholder="e.g. Goblin Chief"/></div>
+        <div><label>Naam</label><input id="ci-name" placeholder="bv. Goblin Chief"/></div>
         <div><label>Initiative</label><input id="ci-init" type="number" placeholder="14"/></div>
         <div><label>HP</label><input id="ci-hp" type="number" placeholder="30"/></div>
         <div style="padding-bottom:0;display:flex;align-items:flex-end;"><button class="btn p" onclick="addMonster()" style="width:100%;">+ Monster</button></div>
       </div>
-      <button class="btn s" onclick="addAllPlayers()" style="margin-top:10px;width:100%;">+ Add all players (voert initiative in per speler)</button>
+      <button class="btn s" onclick="addAllPlayers()" style="margin-top:10px;width:100%;">+ Alle helden (je vult per speler de initiative in)</button>
     </div>
     <div class="card" id="fz-card" style="margin-bottom:12px;">
       <div class="fz-head">
@@ -1140,7 +1170,7 @@ function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['pl
 function SS(){
   try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Opslaan op dit toestel mislukt: '+e.message);}
   if(typeof ghOn==='function'&&ghOn()&&!ghBooting){
-    setDirty(true);syncStat('busy','Wijzigingen…');
+    setDirty(true);ghPendN++;ghDueAt=Date.now()+8000;syncStat('busy','Wijzigingen…');
     clearTimeout(ghTimer);ghTimer=setTimeout(function(){ghPush();},8000);
   }
 }
@@ -1149,20 +1179,26 @@ function hide(id){document.getElementById(id).style.display='none';}
 function show(id){document.getElementById(id).style.display='block';}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase()||'?';}
 
+var ACT_NL={'All':'Alle','Prologue':'Proloog','Act 1':'Akte 1','Act 2':'Akte 2','Act 3':'Akte 3','Act 4':'Akte 4','Act 5':'Akte 5'};
+var ATT_NL={'Friendly':'Vriendelijk','Neutral':'Neutraal','Hostile':'Vijandig','Unknown':'Onbekend'};
+var TABS=['verhaal','draden','combat','personen','sessions'];
 function ST(t){
+  if(t==='characters'||t==='npcs'){PERS.view=(t==='npcs'?'npc':'helden');persSave();t='personen';}
+  if(t==='campaign'||t==='milestones'){VH.zoom='akte';t='verhaal';}
+  if(t==='threads'){DR.mode='camp';t='draden';}
+  if(TABS.indexOf(t)<0)t='verhaal';
+  syncMenuDicht();
   document.body.classList.remove('vh-wide');
-  ['characters','campaign','verhaal','milestones','npcs','draden','sessions','combat'].forEach(function(x){
+  TABS.forEach(function(x){
     document.getElementById('tab-'+x).classList.remove('on');
     document.getElementById('tb-'+x).classList.remove('on');
   });
   document.getElementById('tab-'+t).classList.add('on');
   document.getElementById('tb-'+t).classList.add('on');
-  if(t==='characters')rP();
-  if(t==='campaign')rC();
+  try{localStorage.setItem('odl-tab',t);}catch(e){}
   if(t==='verhaal')rV();
-  if(t==='milestones')rM();
-  if(t==='npcs')rN();
   if(t==='draden')rD();
+  if(t==='personen')rPers();
   if(t==='sessions')rSes();
   if(t==='combat'){rCombat();rFoes();}
 }
@@ -1176,7 +1212,7 @@ function rP(){
     h+='<div class="av" style="background:'+c.bg+';color:'+c.c+';">'+(hk?hk.charAt(0).toUpperCase()+hk.charAt(1):ini(p.player))+'</div>';
     h+='<div><div style="font-size:14px;font-weight:600;">'+(p.name||'—')+'</div>';
     h+='<div style="font-size:12px;color:var(--text2);">'+p.player+'</div></div></div>';
-    h+='<div style="font-size:13px;color:var(--text2);">'+(p.cls||'Class unknown')+(p.race?' · '+p.race:'')+'</div>';
+    h+='<div style="font-size:13px;color:var(--text2);">'+(p.cls||'Klasse onbekend')+(p.race?' · '+p.race:'')+'</div>';
     if(p.path)h+='<div style="margin-top:6px;"><span class="badge ba">'+p.path+'</span></div>';
     if(p.fame)h+='<div style="margin-top:4px;font-size:12px;color:var(--text3);">Fame: '+p.fame+'</div>';
     h+='</div>';
@@ -1193,7 +1229,7 @@ function eP(i){
   document.getElementById('pe-hp').value=p.hp||'';
   document.getElementById('pe-notes').value=p.notes||'';
   document.getElementById('pe-idx').textContent=i;
-  document.getElementById('pe-title').textContent='Edit — '+p.player;
+  document.getElementById('pe-title').textContent='Bewerken — '+p.player;
   show('pedit');
 }
 function savePlayer(){
@@ -1211,7 +1247,7 @@ function savePlayer(){
 
 function cN(n,extra){
   var st=S.ns[n.id]||'todo';
-  var sl=st==='done'?'Done':st==='active'?'Active':'Not started';
+  var sl=st==='done'?'Klaar':st==='active'?'Actief':'Nog niet';
   var cls='nc'+(st==='active'?' sa':st==='done'?' sd':'')+(n.key?' key':'');
   var stcls=st==='active'?'sa2':st==='done'?'sd2':'st';
   var sh='';
@@ -1272,9 +1308,10 @@ function rC(){
     var pk=['amber','green','teal','blue','coral','red'][i%6];
     h+='<div><div class="ph" style="background:var(--'+pk+'-bg);border-color:var(--'+pk+'-bd);color:var(--'+pk+'-tx);">'
       +'<div class="ph-t">'+ph.lbl+'</div><div class="ph-s">'+ph.sub+'</div></div>'
-      +nh+conn+'</div>';
+      +msStrip(ph.id)+nh+conn+'</div>';
   }
   document.getElementById('tree').innerHTML=h;
+  var mc=document.getElementById('ms-cur');if(mc)mc.textContent='Partijlevel '+curLvl();
 }
 
 function getEPs(){
@@ -1293,11 +1330,11 @@ function epH(paths){
   }
   return h;
 }
-function actH(act){var col=(ACB[act]||'var(--gray-bg)|var(--gray-tx)').split('|');return'<span class="act-b" style="background:'+col[0]+';color:'+col[1]+';">'+act+'</span>';}
+function actH(act){var col=(ACB[act]||'var(--gray-bg)|var(--gray-tx)').split('|');return'<span class="act-b" style="background:'+col[0]+';color:'+col[1]+';">'+(ACT_NL[act]||act)+'</span>';}
 
 function rN(){
   var acts=['All','Prologue','Act 1','Act 2','Act 3','Act 4','Act 5'];
-  var fh='';for(var i=0;i<acts.length;i++){var a=acts[i];fh+='<button class="fb'+(S.nfilt===a?' on':'')+'" onclick="fN(\''+a+'\')">'+a+'</button>';}
+  var fh='';for(var i=0;i<acts.length;i++){var a=acts[i];fh+='<button class="fb'+(S.nfilt===a?' on':'')+'" onclick="fN(\''+a+'\')">'+(ACT_NL[a]||a)+'</button>';}
   document.getElementById('nfrow').innerHTML=fh;
   var eps=getEPs();var h='';
   for(var i=0;i<S.npcs.length;i++){
@@ -1311,20 +1348,20 @@ function rN(){
       else{var parr=n.paths.split(',');for(var j=0;j<parr.length;j++){if(eps[parr[j].trim()])rel=true;}}
     }
     var bord=rel?'border:2px solid var(--amber-bd);':'';
-    h+='<div class="npc-c" style="'+bord+'">';
+    h+='<div class="npc-c" id="npc-'+i+'" style="'+bord+'">';
     h+='<div class="row">';
     h+='<div class="av" style="width:34px;height:34px;font-size:12px;background:'+c.bg+';color:'+c.c+';">'+ini(n.name)+'</div>';
     h+='<div style="flex:1;min-width:0;">';
     h+='<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:2px;">';
     h+='<span style="font-size:13px;font-weight:600;">'+n.name+'</span>';
     h+=actH(n.act||'Act 1');
-    h+='<span class="badge '+ab+'">'+n.att+'</span>';
+    h+='<span class="badge '+ab+'">'+(ATT_NL[n.att]||n.att)+'</span>';
     if(rel)h+='<span style="font-size:12px;color:var(--nu);font-weight:600;">partij-relevant</span>';
     h+='</div>';
     h+='<div style="font-size:12px;color:var(--text2);">'+n.role+(n.loc?' · '+n.loc:'')+'</div>';
     h+='</div>';
     h+='<div style="display:flex;gap:4px;flex-shrink:0;">';
-    h+='<button class="btn s" onclick="oNL('+i+')">Log ('+(n.log||[]).length+')</button>';
+    h+='<button class="btn s" onclick="oNL('+i+')">Notities ('+(n.log||[]).length+')</button>';
     h+='<button class="btn s" onclick="openNF('+i+')">✎</button>';
     h+='<button class="btn s d" onclick="delN('+i+')">✕</button>';
     h+='</div></div>';
@@ -1332,20 +1369,20 @@ function rN(){
     if(n.sec)h+='<div class="sec-box"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> '+n.sec+'</div>';
     h+='</div>';
   }
-  document.getElementById('nlist').innerHTML=h||'<div class="empty">No NPCs for this filter.</div>';
+  document.getElementById('nlist').innerHTML=h||'<div class="empty">Geen NPC\'s voor deze filter.</div>';
 }
 function fN(f){S.nfilt=f;rN();}
 function openNF(i){
   hide('nlog');
   document.getElementById('nf-idx').textContent=i;
   if(i===-1){
-    document.getElementById('nf-title').textContent='Add NPC';
+    document.getElementById('nf-title').textContent='NPC toevoegen';
     ['nf-name','nf-role','nf-loc','nf-paths','nf-sec'].forEach(function(id){document.getElementById(id).value='';});
     document.getElementById('nf-att').value='Neutral';
     document.getElementById('nf-act').value='Act 1';
   } else {
     var n=S.npcs[i];
-    document.getElementById('nf-title').textContent='Edit: '+n.name;
+    document.getElementById('nf-title').textContent='Bewerken: '+n.name;
     document.getElementById('nf-name').value=n.name||'';
     document.getElementById('nf-role').value=n.role||'';
     document.getElementById('nf-loc').value=n.loc||'';
@@ -1365,10 +1402,10 @@ function saveNPC(){
   if(i===-1)S.npcs.push(n);else S.npcs[i]=n;
   SS();hide('nform');rN();
 }
-function delN(i){if(!confirm('Remove '+S.npcs[i].name+'?'))return;S.npcs.splice(i,1);SS();rN();}
+function delN(i){if(!confirm('Verwijderen: '+S.npcs[i].name+'?'))return;S.npcs.splice(i,1);SS();rN();}
 function oNL(i){
   S.nal=i;hide('nform');
-  document.getElementById('nl-title').textContent='Interactions: '+S.npcs[i].name;
+  document.getElementById('nl-title').textContent='Interacties: '+S.npcs[i].name;
   var oh='<option value="Whole party">Hele partij</option>';
   for(var j=0;j<S.players.length;j++){var p=S.players[j];oh+='<option>'+p.player+(p.name?' ('+p.name+')':'')+'</option>';}
   document.getElementById('nl-player').innerHTML=oh;
@@ -1379,11 +1416,11 @@ function rNL(){
   var i=S.nal;if(i<0)return;
   var log=(S.npcs[i]&&S.npcs[i].log)||[];
   var h='';
-  if(!log.length){h='<div class="empty">No interactions yet.</div>';}
+  if(!log.length){h='<div class="empty">Nog geen interacties.</div>';}
   else{var rev=log.slice().reverse();for(var j=0;j<rev.length;j++){var e=rev[j];
     var isP=(e.pl==='Whole party');
     var st=isP?'background:var(--amber-bg);color:var(--amber-tx);border:1px solid var(--amber-bd);font-weight:600;':'background:var(--bg2);';
-    h+='<div class="log-e"><span style="font-size:12px;padding:1px 5px;border-radius:3px;'+st+'margin-right:6px;">'+(isP?e.pl:e.pl)+'</span>'+e.txt+'<br><span style="font-size:12px;color:var(--text3);">'+e.dt+'</span></div>';}}
+    h+='<div class="log-e"><span style="font-size:12px;padding:1px 5px;border-radius:3px;'+st+'margin-right:6px;">'+(isP?'Hele partij':e.pl)+'</span>'+e.txt+'<br><span style="font-size:12px;color:var(--text3);">'+e.dt+'</span></div>';}}
   document.getElementById('nl-entries').innerHTML=h;
 }
 function addLog(){
@@ -1399,7 +1436,7 @@ function curLvl(){var v=parseInt(S.lvl,10);return (v>=1&&v<=20)?v:1;}
 function setLvl(n){
   if(curLvl()===n){n=n-1;}
   S.lvl=Math.max(1,Math.min(20,n));
-  SS();rM();
+  SS();rC();
 }
 function rM(){
   var cur=curLvl(),h='',lastAct='';
@@ -1425,24 +1462,24 @@ function rM(){
 
 function rT(){
   var list=document.getElementById('tlist');
-  if(!S.threads.length){list.innerHTML='<div class="empty">No plot threads yet.</div>';return;}
+  if(!S.threads.length){list.innerHTML='<div class="empty">Nog geen verhaaldraden.</div>';return;}
   var h='';
   for(var i=0;i<S.threads.length;i++){
     var t=S.threads[i];
     var dc=t.status==='active'?'background:var(--wacht);':t.status==='resolved'?'background:var(--gespeeld);':'background:var(--inkt3);';
     var bc=t.status==='active'?'ba':t.status==='resolved'?'bt':'bg';
-    var bl=t.status==='active'?'Active':t.status==='resolved'?'Resolved':'Hidden';
+    var bl=t.status==='active'?'Actief':t.status==='resolved'?'Afgerond':'Verborgen';
     h+='<div class="thread-i">';
     h+='<div class="tdot" style="'+dc+'"></div>';
     h+='<div style="flex:1;">';
     h+='<div class="row" style="margin-bottom:4px;"><span style="font-size:13px;font-weight:600;flex:1;">'+t.title+'</span><span class="badge '+bc+'">'+bl+'</span></div>';
     h+='<p style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:6px;">'+t.desc+'</p>';
-    if(t.con)h+='<div style="font-size:12px;color:var(--coral-tx);background:var(--coral-bg);border-radius:4px;padding:5px 10px;margin-bottom:6px;">⚠ '+t.con+'</div>';
+    if(t.con)h+='<div style="font-size:12px;color:var(--coral-tx);background:var(--coral-bg);border-radius:4px;padding:5px 10px;margin-bottom:6px;"><b>Als ze het negeren</b> · '+t.con+'</div>';
     h+='<div class="row" style="margin-top:6px;">';
     h+='<select onchange="setTS('+i+',this.value)" style="font-size:12px;padding:4px 8px;width:130px;">';
-    h+='<option value="hidden"'+(t.status==='hidden'?' selected':'')+'>Hidden</option>';
-    h+='<option value="active"'+(t.status==='active'?' selected':'')+'>Active</option>';
-    h+='<option value="resolved"'+(t.status==='resolved'?' selected':'')+'>Resolved</option>';
+    h+='<option value="hidden"'+(t.status==='hidden'?' selected':'')+'>Verborgen</option>';
+    h+='<option value="active"'+(t.status==='active'?' selected':'')+'>Actief</option>';
+    h+='<option value="resolved"'+(t.status==='resolved'?' selected':'')+'>Afgerond</option>';
     h+='</select><button class="btn s d mla" onclick="delT('+i+')">✕</button></div></div></div>';
   }
   list.innerHTML=h;
@@ -1464,23 +1501,23 @@ function delT(i){S.threads.splice(i,1);SS();rT();}
 
 function rSes(){
   var list=document.getElementById('slist');
-  if(!S.sessions.length){list.innerHTML='<div class="empty">No sessions logged yet.</div>';return;}
+  if(!S.sessions.length){list.innerHTML='<div class="empty">Nog geen sessies.</div>';return;}
   var h='';var rev=S.sessions.slice().reverse();
   for(var ri=0;ri<rev.length;ri++){
     var s=rev[ri];var i=S.sessions.length-1-ri;
     h+='<div class="card">';
-    h+='<div class="row" style="margin-bottom:8px;"><span style="font-size:14px;font-weight:600;">Session '+s.num+'</span>';
+    h+='<div class="row" style="margin-bottom:8px;"><span style="font-family:var(--font-titel);font-size:18px;font-weight:700;">Sessie '+s.num+'</span>';
     if(s.date)h+='<span style="font-size:12px;color:var(--text2);">'+s.date+'</span>';
     h+='<div class="mla" style="display:flex;gap:8px;"><button class="btn s" onclick="eS('+i+')">✎</button><button class="btn s d" onclick="delS('+i+')">✕</button></div></div>';
     if(s.sum)h+='<p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:10px;">'+s.sum+'</p>';
-    if(s.cliff)h+='<div style="font-size:13px;color:var(--amber-tx);background:var(--amber-bg);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;">▶ '+s.cliff+'</div>';
-    if(s.notes)h+='<div style="font-size:13px;color:var(--text2);background:var(--bg2);border-radius:var(--radius-sm);padding:8px 12px;">📝 '+s.notes+'</div>';
+    if(s.cliff)h+='<div style="font-size:13px;color:var(--amber-tx);background:var(--amber-bg);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:8px;"><b>Cliffhanger</b> · '+s.cliff+'</div>';
+    if(s.notes)h+='<div style="font-size:13px;color:var(--text2);background:var(--bg2);border-radius:var(--radius-sm);padding:8px 12px;"><b>DM</b> · '+s.notes+'</div>';
     h+='</div>';
   }
   list.innerHTML=h;
 }
 function openSF(){
-  document.getElementById('sf-title').textContent='New Session';
+  document.getElementById('sf-title').textContent='Nieuwe sessie';
   document.getElementById('sf-num').value=S.sessions.length+1;
   document.getElementById('sf-date').value=new Date().toISOString().split('T')[0];
   ['sf-sum','sf-cliff','sf-notes'].forEach(function(id){document.getElementById(id).value='';});
@@ -1489,7 +1526,7 @@ function openSF(){
 }
 function eS(i){
   var s=S.sessions[i];
-  document.getElementById('sf-title').textContent='Edit Session '+s.num;
+  document.getElementById('sf-title').textContent='Sessie bewerken '+s.num;
   document.getElementById('sf-num').value=s.num;
   document.getElementById('sf-date').value=s.date||'';
   document.getElementById('sf-sum').value=s.sum||'';
@@ -1784,7 +1821,7 @@ function changeHP(idx,delta){
 function setHP(idx){
   var c=S.combat.combatants[idx];
   if(!c)return;
-  var v=prompt('Set HP for '+c.name+' (max '+c.maxHp+'):',c.hp);
+  var v=prompt('HP voor '+c.name+' (max '+c.maxHp+'):',c.hp);
   if(v===null)return;
   var n=parseInt(v);
   if(isNaN(n))return;
@@ -1803,7 +1840,7 @@ function clearCombat(){
   var btn=document.getElementById('clear-btn');
   if(btn&&btn.dataset.armed==='1'){
     S.combat={combatants:[],current:-1,round:0};
-    btn.textContent='Clear all';
+    btn.textContent='Alles wissen';
     btn.dataset.armed='0';
     SS();rCombat();
   } else if(btn){
@@ -1811,7 +1848,7 @@ function clearCombat(){
     btn.dataset.armed='1';
     setTimeout(function(){
       if(btn.dataset.armed==='1'){
-        btn.textContent='Clear all';
+        btn.textContent='Alles wissen';
         btn.dataset.armed='0';
       }
     },3000);
@@ -1821,7 +1858,7 @@ function clearCombat(){
 function rCombat(){
   var c=S.combat;
   var rd=document.getElementById('round-disp');
-  rd.innerHTML=c.round>0?'<span class="round-badge">Round '+c.round+'</span>':'';
+  rd.innerHTML=c.round>0?'<span class="round-badge">Ronde '+c.round+'</span>':'';
   var list=document.getElementById('combat-list');
   if(!c.combatants.length){list.innerHTML='<div class="empty">Nog niemand in de tracker. Voeg spelers toe, of tik + op een kaartje hierboven.</div>';return;}
   var h='';
@@ -1951,7 +1988,18 @@ function vhLoad(force){
     if(!VH.d){var l=vhEl('vh-list');if(l)l.innerHTML='<div class="vh-empty">Kon het verhaal niet laden: '+vhE(err.message)+'</div>';}
   }).then(function(){VH.busy=false;if(rb)rb.disabled=false;vhAfter();});
 }
-function rV(){document.body.classList.add('vh-wide');vhLoad(false);}
+function vhZoom(z){VH.zoom=z;try{localStorage.setItem('odl-zoom',z);}catch(e){}rV();}
+function rV(){
+  if(!VH.zoom){try{VH.zoom=localStorage.getItem('odl-zoom')||'scenes';}catch(e){VH.zoom='scenes';}}
+  var ak=VH.zoom==='akte';
+  document.getElementById('vz-sc').classList.toggle('on',!ak);document.getElementById('vz-ak').classList.toggle('on',ak);
+  document.getElementById('vh-akte').style.display=ak?'block':'none';
+  ['vh-lay','vh-stand'].forEach(function(id){document.getElementById(id).style.display=ak?'none':'';});
+  document.querySelector('#tab-verhaal .vh-bar').style.display=ak?'none':'';
+  document.body.classList.add('vh-wide');
+  if(ak){rC();return;}
+  vhLoad(false);
+}
 
 /* ---------- status, haken ---------- */
 function vhStatus(s){return vhS().st[s.id]||s.status;}
@@ -2133,7 +2181,7 @@ function vhRenderDetail(){
   var dlgNames=(s.dialoog||[]).map(function(d){return d.wie.replace(/\s*\(.*$/,'');});
   var X={
     kern:s.kern?vhBlk('vh-x','Scène','<p>'+vhTxt(s.kern)+'</p>'):'',
-    dia:(s.dialoog&&s.dialoog.length)?vhBlk('vh-x vh-dlg','Belangrijke dialogen',s.dialoog.map(function(d){return '<b>'+vhE(d.wie)+'</b>'+vhUl(d.kern||[]);}).join('')):'',
+    dia:(s.dialoog&&s.dialoog.length)?vhBlk('vh-x vh-dlg','Belangrijke dialogen',s.dialoog.map(function(d){var ni=npcIdx(d.wie);return (ni>=0?'<b><button class="vh-npc" data-vnpc="'+ni+'" title="Open de NPC-kaart">'+vhE(d.wie)+'</button></b>':'<b>'+vhE(d.wie)+'</b>')+vhUl(d.kern||[]);}).join('')):'',
     buit:(s.buit&&s.buit.length)?vhBlk('vh-x','Buit',vhUl(s.buit)):'',
     dm:(s.dm&&s.dm.length)?vhBlk('vh-x dm',vhIc('lock')+' Enkel voor de DM',vhUl(s.dm)):'',
     bs:(s.open&&s.open.length)?vhBlk('vh-x bs','Nog te beslissen',vhUl(s.open)):''
@@ -2224,6 +2272,7 @@ function vhInit(){
     if(b.dataset.vc!==undefined){vhToCombat(D.byId[VH.sel].vijanden[+b.dataset.vc]);return;}
     if(b.dataset.vfight){vhStartFight();return;}
     if(b.dataset.vdraad){DR.sel=b.dataset.vdraad;drSave();ST('draden');return;}
+    if(b.dataset.vnpc!==undefined){npcOpen(+b.dataset.vnpc);return;}
   });
   root.addEventListener('change',function(ev){
     var t=ev.target;if(t.dataset.vchk===undefined)return;
@@ -2370,7 +2419,20 @@ function ghErr(status,j){
   return (j&&j.message)?j.message:('HTTP '+status);
 }
 
-function syncStat(cls,txt){var e=document.getElementById('syncPill');if(e){e.className='sync-pill '+cls;e.textContent=txt;}}
+var ghPendN=0,ghDueAt=0,ghPendT=null,ghLastOk=null;
+function syncShow(cls,l1,l2){var e=document.getElementById('syncPill');if(!e)return;e.className='sync '+cls;document.getElementById('sync1').textContent=l1;document.getElementById('sync2').textContent=l2;e.title=l1+' — '+l2;}
+function syncStat(cls,txt){
+  if(cls!=='pend'){clearInterval(ghPendT);ghPendT=null;}
+  if(cls==='ok'){ghPendN=0;var mt=String(txt||'').match(/\d{1,2}:\d{2}/);ghLastOk=mt?mt[0]:hhmm(new Date());syncShow('ok','Bewaard','op GitHub · '+ghLastOk);return;}
+  if(cls==='off'){syncShow('off','Niet verbonden','tik om te koppelen');return;}
+  if(cls==='busy'&&/Wijzigingen/.test(txt||'')){syncPend();return;}
+  if(cls==='busy'){syncShow('busy',txt||'Bezig…','GitHub');return;}
+  syncShow(cls,txt||'Let op','tik voor opties');
+}
+function syncPend(){
+  function tick(){var sec=Math.max(0,Math.ceil((ghDueAt-Date.now())/1000));syncShow('pend',ghPendN+(ghPendN===1?' wijziging':' wijzigingen'),sec>0?'bewaren over '+sec+' s':'bewaren…');}
+  tick();if(!ghPendT)ghPendT=setInterval(tick,1000);
+}
 function notice(kind,txt,btns){
   var e=document.getElementById('ghNotice');
   var h='<div>'+ghEsc(txt)+'</div>';
@@ -2441,8 +2503,8 @@ function ghPush(force,cb){
 
 function ghForce(){noticeOff();ghPull(function(d,st){if(st==='error')return;ghPush(true);});}
 function rActive(){
-  var t='characters';
-  ['characters','campaign','verhaal','milestones','npcs','draden','sessions','combat'].forEach(function(x){
+  var t='verhaal';
+  TABS.forEach(function(x){
     var b=document.getElementById('tb-'+x);
     if(b&&b.classList.contains('on'))t=x;
   });
@@ -2636,6 +2698,49 @@ function ghDisconnect(){
 // ---- END GITHUB SYNC ----
 
 
+
+// ---- NAVIGATIE (fase 4) ----
+var PERS={view:'helden'};
+try{PERS.view=localStorage.getItem('odl-personen')||'helden';}catch(e){}
+function persSave(){try{localStorage.setItem('odl-personen',PERS.view);}catch(e){}}
+function persView(v){PERS.view=v;persSave();rPers();}
+function rPers(){
+  var n=PERS.view==='npc';
+  document.getElementById('pers-helden').style.display=n?'none':'block';
+  document.getElementById('pers-npc').style.display=n?'block':'none';
+  document.getElementById('ps-add').style.display=n?'':'none';
+  document.getElementById('ps-helden').classList.toggle('on',!n);
+  document.getElementById('ps-npc').classList.toggle('on',n);
+  if(n)rN();else rP();
+}
+function npcIdx(wie){
+  var k=String(wie||'').replace(/\(.*$/,'').trim().toLowerCase();if(!k)return -1;
+  for(var i=0;i<S.npcs.length;i++){var nm=String(S.npcs[i].name||'').toLowerCase();
+    if(nm===k||nm.indexOf(k+' ')===0||nm.indexOf(k+' (')===0||(k.indexOf(' ')<0&&nm.split(/[^a-zà-ÿ']+/).indexOf(k)>=0))return i;}
+  return -1;
+}
+function npcOpen(i){
+  PERS.view='npc';persSave();S.nfilt='All';ST('personen');
+  setTimeout(function(){var e=document.getElementById('npc-'+i);if(!e)return;e.scrollIntoView({block:'center',behavior:'smooth'});e.classList.add('npc-flits');setTimeout(function(){e.classList.remove('npc-flits');},1600);},60);
+}
+var MS_ACT={P:['Proloog','Prologue'],A1:['Act 1','Act 1→2'],A2:['Act 2'],A3:['Act 3'],A4:['Act 4'],A5:['Act 5']};
+function msStrip(pid){
+  var acts=MS_ACT[pid]||[],cur=curLvl(),h='';
+  MILES.forEach(function(m){if(acts.indexOf(m.act)<0)return;
+    var st=m.lvl<=cur?'done':m.lvl===cur+1?'next':'todo';
+    h+='<button class="ms-chip '+st+'" onclick="setLvl('+m.lvl+')" title="'+ghEsc(m.note||'')+'"><b>'+m.lvl+'</b><span>'+ghEsc(m.t)+(st==='next'?' · eerstvolgende':'')+'</span></button>';});
+  return h?'<div class="ms-strip">'+h+'</div>':'';
+}
+function syncMenuDicht(){var m=document.getElementById('syncMenu');if(m)m.hidden=true;}
+function syncKlik(ev){
+  if(ev)ev.stopPropagation();
+  if(!ghOn()){ghOpenCfg();return;}
+  var m=document.getElementById('syncMenu');m.hidden=!m.hidden;
+}
+document.addEventListener('click',function(e){var m=document.getElementById('syncMenu');if(m&&!m.hidden&&!m.contains(e.target))m.hidden=true;});
+function zoekKnop(){VH.zoom='scenes';VH.sbMode=false;ST('verhaal');setTimeout(function(){var q=document.getElementById('vh-q');if(q){q.focus();q.select();}},50);}
+// ---- END NAVIGATIE ----
+
 // ---- THEMA ----
 function themaDonker(){var t=document.documentElement.getAttribute('data-theme');return t?t==='dark':!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);}
 function themaKnop(){var b=document.getElementById('themaKnop');if(!b)return;var d=themaDonker();
@@ -2649,7 +2754,8 @@ ghLoadCfg();
 LS();
 vhInit();
 themaKnop();
-if(/^#verhaal/.test(location.hash)){var _vp=location.hash.split('/')[1];if(_vp){VH.sel=decodeURIComponent(_vp);VH.fromHash=true;}ST('verhaal');}else rP();
+if(/^#verhaal/.test(location.hash)){var _vp=location.hash.split('/')[1];if(_vp){VH.sel=decodeURIComponent(_vp);VH.fromHash=true;}VH.zoom='scenes';ST('verhaal');}
+else{var _lt='verhaal';try{_lt=localStorage.getItem('odl-tab')||'verhaal';}catch(e){}ST(_lt);}
 ghBoot();
 
 if(navigator.storage&&navigator.storage.persist){navigator.storage.persist();}

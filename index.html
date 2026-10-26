@@ -179,102 +179,273 @@
   .cm:last-child { border-bottom:none; }
   .hint { font-size:11px; color:var(--text3); line-height:1.5; margin-top:4px; }
   @media (max-width:560px){ .header { flex-wrap:wrap; } .tabs { overflow-x:auto; } }
-  /* ---- VERHAAL ---- */
-  body.vh-wide .wrap { max-width: 1400px; }
-  .vh-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; }
-  .vh-bar input { flex:1 1 200px; min-width:140px; width:auto; }
-  .vh-bar .btn.on { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
-  .vh-stand { font-size:12px; color:var(--text3); margin-bottom:10px; }
-  .vh-lay { display:grid; grid-template-columns:390px 1fr; gap:14px; align-items:start; }
-  .vh-list { max-height:calc(100vh - 150px); overflow-y:auto; padding-right:4px; position:sticky; top:8px; }
-  .vh-det { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px 30px; min-height:300px; }
-  .vh-empty { color:var(--text3); padding:30px 10px; text-align:center; font-size:13px; }
-  .vh-act > button { width:100%; text-align:left; background:none; border:none; padding:10px 4px 6px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); display:flex; gap:8px; align-items:center; cursor:pointer; font-family:inherit; }
-  .vh-cnt { margin-left:auto; font-weight:400; letter-spacing:0; text-transform:none; color:var(--text3); font-size:12px; }
-  .vh-grp { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:8px; overflow:hidden; }
-  .vh-gh { width:100%; text-align:left; background:none; border:none; padding:10px 12px; display:block; cursor:pointer; font-family:inherit; color:var(--text); }
-  .vh-gt { font-size:14px; font-weight:600; display:flex; gap:8px; align-items:center; }
-  .vh-gs { font-size:12px; color:var(--text3); margin-top:2px; }
-  .vh-grp.grof .vh-gt::after { content:'grof'; font-size:10px; font-weight:600; padding:1px 6px; border-radius:99px; background:var(--gray-bg); color:var(--gray-tx); }
-  .vh-kop { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text3); padding:10px 12px 4px; border-top:1px solid var(--border); }
-  .vh-row { width:100%; text-align:left; background:none; border:none; border-top:1px solid var(--border); padding:9px 12px; display:flex; gap:10px; align-items:flex-start; min-height:44px; cursor:pointer; font-family:inherit; color:var(--text); }
-  .vh-row:hover { background:var(--bg2); }
-  .vh-row.sel { background:var(--amber-bg); }
-  .vh-dot { flex:0 0 10px; height:10px; border-radius:50%; margin-top:6px; border:2px solid var(--text3); }
-  .vh-dot.klaar { background:#27500A; border-color:#27500A; }
-  .vh-dot.nu { background:#854F0B; border-color:#854F0B; box-shadow:0 0 0 3px var(--amber-bd); }
-  .vh-dot.open { border-color:#185FA5; }
-  .vh-dot.optie { border-style:dashed; }
-  .vh-dot.later { border-color:var(--border2); }
-  .vh-dot.skip { background:var(--border2); border-color:var(--border2); }
-  .vh-rt { flex:1; min-width:0; }
-  .vh-rn { font-size:14px; font-weight:500; }
-  .vh-row.klaar .vh-rn, .vh-row.skip .vh-rn { color:var(--text3); }
-  .vh-row.skip .vh-rn { text-decoration:line-through; }
-  .vh-rw { font-size:12px; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .vh-rb { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; flex:0 0 auto; max-width:110px; }
-  .vh-tag { font-size:10.5px; font-weight:600; padding:2px 6px; border-radius:99px; background:var(--gray-bg); color:var(--gray-tx); white-space:nowrap; }
-  .vh-tag.gevecht { background:var(--red-bg); color:var(--red-tx); } .vh-tag.sociaal { background:var(--blue-bg); color:var(--blue-tx); }
-  .vh-tag.val { background:var(--coral-bg); color:var(--coral-tx); } .vh-tag.keuze { background:var(--purple-bg); color:var(--purple-tx); }
-  .vh-tag.beloning { background:var(--green-bg); color:var(--green-tx); } .vh-tag.ster { background:var(--amber-bg); color:var(--amber-tx); }
-  .vh-fork { padding:8px 10px 10px; background:var(--bg2); }
-  .vh-fork .fl { font-size:12px; color:var(--text2); margin-bottom:6px; }
+  /* ---- VERHAAL ---- (herontwerp fase 1–2) */
+  :root{
+    --font-titel:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,'Noto Serif',serif;
+    --font-tekst:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    --grond:#F3ECDD; --vlak:#FBF7EE; --vlak2:#EFE6D3; --lijn:#DED2BC; --lijn-zacht:#EEE5D3; --kaart:#FFFFFF;
+    --inkt:#2A2520; --inkt2:#5C5247; --inkt3:#6E6254;
+    --zee:#1F5560; --zee-op:#FBF7EE; --start-bg:#E3EDEC; --start-tx:#17323A;
+    --nu:#9A6410; --nu-op:#FFF8EC; --nu-bg:#F6E3BD;
+    --vertel-bg:#F6E3BD; --vertel-tx:#3D2803; --vertel-kop:#6A4306;
+    --check-bg:#DCEBE6; --check-tx:#12332E; --check-kop:#13453F;
+    --vijand-bg:#FAEDE6; --vijand-bd:#E6CFC4; --vijand-tx:#7A2E17; --vijand-knop:#8A2E17; --vijand-op:#FFF6F1;
+    --geheim-bg:#F6E4E3; --geheim-bd:#E2BFC0; --geheim-tx:#7A1F24;
+    --beslis-bg:#F3E6CC; --beslis-tx:#5C4410;
+    --voorstel-tx:#5B3F86; --voorstel-bd:#8B72B5;
+    --gespeeld:#2E6B4F; --bewaard:#2E7D4F; --wacht:#B9770E;
+    --t-soc-bg:#E2ECF3; --t-soc-tx:#1F4A6B; --t-keu-bg:#ECE6F4; --t-keu-tx:#4B3575; --t-gev-bg:#F5DED4; --t-gev-tx:#7A2E17;
+    --t-val-bg:#F6E1CF; --t-val-tx:#7A3C12; --t-bel-bg:#DDEBDD; --t-bel-tx:#24502F; --t-and-bg:#EAE2D2; --t-and-tx:#4A4138;
+    --h-orelle:#B0432A; --h-kyrenos:#8F6208; --h-dragini:#6A4C93; --h-apollodorus:#2F6690;
+    --h-sirius:#1C7568; --h-ox:#5B7A22; --h-wauros:#A23A6E; --h-op:#FFFFFF;
+  }
+  :root[data-theme="dark"]{
+    --grond:#12181B; --vlak:#1A2226; --vlak2:#222C31; --lijn:#2E3A40; --lijn-zacht:#26323A; --kaart:#1F292E;
+    --inkt:#EDE4D3; --inkt2:#C2B6A3; --inkt3:#9A8F7E;
+    --zee:#7FC1C4; --zee-op:#0E1F22; --start-bg:#17303A; --start-tx:#E3F0F0;
+    --nu:#E0A955; --nu-op:#2A1C05; --nu-bg:#3A2C12;
+    --vertel-bg:#3A2C12; --vertel-tx:#F7E3BA; --vertel-kop:#E8B964;
+    --check-bg:#15322E; --check-tx:#D5EEE7; --check-kop:#8FD3C2;
+    --vijand-bg:#26191A; --vijand-bd:#4A2C23; --vijand-tx:#F2B7A2; --vijand-knop:#EE9F85; --vijand-op:#26191A;
+    --geheim-bg:#2C1719; --geheim-bd:#5A2A2D; --geheim-tx:#F0B2B5;
+    --beslis-bg:#2A2213; --beslis-tx:#EBC985;
+    --voorstel-tx:#C9B5F0; --voorstel-bd:#8B72B5;
+    --gespeeld:#7CC79B; --bewaard:#6CC08F; --wacht:#E0A955;
+    --t-soc-bg:#1B2A38; --t-soc-tx:#A9CBE6; --t-keu-bg:#2A2440; --t-keu-tx:#CBBDF0; --t-gev-bg:#3A1F1A; --t-gev-tx:#F2B7A2;
+    --t-val-bg:#3A2716; --t-val-tx:#F0C49A; --t-bel-bg:#1C3324; --t-bel-tx:#A9D9B5; --t-and-bg:#2A3236; --t-and-tx:#C2B6A3;
+    --h-orelle:#F08C6E; --h-kyrenos:#E8B64E; --h-dragini:#B9A0E6; --h-apollodorus:#8DBDE6;
+    --h-sirius:#74CDBE; --h-ox:#A9C96B; --h-wauros:#E991BE; --h-op:#12181B;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --grond:#12181B; --vlak:#1A2226; --vlak2:#222C31; --lijn:#2E3A40; --lijn-zacht:#26323A; --kaart:#1F292E;
+    --inkt:#EDE4D3; --inkt2:#C2B6A3; --inkt3:#9A8F7E;
+    --zee:#7FC1C4; --zee-op:#0E1F22; --start-bg:#17303A; --start-tx:#E3F0F0;
+    --nu:#E0A955; --nu-op:#2A1C05; --nu-bg:#3A2C12;
+    --vertel-bg:#3A2C12; --vertel-tx:#F7E3BA; --vertel-kop:#E8B964;
+    --check-bg:#15322E; --check-tx:#D5EEE7; --check-kop:#8FD3C2;
+    --vijand-bg:#26191A; --vijand-bd:#4A2C23; --vijand-tx:#F2B7A2; --vijand-knop:#EE9F85; --vijand-op:#26191A;
+    --geheim-bg:#2C1719; --geheim-bd:#5A2A2D; --geheim-tx:#F0B2B5;
+    --beslis-bg:#2A2213; --beslis-tx:#EBC985;
+    --voorstel-tx:#C9B5F0; --voorstel-bd:#8B72B5;
+    --gespeeld:#7CC79B; --bewaard:#6CC08F; --wacht:#E0A955;
+    --t-soc-bg:#1B2A38; --t-soc-tx:#A9CBE6; --t-keu-bg:#2A2440; --t-keu-tx:#CBBDF0; --t-gev-bg:#3A1F1A; --t-gev-tx:#F2B7A2;
+    --t-val-bg:#3A2716; --t-val-tx:#F0C49A; --t-bel-bg:#1C3324; --t-bel-tx:#A9D9B5; --t-and-bg:#2A3236; --t-and-tx:#C2B6A3;
+    --h-orelle:#F08C6E; --h-kyrenos:#E8B64E; --h-dragini:#B9A0E6; --h-apollodorus:#8DBDE6;
+    --h-sirius:#74CDBE; --h-ox:#A9C96B; --h-wauros:#E991BE; --h-op:#12181B;
+  }}
+  body.vh-wide .wrap { max-width:1400px; }
+  #tab-verhaal, #tab-draden { background:var(--grond); color:var(--inkt); border-radius:16px; padding:14px; font-family:var(--font-tekst); }
+  #tab-verhaal button, #tab-draden button { font-family:inherit; color:inherit; cursor:pointer; }
+  .vh-svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+  .vh-kop2 { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
+  .vh-bar { display:flex; gap:8px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
+  .vh-zoek { flex:1 1 200px; height:44px; box-sizing:border-box; border:1px solid var(--lijn); border-radius:10px; background:var(--vlak); display:flex; align-items:center; gap:8px; padding:0 12px; color:var(--inkt3); }
+  .vh-zoek input { border:0; background:transparent; outline:none; flex:1; font-size:15px; color:var(--inkt); padding:0; width:auto; }
+  .vh-knop { height:44px; padding:0 14px; border-radius:10px; border:1px solid var(--lijn); background:var(--vlak); font-size:14px; white-space:nowrap; display:inline-flex; align-items:center; gap:8px; }
+  .vh-knop.on { background:var(--zee); color:var(--zee-op) !important; border-color:var(--zee); }
+  .vh-stand { font-size:12px; color:var(--inkt3); margin:0 2px 10px; }
+  .vh-lay { display:grid; grid-template-columns:400px minmax(0,1fr); gap:20px; align-items:start; }
+  .vh-list { max-height:calc(100vh - 150px); overflow-y:auto; position:sticky; top:8px; display:flex; flex-direction:column; gap:12px; padding-right:2px; }
+  .vh-list > * { flex:none; }
+  .vh-empty { color:var(--inkt3); padding:30px 10px; text-align:center; font-size:14px; }
+  .vh-akte { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:4px 4px 0; background:none; border:0; width:100%; text-align:left; min-height:32px; }
+  .vh-akte b { font-family:var(--font-titel); font-size:13px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--zee); }
+  .vh-akte span { font-size:13px; color:var(--inkt3); }
+  .vh-gesp { min-height:48px; padding:0 14px; border-radius:12px; border:1px solid var(--lijn); background:var(--vlak2); display:flex; align-items:center; gap:10px; text-align:left; width:100%; }
+  .vh-gesp .t { flex:1; font-size:15px; font-weight:600; color:var(--inkt2); }
+  .vh-gesp .g { font-size:13px; color:var(--gespeeld); font-weight:600; }
+  .vh-grp { background:var(--vlak); border:1px solid var(--lijn); border-radius:14px; overflow:hidden; }
+  .vh-gh { padding:12px 14px 10px; display:flex; align-items:center; gap:10px; width:100%; background:none; border:0; text-align:left; }
+  .vh-gh .gt { font-family:var(--font-titel); font-size:18px; font-weight:700; }
+  .vh-gh .gs { font-size:12px; color:var(--inkt3); margin-top:2px; }
+  .vh-gh .gc { font-size:13px; color:var(--inkt3); margin-left:auto; align-self:flex-start; padding-top:3px; }
+  .vh-kop { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--inkt3); padding:10px 14px 4px; border-top:1px solid var(--lijn-zacht); }
+  .vh-fork { padding:10px 14px; border-top:1px solid var(--lijn-zacht); background:var(--vlak2); }
+  .vh-fork .fl { font-size:12px; color:var(--inkt2); margin-bottom:6px; }
   .vh-fork .ft { display:flex; gap:6px; flex-wrap:wrap; }
-  .vh-dh { display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-bottom:6px; }
-  .vh-dh h2 { font-size:20px; line-height:1.25; flex:1 1 260px; margin:0; }
-  .vh-back { display:none; }
-  .vh-meta { font-size:13px; color:var(--text2); margin-bottom:12px; display:flex; flex-wrap:wrap; gap:6px 14px; }
-  .vh-meta b { color:var(--text); font-weight:600; }
-  .vh-stat { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
-  .vh-stat .btn.on { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
-  .vh-stat .btn.on.klaar { background:var(--green-bg); border-color:var(--green-bd); color:var(--green-tx); }
-  .vh-stat .btn.on.open { background:var(--blue-bg); border-color:var(--blue-bd); color:var(--blue-tx); }
-  .vh-stat .btn.on.skip, .vh-stat .btn.on.optie { background:var(--gray-bg); color:var(--gray-tx); }
-  .vh-sec { border-left:4px solid var(--border2); background:var(--bg2); border-radius:0 var(--radius) var(--radius) 0; padding:10px 14px; margin-bottom:12px; font-size:14.5px; line-height:1.5; }
-  .vh-sec h3 { font-size:11.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text2); margin-bottom:6px; }
-  .vh-sec.kern { border-color:#854F0B; } .vh-sec.kern p { font-size:15px; }
-  .vh-sec.zeg { border-color:var(--amber-bd); background:var(--amber-bg); color:var(--amber-tx); } .vh-sec.zeg h3 { color:var(--amber-tx); } .vh-sec.zeg li { font-weight:500; }
-  .vh-sec.dia { border-color:var(--blue-bd); } .vh-sec.doen { border-color:var(--teal-bd); }
-  .vh-sec.vij { border-color:var(--red-bd); } .vh-sec.buit { border-color:var(--green-bd); }
-  .vh-sec.haken { border-color:var(--purple-bd); }
-  .vh-sec.dm { border-color:var(--red-tx); background:var(--red-bg); color:var(--red-tx); } .vh-sec.dm h3 { color:var(--red-tx); }
-  .vh-sec.open { border-color:#EF9F27; background:var(--amber-bg); color:var(--amber-tx); } .vh-sec.open h3 { color:var(--amber-tx); }
-  .vh-sec ul { padding-left:18px; } .vh-sec li { margin:3px 0; }
-  .vh-dlg { margin:6px 0 10px; } .vh-dlg .who { font-weight:650; font-size:14px; margin-bottom:2px; }
-  .vh-chk { list-style:none; padding-left:0 !important; }
-  .vh-chk li { display:flex; gap:10px; align-items:flex-start; padding:4px 0; }
-  .vh-chk input { width:20px; height:20px; flex:0 0 20px; margin-top:1px; accent-color:#854F0B; padding:0; }
-  .vh-chk li.done span { color:var(--text3); text-decoration:line-through; }
-  .vh-hk { display:flex; gap:10px; margin:6px 0; }
-  .vh-hk .hn { flex:0 0 112px; font-weight:650; font-size:13.5px; }
-  .vh-hk .hn small { display:block; font-weight:400; color:var(--text3); font-size:11.5px; }
-  .vh-hk .ht { flex:1; }
-  .vh-vs { font-size:10.5px; font-weight:700; padding:1px 6px; border-radius:99px; background:var(--purple-bg); color:var(--purple-tx); margin-right:4px; }
-  .vh-src { font-size:12px; color:var(--text3); margin-top:8px; }
-  .vh-nav { display:flex; gap:8px; justify-content:space-between; margin-top:20px; flex-wrap:wrap; }
-  .vh-foe { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); margin:8px 0; overflow:hidden; }
-  .vh-fh { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:8px 11px; }
-  .vh-fh .fn { font-weight:650; flex:1 1 160px; cursor:pointer; }
-  .vh-fh .fq { font-weight:700; color:var(--red-tx); }
-  .vh-fh .fs { font-size:12.5px; color:var(--text2); white-space:nowrap; }
-  .vh-fnote { font-size:13px; color:var(--text2); padding:0 11px 9px; }
-  .vh-sb { border-top:1px solid var(--border); padding:10px 12px 12px; font-size:13.5px; background:var(--bg); line-height:1.45; }
-  .vh-sb .sbn { font-size:17px; font-weight:700; color:#8C3A1E; font-variant:small-caps; }
-  .vh-sb .sbm { font-style:italic; color:var(--text2); margin-bottom:6px; }
-  .vh-sb hr { border:none; border-top:2px solid var(--red-bd); margin:6px 0; }
+  .vh-row { display:flex; gap:10px; padding:11px 14px; border:0; border-top:1px solid var(--lijn-zacht); width:100%; text-align:left; background:transparent; min-height:44px; }
+  .vh-row:hover { background:var(--vlak2); }
+  .vh-row.sel { background:var(--nu-bg); box-shadow:inset 4px 0 0 var(--nu); }
+  .vh-st { width:22px; flex:none; display:flex; justify-content:center; padding-top:3px; }
+  .vh-st i { display:block; box-sizing:border-box; }
+  .vh-st .klaar { width:14px; height:14px; border-radius:50%; background:var(--gespeeld); position:relative; }
+  .vh-st .klaar::after { content:''; position:absolute; left:4.5px; top:2px; width:3px; height:6px; border:solid var(--vlak); border-width:0 2px 2px 0; transform:rotate(45deg); }
+  .vh-st .nu { width:14px; height:14px; border-radius:50%; background:var(--nu); box-shadow:0 0 0 3px var(--nu-bg); }
+  .vh-row.sel .vh-st .nu { box-shadow:0 0 0 3px var(--vlak); }
+  .vh-st .open { width:12px; height:12px; border-radius:50%; border:2px solid var(--inkt2); }
+  .vh-st .optie { width:12px; height:12px; border-radius:50%; border:2px dashed var(--inkt3); }
+  .vh-st .later { width:7px; height:7px; border-radius:50%; background:var(--inkt3); margin-top:3px; }
+  .vh-st .skip { width:12px; height:12px; border-radius:50%; border:2px solid var(--inkt3); background:linear-gradient(135deg,transparent 44%,var(--inkt3) 44%,var(--inkt3) 56%,transparent 56%); }
+  .vh-rt { flex:1; min-width:0; display:flex; flex-direction:column; gap:3px; }
+  .vh-rn { font-size:15px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vh-row.klaar .vh-rn, .vh-row.skip .vh-rn { color:var(--inkt3); }
+  .vh-row.skip .vh-rn { text-decoration:line-through; }
+  .vh-rs { font-size:12.5px; line-height:1.35; color:var(--inkt2); }
+  .vh-rs b, .vh-start b { color:var(--zee); font-weight:700; }
+  .vh-rm { display:flex; align-items:center; gap:6px; margin-top:2px; min-height:26px; }
+  .vh-tag { font-size:11.5px; font-weight:600; padding:2px 8px; border-radius:999px; background:var(--t-and-bg); color:var(--t-and-tx); white-space:nowrap; }
+  .vh-tag.sociaal { background:var(--t-soc-bg); color:var(--t-soc-tx); } .vh-tag.keuze { background:var(--t-keu-bg); color:var(--t-keu-tx); }
+  .vh-tag.gevecht { background:var(--t-gev-bg); color:var(--t-gev-tx); } .vh-tag.val { background:var(--t-val-bg); color:var(--t-val-tx); }
+  .vh-tag.beloning { background:var(--t-bel-bg); color:var(--t-bel-tx); }
+  .vh-nf { font-size:12px; font-weight:600; color:var(--vijand-knop); display:inline-flex; align-items:center; gap:3px; }
+  .vh-nf svg { width:13px; height:13px; stroke-width:2.2; }
+  .vh-ster { width:13px; height:13px; background:var(--nu); clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); display:inline-block; flex:none; }
+  .vh-mono { width:26px; height:26px; border-radius:50%; color:var(--h-op); font-size:11px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; margin-left:-6px; box-shadow:0 0 0 2px var(--vlak); flex:none; }
+  .vh-row.sel .vh-mono { box-shadow:0 0 0 2px var(--nu-bg); }
+  /* detail */
+  .vh-det { background:var(--vlak); border:1px solid var(--lijn); border-radius:16px; padding:22px 26px 30px; display:flex; flex-direction:column; gap:16px; min-height:300px; }
+  .vh-dh { display:flex; align-items:flex-start; gap:16px; }
+  .vh-dh .vh-bc { font-size:13px; color:var(--inkt3); }
+  .vh-dh h1 { margin:4px 0 0; font-family:var(--font-titel); font-size:30px; line-height:1.15; font-weight:700; }
+  .vh-rond { width:44px; height:44px; border-radius:22px; border:1px solid var(--lijn); background:var(--grond); display:flex; align-items:center; justify-content:center; flex:none; }
+  .vh-rond:disabled { opacity:.35; cursor:default; }
+  .vh-ctrl { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .vh-seg { display:flex; background:var(--vlak2); border-radius:12px; padding:3px; gap:2px; flex-wrap:wrap; }
+  .vh-seg button { height:40px; padding:0 14px; border:0; border-radius:9px; background:transparent; font-size:14px; }
+  .vh-seg button.on { background:var(--inkt2); color:var(--vlak) !important; font-weight:600; }
+  .vh-seg button.on.nu { background:var(--nu); color:var(--nu-op) !important; }
+  .vh-seg button.on.klaar { background:var(--gespeeld); color:var(--vlak) !important; }
+  .vh-seg button.on.open { background:var(--zee); color:var(--zee-op) !important; }
+  .vh-mode { display:flex; border:1px solid var(--zee); border-radius:12px; overflow:hidden; margin-left:auto; }
+  .vh-mode button { height:40px; padding:0 14px; border:0; background:transparent; color:var(--zee) !important; font-size:14px; }
+  .vh-mode button.on { background:var(--zee); color:var(--zee-op) !important; font-weight:600; }
+  .vh-blk { border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; font-size:15px; line-height:1.45; }
+  .vh-blk ul { margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px; }
+  .vh-blk p { margin:0; }
+  .vh-start { flex-direction:row; gap:14px; background:var(--start-bg); color:var(--start-tx); }
+  .vh-start .vh-kop2 { color:var(--zee); }
+  .vh-start .tx { font-size:17px; line-height:1.4; }
+  .vh-start svg { width:22px; height:22px; stroke:var(--zee); stroke-width:2; margin-top:2px; }
+  .vh-hkh { display:flex; align-items:baseline; gap:10px; }
+  .vh-hkh .vh-kop2 { color:var(--inkt2); }
+  .vh-link { font-size:13px; font-weight:600; color:var(--zee) !important; background:none; border:0; padding:0; text-decoration:underline; min-height:32px; }
+  .vh-hks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+  .vh-hc { position:relative; display:flex; flex-direction:column; gap:8px; padding:12px; border-radius:12px; background:var(--kaart); border:1px solid var(--lijn); }
+  .vh-hc .top { display:flex; align-items:center; gap:8px; }
+  .vh-hc .m32 { width:32px; height:32px; border-radius:50%; color:var(--h-op); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex:none; }
+  .vh-hc .nm { flex:1; display:flex; flex-direction:column; line-height:1.2; min-width:0; }
+  .vh-hc .nm b { font-size:14px; } .vh-hc .nm small { font-size:11.5px; color:var(--inkt3); }
+  .vh-hc .stp { font-size:12px; font-weight:700; color:var(--inkt2); background:var(--vlak2); border-radius:6px; padding:3px 7px; white-space:nowrap; }
+  .vh-hc .tx { font-size:13.5px; line-height:1.4; color:var(--inkt); }
+  .vh-hc .vh-ster { position:absolute; top:6px; right:6px; width:12px; height:12px; }
+  .vh-vs { font-size:11.5px; font-weight:600; color:var(--voorstel-tx); border:1px dashed var(--voorstel-bd); border-radius:999px; padding:1px 7px; margin-right:5px; white-space:nowrap; }
+  .vh-it { font-size:11.5px; font-weight:600; color:var(--vlak); background:var(--inkt2); border-radius:999px; padding:2px 8px; white-space:nowrap; }
+  .vh-2k { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:start; }
+  .vh-vert { background:var(--vertel-bg); color:var(--vertel-tx); } .vh-vert .vh-kop2 { color:var(--vertel-kop); }
+  .vh-chk { background:var(--check-bg); color:var(--check-tx); } .vh-chk .vh-kop2 { color:var(--check-kop); }
+  .vh-chk label { display:flex; gap:10px; align-items:flex-start; min-height:40px; cursor:pointer; font-size:15px; margin:0; color:inherit; }
+  .vh-chk input { width:22px; height:22px; margin:0; flex:none; accent-color:var(--zee); padding:0; }
+  .vh-chk label.done span { opacity:.6; text-decoration:line-through; }
+  .vh-vijh { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .vh-vijh .vh-kop2 { color:var(--vijand-tx); } .vh-vijh .sub { font-size:13px; color:var(--inkt3); }
+  .vh-startg { height:40px; padding:0 14px; border-radius:10px; background:var(--vijand-knop); color:var(--vijand-op) !important; border:0; font-size:14px; font-weight:600; margin-left:auto; display:inline-flex; align-items:center; gap:8px; }
+  .vh-foes { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .vh-foe { border:1px solid var(--vijand-bd); background:var(--vijand-bg); border-radius:12px; overflow:hidden; }
+  .vh-foe.open { grid-column:1/-1; }
+  .vh-foe .fr { display:flex; align-items:center; gap:12px; padding:10px 12px; }
+  .vh-foe .fn { flex:1; display:flex; flex-direction:column; gap:2px; background:none; border:0; text-align:left; padding:0; min-height:40px; justify-content:center; }
+  .vh-foe .fn strong { font-size:15px; } .vh-foe .fn strong em { font-style:normal; color:var(--vijand-knop); }
+  .vh-foe .fn span { font-size:13px; color:var(--inkt2); }
+  .vh-foe .fno { font-size:13px; color:var(--inkt2); padding:0 12px 10px; }
+  .vh-ini { height:40px; padding:0 12px; border-radius:10px; border:1px solid var(--vijand-bd); background:var(--vlak); font-size:14px; font-weight:600; color:var(--vijand-knop) !important; white-space:nowrap; }
+  .vh-opt { font-size:11px; font-weight:600; color:var(--inkt3); border:1px dashed var(--inkt3); border-radius:999px; padding:1px 7px; margin-left:6px; }
+  .vh-tog { display:flex; gap:8px; flex-wrap:wrap; }
+  .vh-tog button { height:44px; padding:0 14px; border-radius:10px; border:1px solid var(--lijn); background:var(--grond); display:inline-flex; align-items:center; gap:8px; font-size:14px; }
+  .vh-tog button svg { width:16px; height:16px; stroke-width:2; transition:transform .15s; }
+  .vh-tog button.on svg.chev { transform:rotate(90deg); }
+  .vh-tog button.dm { background:var(--geheim-bg); border-color:var(--geheim-bd); color:var(--geheim-tx) !important; font-weight:600; }
+  .vh-tog button.bs { background:var(--beslis-bg); color:var(--beslis-tx) !important; font-weight:600; }
+  .vh-tog .bron { font-size:13px; color:var(--inkt3); align-self:center; padding:0 4px; }
+  .vh-x { background:var(--vlak2); }
+  .vh-x .vh-kop2 { color:var(--inkt2); }
+  .vh-x.dm { background:var(--geheim-bg); color:var(--geheim-tx); } .vh-x.dm .vh-kop2 { color:var(--geheim-tx); }
+  .vh-x.bs { background:var(--beslis-bg); color:var(--beslis-tx); } .vh-x.bs .vh-kop2 { color:var(--beslis-tx); }
+  .vh-dlg b { display:block; font-size:14px; margin:4px 0 2px; }
+  .vh-sb { border-top:1px solid var(--vijand-bd); padding:10px 12px 12px; font-size:13.5px; background:var(--vlak); line-height:1.45; }
+  .vh-sb .sbn { font-family:var(--font-titel); font-size:18px; font-weight:700; color:var(--vijand-tx); }
+  .vh-sb .sbm { font-style:italic; color:var(--inkt2); margin-bottom:6px; }
+  .vh-sb hr { border:none; border-top:2px solid var(--vijand-bd); margin:6px 0; }
   .vh-sb .abil { display:grid; grid-template-columns:repeat(6,1fr); text-align:center; margin:4px 0; }
-  .vh-sb .abil b { display:block; font-size:11px; color:#8C3A1E; }
+  .vh-sb .abil b { display:block; font-size:11px; color:var(--vijand-tx); }
   .vh-sb p { margin:3px 0; }
-  .vh-sb h4 { color:#8C3A1E; border-bottom:1px solid var(--red-bd); margin:8px 0 4px; font-variant:small-caps; font-size:15px; }
-  .vh-sb .note { background:var(--amber-bg); color:var(--amber-tx); padding:6px 8px; border-radius:var(--radius-sm); margin-top:8px; }
-  .vh-sb .ssrc { font-size:11px; color:var(--text3); margin-top:6px; }
+  .vh-sb h4 { color:var(--vijand-tx); border-bottom:1px solid var(--vijand-bd); margin:8px 0 4px; font-size:15px; font-family:var(--font-titel); }
+  .vh-sb .note { background:var(--vertel-bg); color:var(--vertel-tx); padding:6px 8px; border-radius:8px; margin-top:8px; }
+  .vh-sb .ssrc { font-size:12px; color:var(--inkt3); margin-top:6px; }
+  .vh-back { display:none; }
+  /* draden */
+  .dr-head { display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:12px; }
+  .dr-head h1 { margin:0; font-family:var(--font-titel); font-size:26px; font-weight:700; }
+  .dr-head .sub { font-size:13px; color:var(--inkt2); }
+  .dr-leg { display:flex; align-items:center; gap:16px; font-size:13px; color:var(--inkt2); margin-left:auto; flex-wrap:wrap; }
+  .dr-leg span { display:flex; align-items:center; gap:6px; }
+  .dr-mk { display:inline-block; flex:none; box-sizing:border-box; }
+  .dr-mk.h { width:12px; height:12px; border-radius:50%; background:currentColor; }
+  .dr-mk.v { width:12px; height:12px; border-radius:50%; border:2px dashed currentColor; }
+  .dr-mk.i { width:10px; height:10px; margin:1px; background:currentColor; transform:rotate(45deg); border-radius:2px; }
+  .dr-mk.k { width:17px; height:17px; background:currentColor; clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+  .dr-mk.g { opacity:.45; }
+  .dr-mx { background:var(--vlak); border:1px solid var(--lijn); border-radius:16px; overflow-x:auto; }
+  .dr-grid { display:grid; }
+  .dr-col { display:flex; flex-direction:column; justify-content:flex-end; gap:2px; padding:8px; border-left:1px solid var(--lijn-zacht); min-height:58px; box-sizing:border-box; }
+  .dr-col b { font-size:13px; line-height:1.15; } .dr-col small { font-size:11.5px; color:var(--inkt3); }
+  .dr-badge { align-self:flex-start; font-size:10.5px; font-weight:700; letter-spacing:.08em; color:var(--inkt3); border:1px solid var(--lijn); border-radius:4px; padding:0 5px; }
+  .dr-badge.nu { color:var(--nu-op); background:var(--nu); border-color:var(--nu); font-weight:800; }
+  .dr-row { border:0; border-top:1px solid var(--lijn-zacht); padding:0; text-align:left; background:transparent; min-height:53px; width:100%; }
+  .dr-row.sel { background:var(--kaart); }
+  .dr-who { display:flex; align-items:center; gap:10px; padding:0 12px; min-width:0; }
+  .dr-m { border-radius:50%; color:var(--h-op); font-weight:700; display:flex; align-items:center; justify-content:center; flex:none; }
+  .dr-who .t { display:flex; flex-direction:column; min-width:0; gap:1px; }
+  .dr-who .t b { font-size:14.5px; white-space:nowrap; } .dr-who .t b small { font-weight:400; color:var(--inkt3); font-size:12.5px; }
+  .dr-who .t span { font-size:12px; color:var(--inkt2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .dr-cell { display:flex; flex-wrap:wrap; align-items:center; align-content:center; justify-content:center; gap:4px; padding:4px; border-left:1px solid var(--lijn-zacht); box-sizing:border-box; min-height:53px; }
+  .dr-c-gesp { background:var(--vlak2); } .dr-c-nu { background:var(--nu-bg); } .dr-c-grof { background:var(--grond); }
+  .dr-d-fork { border-left:1px dashed var(--lijn) !important; } .dr-d-grof { border-left:2px solid var(--lijn) !important; }
+  .dr-row.sel .dr-cell { background:transparent; }
+  .dr-low { display:grid; grid-template-columns:250px minmax(0,1fr); gap:16px; margin-top:12px; }
+  .dr-held { display:flex; flex-direction:column; gap:10px; padding:14px 16px; background:var(--vlak); border:1px solid var(--lijn); border-radius:16px; }
+  .dr-held .nmw { display:flex; align-items:center; gap:12px; }
+  .dr-held .nm { font-family:var(--font-titel); font-size:21px; font-weight:700; } .dr-held .pl { font-size:13px; color:var(--inkt2); }
+  .dr-bar { height:8px; border-radius:4px; background:var(--lijn-zacht); overflow:hidden; } .dr-bar i { display:block; height:8px; }
+  .dr-open { margin-top:auto; height:44px; border-radius:10px; border:1px solid var(--zee); background:transparent; color:var(--zee) !important; font-size:14px; font-weight:600; }
+  .dr-next { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+  .dr-card { display:flex; flex-direction:column; gap:6px; padding:12px 14px; border-radius:14px; background:var(--vlak); border:1px solid var(--lijn); text-align:left; width:100%; }
+  .dr-card.nu { background:var(--kaart); border-color:var(--nu); }
+  .dr-card .lb { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .dr-card .sc { font-size:15px; font-weight:700; line-height:1.25; }
+  .dr-card .stt { font-size:13px; line-height:1.35; color:var(--start-tx); }
+  .dr-card .stt.leeg { color:var(--nu); font-style:italic; }
+  .dr-card .tx { font-size:13px; line-height:1.4; color:var(--inkt); }
+  .dr-sl { font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; border-radius:6px; padding:2px 7px; background:var(--vlak2); color:var(--inkt2); }
+  .dr-sl.nu { background:var(--nu); color:var(--nu-op); } .dr-sl.open { background:var(--start-bg); color:var(--start-tx); }
+  .dr-sl.optie { background:transparent; border:1px dashed var(--inkt3); } .dr-sl.klaar { background:var(--t-bel-bg); color:var(--gespeeld); }
+  .dr-pick { display:flex; gap:10px; flex-wrap:nowrap; overflow-x:auto; padding:6px; margin:0 -6px 8px; align-items:center; }
+  .dr-pick button { flex:none; }
+  .dr-pick button { width:44px; height:44px; border-radius:50%; border:0; color:var(--h-op) !important; font-weight:700; font-size:14px; opacity:.55; }
+  .dr-pick button.on { opacity:1; box-shadow:0 0 0 3px var(--grond), 0 0 0 5px currentColor; }
+  .dr-tl { position:relative; padding-left:38px; }
+  .dr-tl::before { content:''; position:absolute; left:15px; top:4px; bottom:4px; width:2px; background:var(--lijn); }
+  .dr-tl .kp { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--inkt3); margin:14px 0 8px; }
+  .dr-tl .kp.nu { color:var(--nu); }
+  .dr-tl .it { position:relative; margin-bottom:10px; }
+  .dr-tl .nd { position:absolute; left:-31px; top:14px; width:18px; display:flex; justify-content:center; }
+  .dr-tl .nd .dr-mk { background-clip:padding-box; }
+  .dr-tl .nd.nu .dr-mk { box-shadow:0 0 0 4px var(--nu-bg); }
+  .dr-camp .card { background:var(--vlak); border-color:var(--lijn); }
+  @media (max-width:1100px) { .vh-hks { grid-template-columns:repeat(2,minmax(0,1fr)); } .dr-next { grid-template-columns:repeat(2,minmax(0,1fr)); } }
   @media (max-width:900px) {
     .vh-lay { display:block; }
     .vh-list { max-height:none; position:static; }
-    .vh-det { display:none; }
+    .vh-det { display:none; padding:16px; }
     .vh-lay.showd .vh-list { display:none; }
-    .vh-lay.showd .vh-det { display:block; }
-    .vh-back { display:inline-flex; }
+    .vh-lay.showd .vh-det { display:flex; }
+    .vh-back { display:flex; }
+    .vh-dh h1 { font-size:26px; }
+    .dr-low { grid-template-columns:1fr; }
+  }
+  @media (max-width:700px) {
+    #tab-verhaal, #tab-draden { padding:10px; margin:0 -6px; }
+    .vh-hks, .vh-2k, .vh-foes, .dr-next { grid-template-columns:1fr; }
+    .vh-mode { margin-left:0; }
   }
   /* ---- END VERHAAL ---- */
 </style>
@@ -323,7 +494,7 @@
     <button class="tab" id="tb-verhaal" onclick="ST('verhaal')">📜 Verhaal</button>
     <button class="tab" id="tb-milestones" onclick="ST('milestones')">Milestones</button>
     <button class="tab" id="tb-npcs" onclick="ST('npcs')">NPCs</button>
-    <button class="tab" id="tb-threads" onclick="ST('threads')">Plot Threads</button>
+    <button class="tab" id="tb-draden" onclick="ST('draden')">Draden</button>
     <button class="tab" id="tb-sessions" onclick="ST('sessions')">Sessions</button>
     <button class="tab" id="tb-combat" onclick="ST('combat')">⚔ Combat</button>
   </div>
@@ -424,28 +595,6 @@
     </div>
   </div>
 
-  <!-- THREADS -->
-  <div id="tab-threads" class="sec">
-    <div class="row"><h2 style="margin:0;">Plot Threads</h2><button class="btn s p mla" onclick="openTF()">+ Add Thread</button></div>
-    <div id="tlist" style="margin-top:12px;"></div>
-    <div id="tform" class="card" style="display:none;margin-top:12px;">
-      <h3>New plot thread</h3>
-      <div class="g2" style="margin-top:10px;">
-        <div><label>Title</label><input id="tf-title"/></div>
-        <div><label>Status</label>
-          <select id="tf-st"><option value="hidden">Hidden</option><option value="active">Active</option><option value="resolved">Resolved</option></select>
-        </div>
-      </div>
-      <div style="margin-top:10px;"><label>Description</label><textarea id="tf-desc"></textarea></div>
-      <div style="margin-top:10px;"><label>Consequences if ignored</label><textarea id="tf-con" style="min-height:48px;"></textarea></div>
-      <div class="row" style="margin-top:12px;">
-        <button class="btn p" onclick="saveTF()">Save</button>
-        <button class="btn" onclick="hide('tform')">Cancel</button>
-        <span id="tf-idx" style="display:none;"></span>
-      </div>
-    </div>
-  </div>
-
   <!-- SESSIONS -->
   <div id="tab-sessions" class="sec">
     <div class="row"><h2 style="margin:0;">Session Log</h2><button class="btn s p mla" onclick="openSF()">+ New Session</button></div>
@@ -469,15 +618,45 @@
   <!-- VERHAAL -->
   <div id="tab-verhaal" class="sec">
     <div class="vh-bar">
-      <input id="vh-q" type="search" placeholder="Zoek scène, NPC, monster…" autocomplete="off">
-      <button class="btn s" id="vh-open" title="Verberg wat gespeeld of overgeslagen is">Enkel open</button>
-      <button class="btn s" id="vh-sbm" title="Alle statblokken">Statblokken</button>
-      <button class="btn s" id="vh-reload" title="Haal de nieuwste verhaal.json op">↻</button>
+      <label class="vh-zoek"><svg class="vh-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="vh-q" type="search" placeholder="Zoek scène, NPC, monster" aria-label="Zoek scène, NPC, monster" autocomplete="off"></label>
+      <button class="vh-knop" id="vh-open" title="Verberg wat gespeeld of overgeslagen is">Enkel open</button>
+      <button class="vh-knop" id="vh-sbm" title="Alle statblokken">Statblokken</button>
+      <button class="vh-knop" id="vh-reload" title="Haal de nieuwste verhaal.json op" aria-label="Verhaal opnieuw ophalen"><svg class="vh-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg></button>
     </div>
     <div class="vh-stand" id="vh-stand">Verhaal laden…</div>
     <div class="vh-lay" id="vh-lay">
       <nav class="vh-list" id="vh-list"><div class="vh-empty">Laden…</div></nav>
       <div class="vh-det" id="vh-det"><div class="vh-empty">Kies links een scène.</div></div>
+    </div>
+  </div>
+
+  <!-- DRADEN -->
+  <div id="tab-draden" class="sec">
+    <div class="dr-head">
+      <div><h1>Heldendraden</h1><div class="sub">Wanneer start welke haak — per held, door het hele verhaal. Tik op een held.</div></div>
+      <div class="vh-seg" role="group" aria-label="Soort draad"><button id="dr-mh" class="open on">Helden</button><button id="dr-mc" class="open">Campagne</button></div>
+      <div class="dr-leg" id="dr-leg"><span><i class="dr-mk h"></i>haak</span><span><i class="dr-mk v"></i>voorstel</span><span><i class="dr-mk i"></i>item</span><span><i class="dr-mk k"></i>sleutelmoment</span></div>
+    </div>
+    <div id="dr-body"></div>
+    <div id="dr-camp" class="dr-camp" style="display:none;">
+      <div class="row"><h2 style="margin:0;">Verhaaldraden van de campagne</h2><button class="btn s p mla" onclick="openTF()">+ Draad toevoegen</button></div>
+      <div id="tlist" style="margin-top:12px;"></div>
+      <div id="tform" class="card" style="display:none;margin-top:12px;">
+        <h3>Nieuwe verhaaldraad</h3>
+        <div class="g2" style="margin-top:10px;">
+          <div><label>Titel</label><input id="tf-title"/></div>
+          <div><label>Status</label>
+            <select id="tf-st"><option value="hidden">Verborgen</option><option value="active">Actief</option><option value="resolved">Afgerond</option></select>
+          </div>
+        </div>
+        <div style="margin-top:10px;"><label>Beschrijving</label><textarea id="tf-desc"></textarea></div>
+        <div style="margin-top:10px;"><label>Gevolgen als ze het negeren</label><textarea id="tf-con" style="min-height:48px;"></textarea></div>
+        <div class="row" style="margin-top:12px;">
+          <button class="btn p" onclick="saveTF()">Bewaren</button>
+          <button class="btn" onclick="hide('tform')">Annuleren</button>
+          <span id="tf-idx" style="display:none;"></span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -962,7 +1141,7 @@ function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]
 
 function ST(t){
   document.body.classList.remove('vh-wide');
-  ['characters','campaign','verhaal','milestones','npcs','threads','sessions','combat'].forEach(function(x){
+  ['characters','campaign','verhaal','milestones','npcs','draden','sessions','combat'].forEach(function(x){
     document.getElementById('tab-'+x).classList.remove('on');
     document.getElementById('tb-'+x).classList.remove('on');
   });
@@ -973,7 +1152,7 @@ function ST(t){
   if(t==='verhaal')rV();
   if(t==='milestones')rM();
   if(t==='npcs')rN();
-  if(t==='threads')rT();
+  if(t==='draden')rD();
   if(t==='sessions')rSes();
   if(t==='combat'){rCombat();rFoes();}
 }
@@ -1317,7 +1496,7 @@ function saveSF(){
 function delS(i){S.sessions.splice(i,1);SS();rSes();}
 
 function exportData(){
-  var data={players:S.players,ns:S.ns,sn:S.sn,npcs:S.npcs,threads:S.threads,sessions:S.sessions,nfilt:S.nfilt,combat:S.combat,lvl:S.lvl};
+  var data={players:S.players,ns:S.ns,sn:S.sn,npcs:S.npcs,threads:S.threads,sessions:S.sessions,nfilt:S.nfilt,combat:S.combat,lvl:S.lvl,vs:S.vs};
   var json=JSON.stringify(data,null,2);
   var blob=new Blob([json],{type:"application/json"});
   var url=URL.createObjectURL(blob);
@@ -1339,7 +1518,7 @@ function importData(event){
       var data=JSON.parse(e.target.result);
       if(!data.players&&!data.sessions&&!data.npcs){alert("Geen geldige campagne-data.");return;}
       if(!confirm("Huidige data overschrijven met geimporteerde data?"))return;
-      ["players","ns","sn","npcs","threads","sessions","nfilt","combat","lvl"].forEach(function(k){if(data[k]!==undefined)S[k]=data[k];});
+      ["players","ns","sn","npcs","threads","sessions","nfilt","combat","lvl","vs"].forEach(function(k){if(data[k]!==undefined)S[k]=data[k];});
       SS();rP();
       alert("Data succesvol geladen!");
     }catch(err){alert("Fout: "+err.message);}
@@ -1696,18 +1875,32 @@ function dDrop(e,i){
 // ---- END COMBAT ----
 
 
-// ---- VERHAAL ----
-// Verhaalstroom: de inhoud komt uit verhaal.json in de data-repo (Claude werkt die bij na elke sessie);
-// status en afgevinkte checks staan in S.vs en gaan mee met campaign.json naar GitHub.
-var VH={d:null,sb:{},sel:null,q:'',onlyOpen:false,sbMode:false,loadedAt:0,busy:false,ui:{open:{},fork:{}}};
-var VH_CACHE='odl-verhaal-cache',VH_UI='odl-verhaal-ui';
-try{var _u=JSON.parse(localStorage.getItem(VH_UI)||'null');if(_u){VH.ui.open=_u.open||{};VH.ui.fork=_u.fork||{};}}catch(e){}
+// ---- VERHAAL ---- (herontwerp fase 1–2)
+// Inhoud uit verhaal.json in de data-repo (Claude werkt die bij na elke sessie).
+// Status per scène en afgevinkte checks staan in S.vs en gaan mee met campaign.json.
+var VH={d:null,sb:{},sel:null,q:'',onlyOpen:false,sbMode:false,loadedAt:0,busy:false,ex:{},ui:{open:{},fork:{}},fromHash:false};
+var VH_CACHE='odl-verhaal-cache',VH_UI='odl-verhaal-ui',VH_MODE='odl-detailmodus';
+try{var _u=JSON.parse(localStorage.getItem(VH_UI)||'null');if(_u){VH.ui=_u;VH.ui.open=_u.open||{};VH.ui.fork=_u.fork||{};}}catch(e){}
 function vhUiSave(){try{localStorage.setItem(VH_UI,JSON.stringify(VH.ui));}catch(e){}}
+function vhMode(){try{return localStorage.getItem(VH_MODE)||'tafel';}catch(e){return 'tafel';}}
+function vhSetMode(m){try{localStorage.setItem(VH_MODE,m);}catch(e){}vhRenderDetail();}
 function vhS(){if(!S.vs||typeof S.vs!=='object')S.vs={st:{},chk:{}};S.vs.st=S.vs.st||{};S.vs.chk=S.vs.chk||{};return S.vs;}
 var VH_ST={klaar:'Gespeeld',nu:'Nu',open:'Open',optie:'Optioneel',later:'Later',skip:'Overgeslagen'};
 function vhE(s){return ghEsc(s);}
 function vhEl(id){return document.getElementById(id);}
+var VH_I={
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  chev:'<path d="m9 6 6 6-6 6"/>', chevd:'<path d="m6 9 6 6 6-6"/>', left:'<path d="m15 6-6 6 6 6"/>',
+  sword:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+  search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'
+};
+function vhIc(n,cls){return '<svg class="vh-svg '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true">'+VH_I[n]+'</svg>';}
+function vhHeld(n){return (VH.d&&VH.d.held[n])||{held:n,speler:'',pad:''};}
+function vhHC(n){return 'var(--h-'+String(n).toLowerCase().replace(/[^a-z]/g,'')+')';}
+function vhM2(n){return String(n).slice(0,2);}
 
+/* ---------- laden ---------- */
 function vhFetch(){
   var owner=GH.owner||'jorisdekimpe',repo=GH.repo||'odl-data',br=GH.branch||'main';
   if(ghOn()){
@@ -1723,25 +1916,49 @@ function vhUse(txt,cached){
   d.byId={};d.scenes.forEach(function(s,i){s._i=i;d.byId[s.id]=s;});
   d.gById={};d.groepen.forEach(function(g){d.gById[g.id]=g;});
   d.held={};d.spelers.forEach(function(p){d.held[p.held]=p;});
+  d.aById={};d.aktes.forEach(function(a){d.aById[a.id]=a;});
+  // haakindex: per held alle haken in scènevolgorde
+  d.hk={};d.scenes.forEach(function(s){(s.haken||[]).forEach(function(h){var l=d.hk[h.h]=d.hk[h.h]||[];l.push({s:s,h:h});h._n=l.length;});});
   VH.d=d;
-  vhEl('vh-stand').textContent=d.meta.stand+' · verhaal bijgewerkt '+d.meta.bijgewerkt+(cached?' · offline kopie':'');
+  var st=vhEl('vh-stand');if(st)st.textContent=d.meta.stand+' · verhaal bijgewerkt '+d.meta.bijgewerkt+(cached?' · offline kopie':'');
+}
+function vhAfter(){
+  if(!VH.d)return;
+  var tv=vhEl('tab-verhaal'),td=vhEl('tab-draden');
+  if(tv&&tv.classList.contains('on'))vhRender();
+  if(td&&td.classList.contains('on'))drRender();
 }
 function vhLoad(force){
   if(VH.busy)return;
-  if(VH.d&&!force&&Date.now()-VH.loadedAt<300000){vhRender();return;}
-  if(!VH.d){try{var c=localStorage.getItem(VH_CACHE);if(c){vhUse(c,true);vhRender();}}catch(e){}}
-  VH.busy=true;vhEl('vh-reload').textContent='…';
+  if(VH.d&&!force&&Date.now()-VH.loadedAt<300000){vhAfter();return;}
+  if(!VH.d){try{var c=localStorage.getItem(VH_CACHE);if(c){vhUse(c,true);vhAfter();}}catch(e){}}
+  VH.busy=true;var rb=vhEl('vh-reload');if(rb)rb.disabled=true;
   var pSb=Object.keys(VH.sb).length?Promise.resolve():fetch('statblokken.json').then(function(r){return r.json();}).then(function(j){VH.sb=j;}).catch(function(){});
   Promise.all([pSb,vhFetch()]).then(function(res){
     var t=res[1];vhUse(t,false);VH.loadedAt=Date.now();try{localStorage.setItem(VH_CACHE,t);}catch(e){}
   }).catch(function(err){
-    if(!VH.d)vhEl('vh-list').innerHTML='<div class="vh-empty">Kon het verhaal niet laden: '+vhE(err.message)+'</div>';
-  }).then(function(){VH.busy=false;vhEl('vh-reload').textContent='↻';if(VH.d)vhRender();});
+    if(!VH.d){var l=vhEl('vh-list');if(l)l.innerHTML='<div class="vh-empty">Kon het verhaal niet laden: '+vhE(err.message)+'</div>';}
+  }).then(function(){VH.busy=false;if(rb)rb.disabled=false;vhAfter();});
 }
 function rV(){document.body.classList.add('vh-wide');vhLoad(false);}
 
+/* ---------- status, haken ---------- */
 function vhStatus(s){return vhS().st[s.id]||s.status;}
+function vhDone(s){var t=vhStatus(s);return t==='klaar'||t==='skip';}
 function vhSetStatus(id,v){var s=VH.d.byId[id],st=vhS().st;if(v===s.status)delete st[id];else st[id]=v;SS();vhRenderList();vhRenderDetail();}
+function vhSoort(h){return h.soort||(/^Voorstel:/.test(h.t)?'voorstel':'boek');}
+function vhMijl(h){
+  if(h.mijlpaal)return h.mijlpaal;
+  if(/EINDE VAN|DOEM IN PERSOON|GROOTSTE PAYOFF|ZIJN DOELWIT/.test(h.t))return 'sleutel';
+  if(/ITEM|HARNAS HIER|SCHAT HIER/.test(h.t)||/kroon/i.test(h.t))return 'item';
+  return '';
+}
+function vhCap(t){return t.charAt(0).toUpperCase()+t.slice(1);}
+function vhHT(t){return /^Voorstel:/.test(t)?vhCap(String(t).replace(/^Voorstel:\s*/,'')):String(t);}
+function vhHeroesIn(s){var seen={},out=[];(s.haken||[]).forEach(function(h){if(!seen[h.h]){seen[h.h]=1;out.push(h.h);}});
+  var ord=VH.d.spelers.map(function(p){return p.held;});return out.sort(function(a,b){return ord.indexOf(a)-ord.indexOf(b);});}
+
+/* ---------- zoeken ---------- */
 function vhHay(s){
   if(s._h)return s._h;
   var p=[s.titel,s.waar,s.kern,s.wanneer,s.kop];
@@ -1751,58 +1968,85 @@ function vhHay(s){
   (s.vijanden||[]).forEach(function(v){p.push(v.naam,v.noot,(VH.sb[v.k]||{}).n);});
   return s._h=p.join(' ').toLowerCase();
 }
-function vhVisible(s){var st=vhStatus(s);if(VH.onlyOpen&&(st==='klaar'||st==='skip'))return false;if(VH.q&&vhHay(s).indexOf(VH.q)<0)return false;return true;}
-function vhCounts(sc){return sc.filter(function(s){var t=vhStatus(s);return t==='klaar'||t==='skip';}).length+'/'+sc.length;}
+function vhVisible(s){if(VH.onlyOpen&&vhDone(s))return false;if(VH.q&&vhHay(s).indexOf(VH.q)<0)return false;return true;}
+
+/* ---------- lijst ---------- */
 function vhIsOpen(k,def){return VH.ui.open[k]===undefined?def:VH.ui.open[k];}
+function vhStIcon(st){return '<span class="vh-st" title="'+vhE(VH_ST[st]||st)+'"><i class="'+st+'"></i></span>';}
 function vhRowHtml(s){
-  var st=vhStatus(s),tags='',nf=(s.vijanden||[]).reduce(function(a,v){return a+(v.q||1);},0);
-  if(s.ster)tags+='<span class="vh-tag ster">★</span>';
-  if(s.type&&s.type!=='verhaal')tags+='<span class="vh-tag '+vhE(s.type)+'">'+vhE(s.type)+'</span>';
-  if(nf&&s.type!=='gevecht')tags+='<span class="vh-tag gevecht">⚔ '+nf+'</span>';
-  return '<button class="vh-row '+st+(VH.sel===s.id?' sel':'')+'" data-vid="'+vhE(s.id)+'" id="vhr-'+vhE(s.id)+'"><span class="vh-dot '+st+'"></span><span class="vh-rt"><div class="vh-rn">'+vhE(s.titel)+'</div>'+(s.waar?'<div class="vh-rw">'+vhE(s.waar)+'</div>':'')+'</span><span class="vh-rb">'+tags+'</span></button>';
+  var st=vhStatus(s),nf=(s.vijanden||[]).filter(function(v){return !v.opt;}).reduce(function(a,v){return a+(v.q||1);},0);
+  if(!nf)nf=(s.vijanden||[]).reduce(function(a,v){return a+(v.q||1);},0);
+  var h='<button class="vh-row '+st+(VH.sel===s.id?' sel':'')+'" data-vid="'+vhE(s.id)+'" id="vhr-'+vhE(s.id)+'">'+vhStIcon(st)+'<span class="vh-rt">';
+  h+='<span class="vh-rn">'+vhE(s.titel)+'</span>';
+  if(s.wanneer)h+='<span class="vh-rs"><b>Start</b> '+vhE(s.wanneer)+'</span>';
+  h+='<span class="vh-rm">';
+  if(s.type&&s.type!=='verhaal')h+='<span class="vh-tag '+vhE(s.type)+'">'+vhE(s.type)+'</span>';
+  if(nf)h+='<span class="vh-nf" title="vijanden">'+vhIc('sword')+nf+'</span>';
+  if(s.ster)h+='<span class="vh-ster" title="sleutelmoment"></span>';
+  h+='<span style="flex:1"></span><span style="display:flex;padding-left:6px">';
+  vhHeroesIn(s).forEach(function(n){h+='<span class="vh-mono" style="background:'+vhHC(n)+'" title="'+vhE(n)+'">'+vhE(vhM2(n))+'</span>';});
+  h+='</span></span></span></button>';
+  return h;
 }
 function vhBody(sc){var h='',k=null;sc.forEach(function(s){if(s.kop&&s.kop!==k){k=s.kop;h+='<div class="vh-kop">'+vhE(k)+'</div>';}h+=vhRowHtml(s);});return h;}
-function vhRender(){vhRenderList();if(VH.fromHash&&VH.sel&&VH.d.byId[VH.sel]){VH.fromHash=false;vhSelect(VH.sel);vhScrollRow(VH.sel);}else if(VH.sel&&VH.d.byId[VH.sel])vhRenderDetail();else{var f=VH.d.scenes.find(function(s){return vhStatus(s)==='nu';});if(f&&window.innerWidth>900){vhSelect(f.id);}}}
+function vhSum(sc){
+  var c={nu:0,open:0,optie:0,later:0,klaar:0,skip:0};sc.forEach(function(s){c[vhStatus(s)]++;});
+  var p=[];if(c.nu)p.push(c.nu+(c.nu>1?' scènes':' scène')+' nu');if(c.open)p.push(c.open+' open');if(c.optie)p.push(c.optie+' optioneel');if(c.later)p.push(c.later+' later');
+  return (c.nu?'Nu bezig · ':'')+(p.join(', ')||'alles gespeeld');
+}
+function vhDoneN(sc){return sc.filter(vhDone).length;}
+function vhGroup(g,sc,collapsedDefault){
+  var all=VH.d.scenes.filter(function(s){return s.groep===g.id;});
+  var played=all.every(vhDone);
+  var key='g:'+g.id, open=VH.q?true:vhIsOpen(key,played?false:!(g.dicht||collapsedDefault));
+  if(played&&!open)return '<button class="vh-gesp" data-vtog="'+vhE(key)+'">'+vhIc('chev')+'<span class="t">'+vhE(g.titel)+'</span><span class="g">gespeeld</span></button>';
+  var h='<section class="vh-grp"><button class="vh-gh" data-vtog="'+vhE(key)+'">'+vhIc(open?'chevd':'chev')+'<span style="flex:1;min-width:0"><span class="gt">'+vhE(g.titel)+'</span><div class="gs">'+vhE(played?'gespeeld':vhSum(all))+'</div></span><span class="gc">'+vhDoneN(all)+'/'+all.length+'</span></button>';
+  if(open)h+=vhBody(sc);
+  return h+'</section>';
+}
+function vhRender(){
+  vhRenderList();
+  var D=VH.d;
+  if(VH.fromHash&&VH.sel&&D.byId[VH.sel]){VH.fromHash=false;vhSelect(VH.sel);vhScrollRow(VH.sel);}
+  else if(VH.sel&&D.byId[VH.sel])vhRenderDetail();
+  else{var f=D.scenes.find(function(s){return vhStatus(s)==='nu';});if(f&&window.innerWidth>900)vhSelect(f.id);}
+}
 function vhRenderList(){
-  var D=VH.d;if(!D)return;
+  var D=VH.d,L=vhEl('vh-list');if(!D||!L)return;
   if(VH.sbMode){vhRenderSbList();return;}
   var h='',any=false;
   D.aktes.forEach(function(a){
     var gs=D.groepen.filter(function(g){return g.akte===a.id;});
     var all=D.scenes.filter(function(s){return D.gById[s.groep].akte===a.id;});
     if(!all.filter(vhVisible).length)return;any=true;
-    var ao=VH.q?true:vhIsOpen('a:'+a.id,a.id==='A1');
-    h+='<section class="vh-act"><button data-vtog="a:'+vhE(a.id)+'">'+(ao?'▾':'▸')+' '+vhE(a.titel)+'<span class="vh-cnt">'+vhCounts(all)+'</span></button>';
-    if(ao){
-      var i=0;
-      while(i<gs.length){
-        var g=gs[i];
-        if(g.fork){
-          var fg=[];while(i<gs.length&&gs[i].fork===g.fork){fg.push(gs[i]);i++;}
-          if(VH.q){fg.forEach(function(x){var xs=D.scenes.filter(function(s){return s.groep===x.id&&vhVisible(s);});if(xs.length)h+='<div class="vh-grp"><div class="vh-gh"><div class="vh-gt">'+vhE(x.titel)+'</div></div>'+vhBody(xs)+'</div>';});continue;}
-          var cur=VH.ui.fork[g.fork];if(!fg.some(function(x){return x.id===cur;}))cur=fg[0].id;
-          var cg=D.gById[cur],call=D.scenes.filter(function(s){return s.groep===cur;});
-          h+='<div class="vh-grp"><div class="vh-fork"><div class="fl">Volgende labour — wissel:</div><div class="ft">'+fg.map(function(x){
-            var xs=D.scenes.filter(function(s){return s.groep===x.id;});
-            return '<button class="btn s'+(x.id===cur?' p':'')+'" data-vfork="'+vhE(g.fork)+'" data-vg="'+vhE(x.id)+'">'+vhE(x.tab||x.titel)+' <span style="opacity:.7">'+vhCounts(xs)+'</span></button>';}).join('')+'</div></div>';
-          h+='<div class="vh-gh"><div class="vh-gt">'+vhE(cg.titel)+'<span class="vh-cnt">'+vhCounts(call)+'</span></div>'+(cg.sub?'<div class="vh-gs">'+vhE(cg.sub)+'</div>':'')+'</div>';
-          h+=vhBody(call.filter(vhVisible))+'</div>';
-          continue;
-        }
-        var sc=D.scenes.filter(function(s){return s.groep===g.id;}),sv=sc.filter(vhVisible);i++;
-        if(!sv.length)continue;
-        var go=VH.q?true:vhIsOpen('g:'+g.id,!g.dicht);
-        h+='<div class="vh-grp'+(g.grof?' grof':'')+'"><button class="vh-gh" data-vtog="g:'+vhE(g.id)+'"><div class="vh-gt">'+(go?'▾':'▸')+' '+vhE(g.titel)+'<span class="vh-cnt">'+vhCounts(sc)+'</span></div>'+(g.sub?'<div class="vh-gs">'+vhE(g.sub)+'</div>':'')+'</button>';
-        if(go)h+=vhBody(sv);
-        h+='</div>';
+    var hasLive=all.some(function(s){var t=vhStatus(s);return t==='nu'||t==='open';});
+    var ao=VH.q?true:vhIsOpen('a:'+a.id,hasLive);
+    h+='<button class="vh-akte" data-vtog="a:'+vhE(a.id)+'"><b>'+vhE(a.titel)+'</b><span>'+(ao?'':'▸ ')+vhDoneN(all)+' van '+all.length+' gespeeld</span></button>';
+    if(!ao)return;
+    var i=0;
+    while(i<gs.length){
+      var g=gs[i];
+      if(g.fork){
+        var fg=[];while(i<gs.length&&gs[i].fork===g.fork){fg.push(gs[i]);i++;}
+        if(VH.q){fg.forEach(function(x){var xs=D.scenes.filter(function(s){return s.groep===x.id&&vhVisible(s);});if(xs.length)h+=vhGroup(x,xs);});continue;}
+        var cur=VH.ui.fork[g.fork];if(!fg.some(function(x){return x.id===cur;}))cur=fg[0].id;
+        var cg=D.gById[cur],call=D.scenes.filter(function(s){return s.groep===cur;});
+        h+='<section class="vh-grp"><div class="vh-fork"><div class="fl">Volgende labour — kies wat de partij doet:</div><div class="ft">'+fg.map(function(x){
+          var xs=D.scenes.filter(function(s){return s.groep===x.id;});
+          return '<button class="vh-knop'+(x.id===cur?' on':'')+'" data-vfork="'+vhE(g.fork)+'" data-vg="'+vhE(x.id)+'">'+vhE(x.tab||x.titel)+' <span style="opacity:.75">'+vhDoneN(xs)+'/'+xs.length+'</span></button>';}).join('')+'</div></div>';
+        h+='<div class="vh-gh"><span style="flex:1;min-width:0"><span class="gt">'+vhE(cg.titel)+'</span><div class="gs">'+vhE(cg.sub||vhSum(call))+'</div></span><span class="gc">'+vhDoneN(call)+'/'+call.length+'</span></div>';
+        h+=vhBody(call.filter(vhVisible))+'</section>';
+        continue;
       }
+      var sv=D.scenes.filter(function(s){return s.groep===g.id&&vhVisible(s);});i++;
+      if(sv.length)h+=vhGroup(g,sv);
     }
-    h+='</section>';
   });
-  vhEl('vh-list').innerHTML=any?h:'<div class="vh-empty">Niets gevonden.</div>';
+  L.innerHTML=any?h:'<div class="vh-empty">Niets gevonden.</div>';
 }
 function vhScrollRow(id){var e=vhEl('vhr-'+id);if(e)e.scrollIntoView({block:'nearest'});}
 function vhSelect(id){
+  if(VH.sel!==id)VH.ex={};
   VH.sel=id;
   document.querySelectorAll('.vh-row.sel').forEach(function(e){e.classList.remove('sel');});
   var r=vhEl('vhr-'+id);if(r)r.classList.add('sel');
@@ -1810,40 +2054,98 @@ function vhSelect(id){
   if(window.innerWidth<=900)window.scrollTo(0,vhEl('vh-lay').offsetTop-8);
   try{history.replaceState(null,'','#verhaal/'+id);}catch(e){}
 }
-function vhTxt(t){return vhE(t).replace(/^Voorstel: /,'<span class="vh-vs">voorstel</span>');}
-function vhUl(a){return '<ul>'+a.map(function(x){return '<li>'+vhTxt(x)+'</li>';}).join('')+'</ul>';}
-function vhSec(c,t,b){return '<div class="vh-sec '+c+'"><h3>'+t+'</h3>'+b+'</div>';}
-function vhCR(b){var c=(b.x||[]).find(function(x){return x[0]==='Challenge';});return c?c[1].split(' ')[0]:'—';}
-function vhRenderDetail(){
-  var D=VH.d;if(!D||!VH.sel||!D.byId[VH.sel])return;
-  var s=D.byId[VH.sel],st=vhStatus(s),g=D.gById[s.groep],h='',over=vhS().st[s.id];
-  h+='<div class="vh-dh"><button class="btn s vh-back" data-vback="1">← Lijst</button><h2>'+(s.ster?'★ ':'')+vhE(s.titel)+'</h2></div>';
-  h+='<div class="vh-meta">'+(s.waar?'<span><b>Waar</b> '+vhE(s.waar)+'</span>':'')+'<span><b>Groep</b> '+vhE(g.titel)+(s.kop?' · '+vhE(s.kop):'')+'</span>'+(s.type?'<span><b>Type</b> '+vhE(s.type)+'</span>':'')+'</div>';
-  h+='<div class="vh-stat">'+['nu','open','klaar','optie','skip'].map(function(k){return '<button class="btn s '+k+(st===k?' on':'')+'" data-vst="'+k+'">'+VH_ST[k]+'</button>';}).join('')+(over?'<button class="btn s" data-vst="'+vhE(s.status)+'" title="Terug naar de status uit verhaal.json">↺ '+vhE(VH_ST[s.status])+'</button>':'')+'</div>';
-  if(s.wanneer)h+=vhSec('kern','Wanneer','<p>'+vhTxt(s.wanneer)+'</p>');
-  if(s.kern)h+=vhSec('kern','Scène','<p>'+vhTxt(s.kern)+'</p>');
-  if(s.zeg&&s.zeg.length)h+=vhSec('zeg','Moet je zeker vertellen',vhUl(s.zeg));
-  if(s.dialoog&&s.dialoog.length)h+=vhSec('dia','Belangrijke dialogen',s.dialoog.map(function(d){return '<div class="vh-dlg"><div class="who">'+vhE(d.wie)+'</div>'+vhUl(d.kern||[])+'</div>';}).join(''));
-  if(s.doen&&s.doen.length){var c=vhS().chk[s.id]||{};h+=vhSec('doen','Interacties en checks','<ul class="vh-chk">'+s.doen.map(function(x,i){return '<li class="'+(c[i]?'done':'')+'"><input type="checkbox" data-vchk="'+i+'"'+(c[i]?' checked':'')+'><span>'+vhTxt(x)+'</span></li>';}).join('')+'</ul>');}
-  if(s.vijanden&&s.vijanden.length){
-    var fight=s.vijanden.some(function(v){return VH.sb[v.k]&&!v.opt;});
-    h+=vhSec('vij','Vijanden en statblokken',(fight?'<div style="margin-bottom:4px;"><button class="btn s p" data-vcall="1">⚔ Gevecht naar Combat</button> <span style="font-size:12px;color:var(--text3)">zonder wat op "indien nodig" staat</span></div>':'')+s.vijanden.map(function(v,i){return vhFoe(v,i);}).join(''));
-  }
-  if(s.buit&&s.buit.length)h+=vhSec('buit','Buit',vhUl(s.buit));
-  if(s.haken&&s.haken.length)h+=vhSec('haken','Haken per held',s.haken.map(function(k){var p=D.held[k.h];return '<div class="vh-hk"><div class="hn">'+vhE(k.h)+(p?'<small>'+vhE(p.speler)+' · '+vhE(p.pad)+'</small>':'')+'</div><div class="ht">'+vhTxt(k.t)+'</div></div>';}).join(''));
-  if(s.dm&&s.dm.length)h+=vhSec('dm','Enkel voor de DM',vhUl(s.dm));
-  if(s.open&&s.open.length)h+=vhSec('open','Nog te beslissen',vhUl(s.open));
-  if(s.bron)h+='<div class="vh-src">Bron: '+vhE(s.bron)+'</div>';
-  var pv=D.scenes[s._i-1],nx=D.scenes[s._i+1];
-  h+='<div class="vh-nav">'+(pv?'<button class="btn s" data-vgo="'+vhE(pv.id)+'">← '+vhE(pv.titel)+'</button>':'<span></span>')+(nx?'<button class="btn s" data-vgo="'+vhE(nx.id)+'">'+vhE(nx.titel)+' →</button>':'')+'</div>';
-  vhEl('vh-det').innerHTML=h;
+function vhGoScene(id){
+  if(!vhEl('tab-verhaal').classList.contains('on'))ST('verhaal');
+  var s=VH.d&&VH.d.byId[id];if(!s)return;
+  var g=VH.d.gById[s.groep];if(g.fork){VH.ui.fork[g.fork]=g.id;}
+  VH.ui.open['a:'+g.akte]=true;VH.ui.open['g:'+g.id]=true;vhUiSave();
+  vhRenderList();vhSelect(id);vhScrollRow(id);
 }
-function vhFoe(v,i){
-  var b=VH.sb[v.k],q=v.q||1,name=v.naam||(b?b.n:v.k);
-  var h='<div class="vh-foe"><div class="vh-fh"><span class="fn" data-vsb="'+i+'">▸ '+vhE(name)+(v.naam&&b?' <span style="font-weight:400;color:var(--text3)">('+vhE(b.n)+')</span>':'')+'</span><span class="fq">×'+q+'</span>'+(v.opt?'<span class="vh-tag" title="Gaat niet mee met de Combat-knop bovenaan">indien nodig</span>':'')+(b?'<span class="fs">AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+' · CR '+vhE(vhCR(b))+'</span><button class="btn s" data-vc="'+i+'" title="Voeg toe aan de initiative tracker">⚔ +'+q+'</button>':'<span class="fs">geen statblok</span>')+'</div>';
-  if(v.noot)h+='<div class="vh-fnote">'+vhTxt(v.noot)+'</div>';
-  h+='<div id="vhsb-'+i+'" style="display:none">'+(b?vhSbHtml(b):'')+'</div></div>';
-  return h;
+
+/* ---------- detail ---------- */
+function vhTxt(t){
+  var v=/^Voorstel:\s*/.test(t);
+  var x=vhE(v?vhCap(String(t).replace(/^Voorstel:\s*/,'')):String(t));
+  return (v?'<span class="vh-vs">voorstel</span>':'')+x;
+}
+function vhChkTxt(t){return vhTxt(t).replace(/((?:[A-Z][a-z]+ )?(?:\([A-Z][a-z]+\) )?DC \d+)/g,'<strong>$1</strong>');}
+function vhUl(a,f){return '<ul>'+a.map(function(x){return '<li>'+(f||vhTxt)(x)+'</li>';}).join('')+'</ul>';}
+function vhBlk(cls,kop,body){return '<div class="vh-blk '+cls+'"><div class="vh-kop2">'+kop+'</div>'+body+'</div>';}
+function vhCR(b){var c=(b.x||[]).find(function(x){return x[0]==='Challenge';});return c?c[1].split(' ')[0]:'—';}
+function vhHookCards(s){
+  var D=VH.d,by={},ord=[];
+  (s.haken||[]).forEach(function(h){if(!by[h.h]){by[h.h]=[];ord.push(h.h);}by[h.h].push(h);});
+  var po=D.spelers.map(function(p){return p.held;});ord.sort(function(a,b){return po.indexOf(a)-po.indexOf(b);});
+  return '<div class="vh-hks">'+ord.map(function(n){
+    var hs=by[n],p=vhHeld(n),N=(D.hk[n]||[]).length,a=hs[0]._n,b=hs[hs.length-1]._n;
+    var key=hs.some(function(h){return vhMijl(h)==='sleutel';});
+    var it=hs.some(function(h){return vhMijl(h)==='item';});
+    return '<div class="vh-hc" style="box-shadow:inset 0 3px 0 '+vhHC(n)+'">'+(key?'<span class="vh-ster" title="sleutelmoment"></span>':'')+
+      '<div class="top"><span class="m32" style="background:'+vhHC(n)+'">'+vhE(vhM2(n))+'</span><span class="nm"><b>'+vhE(n)+'</b><small>'+vhE(p.speler)+' · '+vhE(p.pad)+'</small></span><span class="stp">'+(a===b?a:a+'–'+b)+' / '+N+'</span></div>'+
+      hs.map(function(h){return '<div class="tx">'+(vhSoort(h)==='voorstel'?'<span class="vh-vs">voorstel</span>':'')+(vhMijl(h)==='item'?'<span class="vh-it">item</span> ':'')+vhE(vhHT(h.t))+'</div>';}).join('')+'</div>';
+  }).join('')+'</div>';
+}
+function vhFoesBlk(s){
+  var vs=s.vijanden||[];if(!vs.length)return '';
+  var fight=vs.filter(function(v){return !v.opt&&VH.sb[v.k];});
+  var allOpt=!fight.length;
+  var sub=allOpt?'alleen als het misloopt':(vs.length>fight.length?(vs.length-fight.length)+' enkel indien nodig':'');
+  var h='<div class="vh-blk" style="padding:0"><div class="vh-vijh"><span class="vh-kop2">Vijanden</span>'+(sub?'<span class="sub">'+vhE(sub)+'</span>':'')+
+    '<button class="vh-startg" data-vfight="1">'+vhIc('sword')+'Start gevecht</button></div><div class="vh-foes">';
+  vs.forEach(function(v,i){
+    var b=VH.sb[v.k],q=v.q||1,name=v.naam||(b?b.n:v.k),op=VH.ex['sb'+i];
+    h+='<div class="vh-foe'+(op?' open':'')+'"><div class="fr"><button class="fn" data-vsb="'+i+'"><strong>'+vhE(name)+' <em>×'+q+'</em></strong><span>'+(v.opt?'<span class="vh-opt" style="margin:0 6px 0 0">indien nodig</span>':'')+(b?'AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+' · CR '+vhE(vhCR(b))+' · '+(op?'statblok sluiten':'tik voor statblok'):'geen statblok')+'</span></button>'+
+      (b?'<button class="vh-ini" data-vc="'+i+'">+ initiative</button>':'')+'</div>';
+    if(v.noot)h+='<div class="fno">'+vhTxt(v.noot)+'</div>';
+    if(op&&b)h+=vhSbHtml(b);
+    h+='</div>';
+  });
+  return h+'</div></div>';
+}
+function vhRenderDetail(){
+  var D=VH.d,E=vhEl('vh-det');if(!D||!E||!VH.sel||!D.byId[VH.sel])return;
+  var s=D.byId[VH.sel],st=vhStatus(s),g=D.gById[s.groep],a=D.aById[g.akte],over=vhS().st[s.id],mode=vhMode(),h='';
+  var pv=D.scenes[s._i-1],nx=D.scenes[s._i+1];
+  h+='<button class="vh-knop vh-back" data-vback="1" style="align-self:flex-start">'+vhIc('left')+'Lijst</button>';
+  h+='<div class="vh-dh"><div style="flex:1;min-width:0"><div class="vh-bc">'+vhE((a?a.titel.split(' — ')[0]:'')+' · '+g.titel+(s.waar?' · '+s.waar:''))+'</div><h1>'+vhE(s.titel)+(s.ster?' <span class="vh-ster" title="sleutelmoment" style="width:18px;height:18px"></span>':'')+'</h1></div>'+
+     '<button class="vh-rond" aria-label="Vorige scène" '+(pv?'data-vgo="'+vhE(pv.id)+'" title="'+vhE(pv.titel)+'"':'disabled')+'>'+vhIc('left')+'</button>'+
+     '<button class="vh-rond" aria-label="Volgende scène" '+(nx?'data-vgo="'+vhE(nx.id)+'" title="'+vhE(nx.titel)+'"':'disabled')+'>'+vhIc('chev')+'</button></div>';
+  h+='<div class="vh-ctrl"><div class="vh-seg" role="group" aria-label="Status">'+['nu','open','klaar','optie','skip'].map(function(k){return '<button class="'+k+(st===k?' on':'')+'" data-vst="'+k+'">'+VH_ST[k]+'</button>';}).join('')+
+     (over?'<button data-vst="'+vhE(s.status)+'" title="Terug naar de status uit verhaal.json">↺</button>':'')+'</div>'+
+     '<div class="vh-mode" role="group" aria-label="Weergave"><button class="'+(mode==='tafel'?'on':'')+'" data-vmode="tafel">Aan tafel</button><button class="'+(mode==='prep'?'on':'')+'" data-vmode="prep">Voorbereiding</button></div></div>';
+  // start
+  h+='<div class="vh-blk vh-start">'+vhIc('flag')+'<div style="display:flex;flex-direction:column;gap:3px"><div class="vh-kop2">Start wanneer</div><div class="tx">'+(s.wanneer?vhE(s.wanneer):'<i>Nog geen startmoment ingevuld.</i>')+'</div></div></div>';
+  var hooks=(s.haken&&s.haken.length)?'<div style="display:flex;flex-direction:column;gap:8px"><div class="vh-hkh"><span class="vh-kop2">Haken in deze scène</span><button class="vh-link" data-vdraad="'+vhE(vhHeroesIn(s)[0])+'">Bekijk in Draden</button></div>'+vhHookCards(s)+'</div>':'';
+  var c=vhS().chk[s.id]||{};
+  var tell=(s.zeg&&s.zeg.length)?vhBlk('vh-vert','Moet je zeker vertellen',vhUl(s.zeg)):'';
+  var chk=(s.doen&&s.doen.length)?vhBlk('vh-chk','Checks en interacties',s.doen.map(function(x,i){return '<label class="'+(c[i]?'done':'')+'"><input type="checkbox" data-vchk="'+i+'"'+(c[i]?' checked':'')+'><span>'+vhChkTxt(x)+'</span></label>';}).join('')):'';
+  var dlgNames=(s.dialoog||[]).map(function(d){return d.wie.replace(/\s*\(.*$/,'');});
+  var X={
+    kern:s.kern?vhBlk('vh-x','Scène','<p>'+vhTxt(s.kern)+'</p>'):'',
+    dia:(s.dialoog&&s.dialoog.length)?vhBlk('vh-x vh-dlg','Belangrijke dialogen',s.dialoog.map(function(d){return '<b>'+vhE(d.wie)+'</b>'+vhUl(d.kern||[]);}).join('')):'',
+    buit:(s.buit&&s.buit.length)?vhBlk('vh-x','Buit',vhUl(s.buit)):'',
+    dm:(s.dm&&s.dm.length)?vhBlk('vh-x dm',vhIc('lock')+' Enkel voor de DM',vhUl(s.dm)):'',
+    bs:(s.open&&s.open.length)?vhBlk('vh-x bs','Nog te beslissen',vhUl(s.open)):''
+  };
+  var src=s.bron?'<span class="bron">Bron: '+vhE(s.bron)+'</span>':'';
+  if(mode==='prep'){
+    h+=X.kern+(tell)+X.dia+(chk)+hooks+vhFoesBlk(s)+X.buit+X.dm+X.bs+(src?'<div class="vh-tog">'+src+'</div>':'');
+  } else {
+    h+=hooks;
+    if(tell||chk)h+=(tell&&chk)?'<div class="vh-2k">'+tell+chk+'</div>':(tell||chk);
+    h+=vhFoesBlk(s);
+    var tg=[];
+    if(X.kern)tg.push(['kern','Scène','']);
+    if(X.dia)tg.push(['dia','Dialogen · '+dlgNames.join(', '),'']);
+    if(X.buit)tg.push(['buit','Buit · '+s.buit.length,'']);
+    if(X.dm)tg.push(['dm','Enkel voor de DM · '+s.dm.length,'dm']);
+    if(X.bs)tg.push(['bs','Nog te beslissen · '+s.open.length,'bs']);
+    if(tg.length||src){
+      h+='<div class="vh-tog">'+tg.map(function(t){return '<button class="'+t[2]+(VH.ex[t[0]]?' on':'')+'" data-vex="'+t[0]+'">'+(t[0]==='dm'?vhIc('lock'):vhIc('chev','chev'))+vhE(t[1])+'</button>';}).join('')+src+'</div>';
+      tg.forEach(function(t){if(VH.ex[t[0]])h+=X[t[0]];});
+    }
+  }
+  E.innerHTML=h;
 }
 function vhMod(n){var m=Math.floor((n-10)/2);return (m>=0?'+':'')+m;}
 function vhSbHtml(b){
@@ -1871,34 +2173,46 @@ function vhToCombat(v,quiet){
   if(!quiet){SS();fzToast(out);}
   return out;
 }
+function vhStartFight(){
+  var s=VH.d.byId[VH.sel],vs=(s.vijanden||[]).filter(function(v){return VH.sb[v.k];});
+  var f=vs.filter(function(v){return !v.opt;});if(!f.length)f=vs;
+  var out=[];f.forEach(function(v){out=out.concat(vhToCombat(v,true));});
+  SS();ST('combat');fzToast(out);
+}
 function vhRenderSbList(){
   var sb=VH.sb,keys=Object.keys(sb).sort(function(a,b){return sb[a].n.localeCompare(sb[b].n);});
   if(VH.q)keys=keys.filter(function(k){return (sb[k].n+' '+sb[k].m+' '+(sb[k].note||'')).toLowerCase().indexOf(VH.q)>=0;});
   var used={};VH.d.scenes.forEach(function(s){(s.vijanden||[]).forEach(function(v){used[v.k]=(used[v.k]||0)+1;});});
-  vhEl('vh-list').innerHTML='<div class="vh-grp"><div class="vh-gh"><div class="vh-gt">Statblokken<span class="vh-cnt">'+keys.length+'</span></div></div>'+keys.map(function(k){var b=sb[k];return '<button class="vh-row" data-vsbk="'+vhE(k)+'"><span class="vh-rt"><div class="vh-rn">'+vhE(b.n)+'</div><div class="vh-rw">CR '+vhE(vhCR(b))+' · AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+(used[k]?' · '+used[k]+'× in het verhaal':'')+'</div></span></button>';}).join('')+'</div>';
+  vhEl('vh-list').innerHTML='<section class="vh-grp"><div class="vh-gh"><span style="flex:1"><span class="gt">Statblokken</span><div class="gs">'+keys.length+' blokken · tik voor het volledige blok</div></span></div>'+keys.map(function(k){var b=sb[k];return '<button class="vh-row" data-vsbk="'+vhE(k)+'"><span class="vh-rt"><span class="vh-rn">'+vhE(b.n)+'</span><span class="vh-rs">CR '+vhE(vhCR(b))+' · AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+(used[k]?' · '+used[k]+'× in het verhaal':'')+'</span></span></button>';}).join('')+'</section>';
 }
 function vhShowSb(k){
   var b=VH.sb[k];if(!b)return;
   var used=VH.d.scenes.filter(function(s){return (s.vijanden||[]).some(function(v){return v.k===k;});});
-  vhEl('vh-det').innerHTML='<div class="vh-dh"><button class="btn s vh-back" data-vback="1">← Lijst</button><h2>'+vhE(b.n)+'</h2></div>'+vhSbHtml(b)+(used.length?'<div class="vh-sec" style="margin-top:12px"><h3>Komt voor in</h3><ul>'+used.map(function(s){return '<li><a href="#" data-vgo2="'+vhE(s.id)+'">'+vhE(s.titel)+'</a></li>';}).join('')+'</ul></div>':'');
+  vhEl('vh-det').innerHTML='<button class="vh-knop vh-back" data-vback="1" style="align-self:flex-start">'+vhIc('left')+'Lijst</button><div class="vh-dh"><h1>'+vhE(b.n)+'</h1></div><div class="vh-foe open">'+vhSbHtml(b)+'</div>'+(used.length?vhBlk('vh-x','Komt voor in','<ul>'+used.map(function(s){return '<li><button class="vh-link" data-vgo2="'+vhE(s.id)+'">'+vhE(s.titel)+'</button></li>';}).join('')+'</ul>'):'');
   vhEl('vh-lay').classList.add('showd');
 }
 function vhInit(){
   var root=vhEl('tab-verhaal');if(!root)return;
   root.addEventListener('click',function(ev){
-    var a=ev.target.closest('[data-vgo2]');if(a){ev.preventDefault();VH.sbMode=false;vhEl('vh-sbm').classList.remove('on');vhRenderList();vhSelect(a.dataset.vgo2);return;}
-    var t=ev.target.closest('[data-vsb]');if(t){var w=vhEl('vhsb-'+t.dataset.vsb);if(w){var o=w.style.display==='none';w.style.display=o?'block':'none';t.innerHTML=t.innerHTML.replace(o?'▸':'▾',o?'▾':'▸');}return;}
     var b=ev.target.closest('button');if(!b)return;
     var D=VH.d;
-    if(b.dataset.vtog){var k=b.dataset.vtog,g=k.slice(2),def=k[0]==='a'?(g==='A1'):!(D.gById[g]&&D.gById[g].dicht);VH.ui.open[k]=!vhIsOpen(k,def);vhUiSave();vhRenderList();return;}
+    if(b.dataset.vgo2){VH.sbMode=false;vhEl('vh-sbm').classList.remove('on');vhGoScene(b.dataset.vgo2);return;}
+    if(b.dataset.vtog){var k=b.dataset.vtog,id=k.slice(2),def;
+      if(k[0]==='a'){def=D.scenes.some(function(s){return D.gById[s.groep].akte===id&&/^(nu|open)$/.test(vhStatus(s));});}
+      else{var all=D.scenes.filter(function(s){return s.groep===id;});def=all.every(vhDone)?false:!D.gById[id].dicht;}
+      VH.ui.open[k]=!vhIsOpen(k,def);vhUiSave();vhRenderList();return;}
     if(b.dataset.vfork){VH.ui.fork[b.dataset.vfork]=b.dataset.vg;vhUiSave();vhRenderList();return;}
     if(b.dataset.vid){vhSelect(b.dataset.vid);return;}
     if(b.dataset.vsbk){vhShowSb(b.dataset.vsbk);return;}
     if(b.dataset.vback){vhEl('vh-lay').classList.remove('showd');vhScrollRow(VH.sel);return;}
     if(b.dataset.vst){vhSetStatus(VH.sel,b.dataset.vst);return;}
-    if(b.dataset.vgo){vhSelect(b.dataset.vgo);vhScrollRow(b.dataset.vgo);return;}
+    if(b.dataset.vmode){vhSetMode(b.dataset.vmode);return;}
+    if(b.dataset.vgo){vhGoScene(b.dataset.vgo);return;}
+    if(b.dataset.vex){VH.ex[b.dataset.vex]=!VH.ex[b.dataset.vex];vhRenderDetail();return;}
+    if(b.dataset.vsb!==undefined){VH.ex['sb'+b.dataset.vsb]=!VH.ex['sb'+b.dataset.vsb];vhRenderDetail();return;}
     if(b.dataset.vc!==undefined){vhToCombat(D.byId[VH.sel].vijanden[+b.dataset.vc]);return;}
-    if(b.dataset.vcall){var out=[];D.byId[VH.sel].vijanden.forEach(function(v){if(!v.opt)out=out.concat(vhToCombat(v,true));});SS();fzToast(out);return;}
+    if(b.dataset.vfight){vhStartFight();return;}
+    if(b.dataset.vdraad){DR.sel=b.dataset.vdraad;drSave();ST('draden');return;}
   });
   root.addEventListener('change',function(ev){
     var t=ev.target;if(t.dataset.vchk===undefined)return;
@@ -1911,6 +2225,106 @@ function vhInit(){
   vhEl('vh-open').addEventListener('click',function(){VH.onlyOpen=!VH.onlyOpen;this.classList.toggle('on',VH.onlyOpen);vhRenderList();});
   vhEl('vh-sbm').addEventListener('click',function(){VH.sbMode=!VH.sbMode;this.classList.toggle('on',VH.sbMode);vhRenderList();});
   vhEl('vh-reload').addEventListener('click',function(){vhLoad(true);});
+  drInit();
+}
+
+/* ---------- DRADEN ---------- */
+var DR={sel:null,mode:'helden',tl:false};
+try{var _d=JSON.parse(localStorage.getItem('odl-draden')||'null');if(_d){DR.sel=_d.sel;DR.mode=_d.mode||'helden';}}catch(e){}
+function drSave(){try{localStorage.setItem('odl-draden',JSON.stringify({sel:DR.sel,mode:DR.mode}));}catch(e){}}
+function rD(){document.body.classList.add('vh-wide');drRender();vhLoad(false);}
+function drMarkKind(h){var m=vhMijl(h);if(m==='sleutel')return 'k';if(m==='item')return 'i';return vhSoort(h)==='voorstel'?'v':'h';}
+function drMark(h,s,extra){return '<span class="dr-mk '+drMarkKind(h)+(vhDone(s)?' g':'')+(extra||'')+'" title="'+vhE(s.titel)+'"></span>';}
+function drCols(){
+  var D=VH.d,cols=[],gesp={k:'gesp',label:'Gespeeld',groups:[],cls:'dr-c-gesp'},hasG=false,prevGrof=false,prevFork=null;
+  var nuG=null;D.scenes.some(function(s){if(vhStatus(s)==='nu'){nuG=s.groep;return true;}return false;});
+  D.groepen.forEach(function(g){
+    var sc=D.scenes.filter(function(s){return s.groep===g.id;});
+    if(sc.length&&sc.every(vhDone)){gesp.groups.push(g.id);hasG=true;return;}
+    var c={k:g.id,groups:[g.id],label:g.grof?(D.aById[g.akte].titel.split(' — ')[0]):(g.kort||g.tab||g.titel),sub:'',badge:'',cls:'',div:''};
+    if(g.grof){c.sub='grof';c.cls='dr-c-grof';if(!prevGrof)c.div='dr-d-grof';}
+    else if(sc.every(function(s){return vhStatus(s)==='optie';}))c.sub='optioneel';
+    else c.sub=sc.length+(sc.length>1?' scènes':' scène');
+    if(g.fork){c.badge='OF';if(prevFork===g.fork)c.div='dr-d-fork';}
+    if(g.id===nuG){c.badge='NU';c.cls='dr-c-nu';}
+    prevGrof=!!g.grof;prevFork=g.fork||null;
+    cols.push(c);
+  });
+  if(hasG){gesp.sub=gesp.groups.length+(gesp.groups.length>1?' groepen':' groep');cols.unshift(gesp);}
+  return cols;
+}
+function drUpcoming(n){return (VH.d.hk[n]||[]).filter(function(x){return /^(nu|open|optie|later)$/.test(vhStatus(x.s));});}
+function drSlabel(st){return '<span class="dr-sl '+st+'">'+vhE(VH_ST[st]||st)+'</span>';}
+function drCard(x,big){
+  var s=x.s,h=x.h,st=vhStatus(s);
+  return '<button class="dr-card'+(st==='nu'?' nu':'')+'" data-dgo="'+vhE(s.id)+'" style="box-shadow:inset 0 3px 0 '+vhHC(h.h)+'"><span class="lb">'+drSlabel(st)+
+    (vhSoort(h)==='voorstel'?'<span class="vh-vs">voorstel</span>':'')+(vhMijl(h)==='item'?'<span class="vh-it">item</span>':'')+(vhMijl(h)==='sleutel'?'<span class="vh-ster"></span>':'')+'</span>'+
+    '<span class="sc">'+vhE(s.titel)+'</span>'+
+    (s.wanneer?'<span class="stt"><b style="color:var(--zee)">Start</b> '+vhE(s.wanneer)+'</span>':'<span class="stt leeg"><b>Start</b> Nog geen startmoment ingevuld'+(s.waar?' · '+vhE(s.waar):'')+'</span>')+
+    '<span class="tx">'+vhE(vhHT(h.t))+'</span></button>';
+}
+function drRender(){
+  var B=vhEl('dr-body'),D=VH.d;if(!B)return;
+  vhEl('dr-mh').classList.toggle('on',DR.mode==='helden');vhEl('dr-mc').classList.toggle('on',DR.mode==='camp');
+  vhEl('dr-camp').style.display=DR.mode==='camp'?'block':'none';
+  vhEl('dr-leg').style.display=DR.mode==='camp'?'none':'flex';
+  if(DR.mode==='camp'){B.innerHTML='';rT();return;}
+  if(!D){B.innerHTML='<div class="vh-empty">Verhaal laden…</div>';return;}
+  var heroes=D.spelers.map(function(p){return p.held;});
+  if(heroes.indexOf(DR.sel)<0)DR.sel=heroes[0];
+  if(window.innerWidth<=900||DR.tl){B.innerHTML=drTimeline(heroes);return;}
+  var cols=drCols(),w=cols.map(function(c){
+    var mx=1;heroes.forEach(function(n){var k=(D.hk[n]||[]).filter(function(x){return c.groups.indexOf(x.s.groep)>=0;}).length;mx=Math.max(mx,k);});
+    return 'minmax(72px,'+(0.45+0.17*Math.min(mx,7)).toFixed(2)+'fr)';});
+  var gt='grid-template-columns:236px '+w.join(' ')+';';
+  var h='<div class="dr-mx"><div style="min-width:'+(236+cols.length*74)+'px"><div class="dr-grid" style="'+gt+'"><span style="display:flex;align-items:flex-end;padding:0 14px 8px;font-size:12px;color:var(--inkt3)">Held · volgende haak</span>';
+  cols.forEach(function(c){h+='<span class="dr-col '+c.cls+' '+c.div+'">'+(c.badge?'<span class="dr-badge'+(c.badge==='NU'?' nu':'')+'">'+c.badge+'</span>':'')+'<b>'+vhE(c.label)+'</b><small>'+vhE(c.sub)+'</small></span>';});
+  h+='</div>';
+  heroes.forEach(function(n){
+    var p=vhHeld(n),up=drUpcoming(n),sel=DR.sel===n;
+    h+='<button class="dr-row dr-grid'+(sel?' sel':'')+'" data-dsel="'+vhE(n)+'" style="'+gt+(sel?'box-shadow:inset 0 0 0 2px '+vhHC(n)+';':'')+'"><span class="dr-who"><span class="dr-m" style="width:34px;height:34px;font-size:13px;background:'+vhHC(n)+'">'+vhE(vhM2(n))+'</span><span class="t"><b>'+vhE(n)+' <small>'+vhE(p.speler)+'</small></b><span>'+(up.length?'Volgende: '+vhE(up[0].s.titel):'Geen haken meer')+'</span></span></span>';
+    cols.forEach(function(c){
+      var hs=(D.hk[n]||[]).filter(function(x){return c.groups.indexOf(x.s.groep)>=0;});
+      h+='<span class="dr-cell '+c.cls+' '+c.div+'" style="color:'+vhHC(n)+'">'+hs.map(function(x){return drMark(x.h,x.s);}).join('')+'</span>';
+    });
+    h+='</button>';
+  });
+  h+='</div></div>';
+  // onderste panelen
+  var n=DR.sel,p=vhHeld(n),all=D.hk[n]||[],pl=all.filter(function(x){return vhStatus(x.s)==='klaar';}).length,up=drUpcoming(n);
+  h+='<div class="dr-low"><div class="dr-held"><div class="nmw"><span class="dr-m" style="width:48px;height:48px;font-size:18px;background:'+vhHC(n)+'">'+vhE(vhM2(n))+'</span><div><div class="nm">'+vhE(n)+'</div><div class="pl">'+vhE(p.speler)+' · '+vhE(p.pad)+'</div></div></div>'+
+     '<div style="font-size:13px;color:var(--inkt2)"><strong>'+pl+'</strong> van '+all.length+' haken gespeeld</div><div class="dr-bar"><i style="width:'+(all.length?Math.round(pl/all.length*100):0)+'%;background:'+vhHC(n)+'"></i></div>'+
+     '<button class="dr-open" data-dtl="1">Hele draad openen</button></div>';
+  h+='<div style="display:flex;flex-direction:column;gap:8px;min-width:0"><div class="vh-kop2" style="color:var(--inkt2)">Komende haken, in speelvolgorde</div><div class="dr-next">'+(up.slice(0,3).map(function(x){return drCard(x);}).join('')||'<div class="vh-empty">Geen komende haken.</div>')+'</div></div></div>';
+  B.innerHTML=h;
+}
+function drTimeline(heroes){
+  var D=VH.d,n=DR.sel,p=vhHeld(n),all=D.hk[n]||[],pl=all.filter(function(x){return vhStatus(x.s)==='klaar';}).length;
+  var h='';
+  if(window.innerWidth>900)h+='<button class="vh-knop" data-dtl="0" style="margin-bottom:12px">'+vhIc('left')+'Terug naar het overzicht</button>';
+  h+='<div class="dr-pick">'+heroes.map(function(x){return '<button class="'+(x===n?'on':'')+'" data-dsel="'+vhE(x)+'" style="background:'+vhHC(x)+';color:'+vhHC(x)+'" title="'+vhE(x)+'"><span style="color:var(--h-op)">'+vhE(vhM2(x))+'</span></button>';}).join('')+'</div>';
+  h+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:6px"><span class="dr-m" style="width:48px;height:48px;font-size:18px;background:'+vhHC(n)+'">'+vhE(vhM2(n))+'</span><div><div style="font-family:var(--font-titel);font-size:22px;font-weight:700">'+vhE(n)+'</div><div style="font-size:14px;color:var(--inkt2)">'+vhE(p.speler)+' · '+vhE(p.pad)+' · '+pl+' van '+all.length+' gespeeld</div></div></div>';
+  var cols=drCols(),colOf={};cols.forEach(function(c){c.groups.forEach(function(g){colOf[g]=c;});});
+  h+='<div class="dr-tl">';var last=null;
+  all.forEach(function(x){
+    var c=colOf[x.s.groep];
+    if(c!==last){last=c;h+='<div class="kp'+(c.badge==='NU'?' nu':'')+'">'+(c.badge==='NU'?'Nu · ':'')+vhE(c.label)+'</div>';}
+    var st=vhStatus(x.s);
+    h+='<div class="it"><span class="nd'+(st==='nu'?' nu':'')+'" style="color:'+vhHC(n)+'">'+drMark(x.h,x.s)+'</span>'+drCard(x)+'</div>';
+  });
+  return h+'</div>';
+}
+function drInit(){
+  var root=vhEl('tab-draden');if(!root)return;
+  root.addEventListener('click',function(ev){
+    var b=ev.target.closest('button');if(!b)return;
+    if(b.id==='dr-mh'){DR.mode='helden';drSave();drRender();return;}
+    if(b.id==='dr-mc'){DR.mode='camp';drSave();drRender();return;}
+    if(b.dataset.dsel){DR.sel=b.dataset.dsel;drSave();drRender();return;}
+    if(b.dataset.dtl!==undefined){DR.tl=b.dataset.dtl==='1';drRender();window.scrollTo(0,vhEl('tab-draden').offsetTop-8);return;}
+    if(b.dataset.dgo){vhGoScene(b.dataset.dgo);return;}
+  });
+  var rz=null;window.addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){if(vhEl('tab-draden').classList.contains('on'))drRender();},200);});
 }
 // ---- END VERHAAL ----
 
@@ -2013,7 +2427,7 @@ function ghPush(force,cb){
 function ghForce(){noticeOff();ghPull(function(d,st){if(st==='error')return;ghPush(true);});}
 function rActive(){
   var t='characters';
-  ['characters','campaign','verhaal','milestones','npcs','threads','sessions','combat'].forEach(function(x){
+  ['characters','campaign','verhaal','milestones','npcs','draden','sessions','combat'].forEach(function(x){
     var b=document.getElementById('tb-'+x);
     if(b&&b.classList.contains('on'))t=x;
   });

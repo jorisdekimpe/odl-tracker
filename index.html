@@ -179,6 +179,104 @@
   .cm:last-child { border-bottom:none; }
   .hint { font-size:11px; color:var(--text3); line-height:1.5; margin-top:4px; }
   @media (max-width:560px){ .header { flex-wrap:wrap; } .tabs { overflow-x:auto; } }
+  /* ---- VERHAAL ---- */
+  body.vh-wide .wrap { max-width: 1400px; }
+  .vh-bar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:10px; }
+  .vh-bar input { flex:1 1 200px; min-width:140px; width:auto; }
+  .vh-bar .btn.on { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
+  .vh-stand { font-size:12px; color:var(--text3); margin-bottom:10px; }
+  .vh-lay { display:grid; grid-template-columns:390px 1fr; gap:14px; align-items:start; }
+  .vh-list { max-height:calc(100vh - 150px); overflow-y:auto; padding-right:4px; position:sticky; top:8px; }
+  .vh-det { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px 30px; min-height:300px; }
+  .vh-empty { color:var(--text3); padding:30px 10px; text-align:center; font-size:13px; }
+  .vh-act > button { width:100%; text-align:left; background:none; border:none; padding:10px 4px 6px; font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text2); display:flex; gap:8px; align-items:center; cursor:pointer; font-family:inherit; }
+  .vh-cnt { margin-left:auto; font-weight:400; letter-spacing:0; text-transform:none; color:var(--text3); font-size:12px; }
+  .vh-grp { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:8px; overflow:hidden; }
+  .vh-gh { width:100%; text-align:left; background:none; border:none; padding:10px 12px; display:block; cursor:pointer; font-family:inherit; color:var(--text); }
+  .vh-gt { font-size:14px; font-weight:600; display:flex; gap:8px; align-items:center; }
+  .vh-gs { font-size:12px; color:var(--text3); margin-top:2px; }
+  .vh-grp.grof .vh-gt::after { content:'grof'; font-size:10px; font-weight:600; padding:1px 6px; border-radius:99px; background:var(--gray-bg); color:var(--gray-tx); }
+  .vh-kop { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text3); padding:10px 12px 4px; border-top:1px solid var(--border); }
+  .vh-row { width:100%; text-align:left; background:none; border:none; border-top:1px solid var(--border); padding:9px 12px; display:flex; gap:10px; align-items:flex-start; min-height:44px; cursor:pointer; font-family:inherit; color:var(--text); }
+  .vh-row:hover { background:var(--bg2); }
+  .vh-row.sel { background:var(--amber-bg); }
+  .vh-dot { flex:0 0 10px; height:10px; border-radius:50%; margin-top:6px; border:2px solid var(--text3); }
+  .vh-dot.klaar { background:#27500A; border-color:#27500A; }
+  .vh-dot.nu { background:#854F0B; border-color:#854F0B; box-shadow:0 0 0 3px var(--amber-bd); }
+  .vh-dot.open { border-color:#185FA5; }
+  .vh-dot.optie { border-style:dashed; }
+  .vh-dot.later { border-color:var(--border2); }
+  .vh-dot.skip { background:var(--border2); border-color:var(--border2); }
+  .vh-rt { flex:1; min-width:0; }
+  .vh-rn { font-size:14px; font-weight:500; }
+  .vh-row.klaar .vh-rn, .vh-row.skip .vh-rn { color:var(--text3); }
+  .vh-row.skip .vh-rn { text-decoration:line-through; }
+  .vh-rw { font-size:12px; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vh-rb { display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end; flex:0 0 auto; max-width:110px; }
+  .vh-tag { font-size:10.5px; font-weight:600; padding:2px 6px; border-radius:99px; background:var(--gray-bg); color:var(--gray-tx); white-space:nowrap; }
+  .vh-tag.gevecht { background:var(--red-bg); color:var(--red-tx); } .vh-tag.sociaal { background:var(--blue-bg); color:var(--blue-tx); }
+  .vh-tag.val { background:var(--coral-bg); color:var(--coral-tx); } .vh-tag.keuze { background:var(--purple-bg); color:var(--purple-tx); }
+  .vh-tag.beloning { background:var(--green-bg); color:var(--green-tx); } .vh-tag.ster { background:var(--amber-bg); color:var(--amber-tx); }
+  .vh-fork { padding:8px 10px 10px; background:var(--bg2); }
+  .vh-fork .fl { font-size:12px; color:var(--text2); margin-bottom:6px; }
+  .vh-fork .ft { display:flex; gap:6px; flex-wrap:wrap; }
+  .vh-dh { display:flex; gap:10px; align-items:flex-start; flex-wrap:wrap; margin-bottom:6px; }
+  .vh-dh h2 { font-size:20px; line-height:1.25; flex:1 1 260px; margin:0; }
+  .vh-back { display:none; }
+  .vh-meta { font-size:13px; color:var(--text2); margin-bottom:12px; display:flex; flex-wrap:wrap; gap:6px 14px; }
+  .vh-meta b { color:var(--text); font-weight:600; }
+  .vh-stat { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px; }
+  .vh-stat .btn.on { background:var(--amber-bg); border-color:var(--amber-bd); color:var(--amber-tx); }
+  .vh-stat .btn.on.klaar { background:var(--green-bg); border-color:var(--green-bd); color:var(--green-tx); }
+  .vh-stat .btn.on.open { background:var(--blue-bg); border-color:var(--blue-bd); color:var(--blue-tx); }
+  .vh-stat .btn.on.skip, .vh-stat .btn.on.optie { background:var(--gray-bg); color:var(--gray-tx); }
+  .vh-sec { border-left:4px solid var(--border2); background:var(--bg2); border-radius:0 var(--radius) var(--radius) 0; padding:10px 14px; margin-bottom:12px; font-size:14.5px; line-height:1.5; }
+  .vh-sec h3 { font-size:11.5px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; color:var(--text2); margin-bottom:6px; }
+  .vh-sec.kern { border-color:#854F0B; } .vh-sec.kern p { font-size:15px; }
+  .vh-sec.zeg { border-color:var(--amber-bd); background:var(--amber-bg); color:var(--amber-tx); } .vh-sec.zeg h3 { color:var(--amber-tx); } .vh-sec.zeg li { font-weight:500; }
+  .vh-sec.dia { border-color:var(--blue-bd); } .vh-sec.doen { border-color:var(--teal-bd); }
+  .vh-sec.vij { border-color:var(--red-bd); } .vh-sec.buit { border-color:var(--green-bd); }
+  .vh-sec.haken { border-color:var(--purple-bd); }
+  .vh-sec.dm { border-color:var(--red-tx); background:var(--red-bg); color:var(--red-tx); } .vh-sec.dm h3 { color:var(--red-tx); }
+  .vh-sec.open { border-color:#EF9F27; background:var(--amber-bg); color:var(--amber-tx); } .vh-sec.open h3 { color:var(--amber-tx); }
+  .vh-sec ul { padding-left:18px; } .vh-sec li { margin:3px 0; }
+  .vh-dlg { margin:6px 0 10px; } .vh-dlg .who { font-weight:650; font-size:14px; margin-bottom:2px; }
+  .vh-chk { list-style:none; padding-left:0 !important; }
+  .vh-chk li { display:flex; gap:10px; align-items:flex-start; padding:4px 0; }
+  .vh-chk input { width:20px; height:20px; flex:0 0 20px; margin-top:1px; accent-color:#854F0B; padding:0; }
+  .vh-chk li.done span { color:var(--text3); text-decoration:line-through; }
+  .vh-hk { display:flex; gap:10px; margin:6px 0; }
+  .vh-hk .hn { flex:0 0 112px; font-weight:650; font-size:13.5px; }
+  .vh-hk .hn small { display:block; font-weight:400; color:var(--text3); font-size:11.5px; }
+  .vh-hk .ht { flex:1; }
+  .vh-vs { font-size:10.5px; font-weight:700; padding:1px 6px; border-radius:99px; background:var(--purple-bg); color:var(--purple-tx); margin-right:4px; }
+  .vh-src { font-size:12px; color:var(--text3); margin-top:8px; }
+  .vh-nav { display:flex; gap:8px; justify-content:space-between; margin-top:20px; flex-wrap:wrap; }
+  .vh-foe { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); margin:8px 0; overflow:hidden; }
+  .vh-fh { display:flex; gap:10px; align-items:center; flex-wrap:wrap; padding:8px 11px; }
+  .vh-fh .fn { font-weight:650; flex:1 1 160px; cursor:pointer; }
+  .vh-fh .fq { font-weight:700; color:var(--red-tx); }
+  .vh-fh .fs { font-size:12.5px; color:var(--text2); white-space:nowrap; }
+  .vh-fnote { font-size:13px; color:var(--text2); padding:0 11px 9px; }
+  .vh-sb { border-top:1px solid var(--border); padding:10px 12px 12px; font-size:13.5px; background:var(--bg); line-height:1.45; }
+  .vh-sb .sbn { font-size:17px; font-weight:700; color:#8C3A1E; font-variant:small-caps; }
+  .vh-sb .sbm { font-style:italic; color:var(--text2); margin-bottom:6px; }
+  .vh-sb hr { border:none; border-top:2px solid var(--red-bd); margin:6px 0; }
+  .vh-sb .abil { display:grid; grid-template-columns:repeat(6,1fr); text-align:center; margin:4px 0; }
+  .vh-sb .abil b { display:block; font-size:11px; color:#8C3A1E; }
+  .vh-sb p { margin:3px 0; }
+  .vh-sb h4 { color:#8C3A1E; border-bottom:1px solid var(--red-bd); margin:8px 0 4px; font-variant:small-caps; font-size:15px; }
+  .vh-sb .note { background:var(--amber-bg); color:var(--amber-tx); padding:6px 8px; border-radius:var(--radius-sm); margin-top:8px; }
+  .vh-sb .ssrc { font-size:11px; color:var(--text3); margin-top:6px; }
+  @media (max-width:900px) {
+    .vh-lay { display:block; }
+    .vh-list { max-height:none; position:static; }
+    .vh-det { display:none; }
+    .vh-lay.showd .vh-list { display:none; }
+    .vh-lay.showd .vh-det { display:block; }
+    .vh-back { display:inline-flex; }
+  }
+  /* ---- END VERHAAL ---- */
 </style>
 </head>
 <body>
@@ -222,6 +320,7 @@
   <div class="tabs">
     <button class="tab on" id="tb-characters" onclick="ST('characters')">Players</button>
     <button class="tab" id="tb-campaign" onclick="ST('campaign')">Campaign</button>
+    <button class="tab" id="tb-verhaal" onclick="ST('verhaal')">📜 Verhaal</button>
     <button class="tab" id="tb-milestones" onclick="ST('milestones')">Milestones</button>
     <button class="tab" id="tb-npcs" onclick="ST('npcs')">NPCs</button>
     <button class="tab" id="tb-threads" onclick="ST('threads')">Plot Threads</button>
@@ -367,6 +466,21 @@
       </div>
     </div>
   </div>
+  <!-- VERHAAL -->
+  <div id="tab-verhaal" class="sec">
+    <div class="vh-bar">
+      <input id="vh-q" type="search" placeholder="Zoek scène, NPC, monster…" autocomplete="off">
+      <button class="btn s" id="vh-open" title="Verberg wat gespeeld of overgeslagen is">Enkel open</button>
+      <button class="btn s" id="vh-sbm" title="Alle statblokken">Statblokken</button>
+      <button class="btn s" id="vh-reload" title="Haal de nieuwste verhaal.json op">↻</button>
+    </div>
+    <div class="vh-stand" id="vh-stand">Verhaal laden…</div>
+    <div class="vh-lay" id="vh-lay">
+      <nav class="vh-list" id="vh-list"><div class="vh-empty">Laden…</div></nav>
+      <div class="vh-det" id="vh-det"><div class="vh-empty">Kies links een scène.</div></div>
+    </div>
+  </div>
+
   <!-- COMBAT -->
   <div id="tab-combat" class="sec">
     <div class="row" style="margin-bottom:12px;">
@@ -828,11 +942,12 @@ var S={
   threads:JSON.parse(JSON.stringify(DTHREADS)),
   sessions:[],nal:-1,nfilt:'All',
   combat:{combatants:[],current:-1,round:0},
-  lvl:1
+  lvl:1,
+  vs:{st:{},chk:{}}
 };
 
 var KEY='odl-dm-tracker-v2';
-function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat','lvl'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
+function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat','lvl','vs'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
 function SS(){
   try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Opslaan op dit toestel mislukt: '+e.message);}
   if(typeof ghOn==='function'&&ghOn()&&!ghBooting){
@@ -846,7 +961,8 @@ function show(id){document.getElementById(id).style.display='block';}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(function(w){return w[0]||'';}).join('').toUpperCase()||'?';}
 
 function ST(t){
-  ['characters','campaign','milestones','npcs','threads','sessions','combat'].forEach(function(x){
+  document.body.classList.remove('vh-wide');
+  ['characters','campaign','verhaal','milestones','npcs','threads','sessions','combat'].forEach(function(x){
     document.getElementById('tab-'+x).classList.remove('on');
     document.getElementById('tb-'+x).classList.remove('on');
   });
@@ -854,6 +970,7 @@ function ST(t){
   document.getElementById('tb-'+t).classList.add('on');
   if(t==='characters')rP();
   if(t==='campaign')rC();
+  if(t==='verhaal')rV();
   if(t==='milestones')rM();
   if(t==='npcs')rN();
   if(t==='threads')rT();
@@ -1579,6 +1696,225 @@ function dDrop(e,i){
 // ---- END COMBAT ----
 
 
+// ---- VERHAAL ----
+// Verhaalstroom: de inhoud komt uit verhaal.json in de data-repo (Claude werkt die bij na elke sessie);
+// status en afgevinkte checks staan in S.vs en gaan mee met campaign.json naar GitHub.
+var VH={d:null,sb:{},sel:null,q:'',onlyOpen:false,sbMode:false,loadedAt:0,busy:false,ui:{open:{},fork:{}}};
+var VH_CACHE='odl-verhaal-cache',VH_UI='odl-verhaal-ui';
+try{var _u=JSON.parse(localStorage.getItem(VH_UI)||'null');if(_u){VH.ui.open=_u.open||{};VH.ui.fork=_u.fork||{};}}catch(e){}
+function vhUiSave(){try{localStorage.setItem(VH_UI,JSON.stringify(VH.ui));}catch(e){}}
+function vhS(){if(!S.vs||typeof S.vs!=='object')S.vs={st:{},chk:{}};S.vs.st=S.vs.st||{};S.vs.chk=S.vs.chk||{};return S.vs;}
+var VH_ST={klaar:'Gespeeld',nu:'Nu',open:'Open',optie:'Optioneel',later:'Later',skip:'Overgeslagen'};
+function vhE(s){return ghEsc(s);}
+function vhEl(id){return document.getElementById(id);}
+
+function vhFetch(){
+  var owner=GH.owner||'jorisdekimpe',repo=GH.repo||'odl-data',br=GH.branch||'main';
+  if(ghOn()){
+    return ghApi(ghUrl('/contents/verhaal.json?ref='+encodeURIComponent(br))).then(function(r){
+      if(!r.ok)throw new Error('GitHub '+r.status);return r.json();
+    }).then(function(j){return b64d(j.content);});
+  }
+  return fetch('https://raw.githubusercontent.com/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/'+encodeURIComponent(br)+'/verhaal.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();});
+}
+function vhUse(txt,cached){
+  var d=JSON.parse(txt);
+  d.byId={};d.scenes.forEach(function(s,i){s._i=i;d.byId[s.id]=s;});
+  d.gById={};d.groepen.forEach(function(g){d.gById[g.id]=g;});
+  d.held={};d.spelers.forEach(function(p){d.held[p.held]=p;});
+  VH.d=d;
+  vhEl('vh-stand').textContent=d.meta.stand+' · verhaal bijgewerkt '+d.meta.bijgewerkt+(cached?' · offline kopie':'');
+}
+function vhLoad(force){
+  if(VH.busy)return;
+  if(VH.d&&!force&&Date.now()-VH.loadedAt<300000){vhRender();return;}
+  if(!VH.d){try{var c=localStorage.getItem(VH_CACHE);if(c){vhUse(c,true);vhRender();}}catch(e){}}
+  VH.busy=true;vhEl('vh-reload').textContent='…';
+  var pSb=Object.keys(VH.sb).length?Promise.resolve():fetch('statblokken.json').then(function(r){return r.json();}).then(function(j){VH.sb=j;}).catch(function(){});
+  Promise.all([pSb,vhFetch()]).then(function(res){
+    var t=res[1];vhUse(t,false);VH.loadedAt=Date.now();try{localStorage.setItem(VH_CACHE,t);}catch(e){}
+  }).catch(function(err){
+    if(!VH.d)vhEl('vh-list').innerHTML='<div class="vh-empty">Kon het verhaal niet laden: '+vhE(err.message)+'</div>';
+  }).then(function(){VH.busy=false;vhEl('vh-reload').textContent='↻';if(VH.d)vhRender();});
+}
+function rV(){document.body.classList.add('vh-wide');vhLoad(false);}
+
+function vhStatus(s){return vhS().st[s.id]||s.status;}
+function vhSetStatus(id,v){var s=VH.d.byId[id],st=vhS().st;if(v===s.status)delete st[id];else st[id]=v;SS();vhRenderList();vhRenderDetail();}
+function vhHay(s){
+  if(s._h)return s._h;
+  var p=[s.titel,s.waar,s.kern,s.wanneer,s.kop];
+  ['zeg','doen','buit','dm','open'].forEach(function(k){(s[k]||[]).forEach(function(x){p.push(x);});});
+  (s.dialoog||[]).forEach(function(d){p.push(d.wie);(d.kern||[]).forEach(function(x){p.push(x);});});
+  (s.haken||[]).forEach(function(h){p.push(h.h,h.t);});
+  (s.vijanden||[]).forEach(function(v){p.push(v.naam,v.noot,(VH.sb[v.k]||{}).n);});
+  return s._h=p.join(' ').toLowerCase();
+}
+function vhVisible(s){var st=vhStatus(s);if(VH.onlyOpen&&(st==='klaar'||st==='skip'))return false;if(VH.q&&vhHay(s).indexOf(VH.q)<0)return false;return true;}
+function vhCounts(sc){return sc.filter(function(s){var t=vhStatus(s);return t==='klaar'||t==='skip';}).length+'/'+sc.length;}
+function vhIsOpen(k,def){return VH.ui.open[k]===undefined?def:VH.ui.open[k];}
+function vhRowHtml(s){
+  var st=vhStatus(s),tags='',nf=(s.vijanden||[]).reduce(function(a,v){return a+(v.q||1);},0);
+  if(s.ster)tags+='<span class="vh-tag ster">★</span>';
+  if(s.type&&s.type!=='verhaal')tags+='<span class="vh-tag '+vhE(s.type)+'">'+vhE(s.type)+'</span>';
+  if(nf&&s.type!=='gevecht')tags+='<span class="vh-tag gevecht">⚔ '+nf+'</span>';
+  return '<button class="vh-row '+st+(VH.sel===s.id?' sel':'')+'" data-vid="'+vhE(s.id)+'" id="vhr-'+vhE(s.id)+'"><span class="vh-dot '+st+'"></span><span class="vh-rt"><div class="vh-rn">'+vhE(s.titel)+'</div>'+(s.waar?'<div class="vh-rw">'+vhE(s.waar)+'</div>':'')+'</span><span class="vh-rb">'+tags+'</span></button>';
+}
+function vhBody(sc){var h='',k=null;sc.forEach(function(s){if(s.kop&&s.kop!==k){k=s.kop;h+='<div class="vh-kop">'+vhE(k)+'</div>';}h+=vhRowHtml(s);});return h;}
+function vhRender(){vhRenderList();if(VH.fromHash&&VH.sel&&VH.d.byId[VH.sel]){VH.fromHash=false;vhSelect(VH.sel);vhScrollRow(VH.sel);}else if(VH.sel&&VH.d.byId[VH.sel])vhRenderDetail();else{var f=VH.d.scenes.find(function(s){return vhStatus(s)==='nu';});if(f&&window.innerWidth>900){vhSelect(f.id);}}}
+function vhRenderList(){
+  var D=VH.d;if(!D)return;
+  if(VH.sbMode){vhRenderSbList();return;}
+  var h='',any=false;
+  D.aktes.forEach(function(a){
+    var gs=D.groepen.filter(function(g){return g.akte===a.id;});
+    var all=D.scenes.filter(function(s){return D.gById[s.groep].akte===a.id;});
+    if(!all.filter(vhVisible).length)return;any=true;
+    var ao=VH.q?true:vhIsOpen('a:'+a.id,a.id==='A1');
+    h+='<section class="vh-act"><button data-vtog="a:'+vhE(a.id)+'">'+(ao?'▾':'▸')+' '+vhE(a.titel)+'<span class="vh-cnt">'+vhCounts(all)+'</span></button>';
+    if(ao){
+      var i=0;
+      while(i<gs.length){
+        var g=gs[i];
+        if(g.fork){
+          var fg=[];while(i<gs.length&&gs[i].fork===g.fork){fg.push(gs[i]);i++;}
+          if(VH.q){fg.forEach(function(x){var xs=D.scenes.filter(function(s){return s.groep===x.id&&vhVisible(s);});if(xs.length)h+='<div class="vh-grp"><div class="vh-gh"><div class="vh-gt">'+vhE(x.titel)+'</div></div>'+vhBody(xs)+'</div>';});continue;}
+          var cur=VH.ui.fork[g.fork];if(!fg.some(function(x){return x.id===cur;}))cur=fg[0].id;
+          var cg=D.gById[cur],call=D.scenes.filter(function(s){return s.groep===cur;});
+          h+='<div class="vh-grp"><div class="vh-fork"><div class="fl">Volgende labour — wissel:</div><div class="ft">'+fg.map(function(x){
+            var xs=D.scenes.filter(function(s){return s.groep===x.id;});
+            return '<button class="btn s'+(x.id===cur?' p':'')+'" data-vfork="'+vhE(g.fork)+'" data-vg="'+vhE(x.id)+'">'+vhE(x.tab||x.titel)+' <span style="opacity:.7">'+vhCounts(xs)+'</span></button>';}).join('')+'</div></div>';
+          h+='<div class="vh-gh"><div class="vh-gt">'+vhE(cg.titel)+'<span class="vh-cnt">'+vhCounts(call)+'</span></div>'+(cg.sub?'<div class="vh-gs">'+vhE(cg.sub)+'</div>':'')+'</div>';
+          h+=vhBody(call.filter(vhVisible))+'</div>';
+          continue;
+        }
+        var sc=D.scenes.filter(function(s){return s.groep===g.id;}),sv=sc.filter(vhVisible);i++;
+        if(!sv.length)continue;
+        var go=VH.q?true:vhIsOpen('g:'+g.id,!g.dicht);
+        h+='<div class="vh-grp'+(g.grof?' grof':'')+'"><button class="vh-gh" data-vtog="g:'+vhE(g.id)+'"><div class="vh-gt">'+(go?'▾':'▸')+' '+vhE(g.titel)+'<span class="vh-cnt">'+vhCounts(sc)+'</span></div>'+(g.sub?'<div class="vh-gs">'+vhE(g.sub)+'</div>':'')+'</button>';
+        if(go)h+=vhBody(sv);
+        h+='</div>';
+      }
+    }
+    h+='</section>';
+  });
+  vhEl('vh-list').innerHTML=any?h:'<div class="vh-empty">Niets gevonden.</div>';
+}
+function vhScrollRow(id){var e=vhEl('vhr-'+id);if(e)e.scrollIntoView({block:'nearest'});}
+function vhSelect(id){
+  VH.sel=id;
+  document.querySelectorAll('.vh-row.sel').forEach(function(e){e.classList.remove('sel');});
+  var r=vhEl('vhr-'+id);if(r)r.classList.add('sel');
+  vhRenderDetail();vhEl('vh-lay').classList.add('showd');
+  if(window.innerWidth<=900)window.scrollTo(0,vhEl('vh-lay').offsetTop-8);
+  try{history.replaceState(null,'','#verhaal/'+id);}catch(e){}
+}
+function vhTxt(t){return vhE(t).replace(/^Voorstel: /,'<span class="vh-vs">voorstel</span>');}
+function vhUl(a){return '<ul>'+a.map(function(x){return '<li>'+vhTxt(x)+'</li>';}).join('')+'</ul>';}
+function vhSec(c,t,b){return '<div class="vh-sec '+c+'"><h3>'+t+'</h3>'+b+'</div>';}
+function vhCR(b){var c=(b.x||[]).find(function(x){return x[0]==='Challenge';});return c?c[1].split(' ')[0]:'—';}
+function vhRenderDetail(){
+  var D=VH.d;if(!D||!VH.sel||!D.byId[VH.sel])return;
+  var s=D.byId[VH.sel],st=vhStatus(s),g=D.gById[s.groep],h='',over=vhS().st[s.id];
+  h+='<div class="vh-dh"><button class="btn s vh-back" data-vback="1">← Lijst</button><h2>'+(s.ster?'★ ':'')+vhE(s.titel)+'</h2></div>';
+  h+='<div class="vh-meta">'+(s.waar?'<span><b>Waar</b> '+vhE(s.waar)+'</span>':'')+'<span><b>Groep</b> '+vhE(g.titel)+(s.kop?' · '+vhE(s.kop):'')+'</span>'+(s.type?'<span><b>Type</b> '+vhE(s.type)+'</span>':'')+'</div>';
+  h+='<div class="vh-stat">'+['nu','open','klaar','optie','skip'].map(function(k){return '<button class="btn s '+k+(st===k?' on':'')+'" data-vst="'+k+'">'+VH_ST[k]+'</button>';}).join('')+(over?'<button class="btn s" data-vst="'+vhE(s.status)+'" title="Terug naar de status uit verhaal.json">↺ '+vhE(VH_ST[s.status])+'</button>':'')+'</div>';
+  if(s.wanneer)h+=vhSec('kern','Wanneer','<p>'+vhTxt(s.wanneer)+'</p>');
+  if(s.kern)h+=vhSec('kern','Scène','<p>'+vhTxt(s.kern)+'</p>');
+  if(s.zeg&&s.zeg.length)h+=vhSec('zeg','Moet je zeker vertellen',vhUl(s.zeg));
+  if(s.dialoog&&s.dialoog.length)h+=vhSec('dia','Belangrijke dialogen',s.dialoog.map(function(d){return '<div class="vh-dlg"><div class="who">'+vhE(d.wie)+'</div>'+vhUl(d.kern||[])+'</div>';}).join(''));
+  if(s.doen&&s.doen.length){var c=vhS().chk[s.id]||{};h+=vhSec('doen','Interacties en checks','<ul class="vh-chk">'+s.doen.map(function(x,i){return '<li class="'+(c[i]?'done':'')+'"><input type="checkbox" data-vchk="'+i+'"'+(c[i]?' checked':'')+'><span>'+vhTxt(x)+'</span></li>';}).join('')+'</ul>');}
+  if(s.vijanden&&s.vijanden.length){
+    var fight=s.vijanden.some(function(v){return VH.sb[v.k]&&!v.opt;});
+    h+=vhSec('vij','Vijanden en statblokken',(fight?'<div style="margin-bottom:4px;"><button class="btn s p" data-vcall="1">⚔ Gevecht naar Combat</button> <span style="font-size:12px;color:var(--text3)">zonder wat op "indien nodig" staat</span></div>':'')+s.vijanden.map(function(v,i){return vhFoe(v,i);}).join(''));
+  }
+  if(s.buit&&s.buit.length)h+=vhSec('buit','Buit',vhUl(s.buit));
+  if(s.haken&&s.haken.length)h+=vhSec('haken','Haken per held',s.haken.map(function(k){var p=D.held[k.h];return '<div class="vh-hk"><div class="hn">'+vhE(k.h)+(p?'<small>'+vhE(p.speler)+' · '+vhE(p.pad)+'</small>':'')+'</div><div class="ht">'+vhTxt(k.t)+'</div></div>';}).join(''));
+  if(s.dm&&s.dm.length)h+=vhSec('dm','Enkel voor de DM',vhUl(s.dm));
+  if(s.open&&s.open.length)h+=vhSec('open','Nog te beslissen',vhUl(s.open));
+  if(s.bron)h+='<div class="vh-src">Bron: '+vhE(s.bron)+'</div>';
+  var pv=D.scenes[s._i-1],nx=D.scenes[s._i+1];
+  h+='<div class="vh-nav">'+(pv?'<button class="btn s" data-vgo="'+vhE(pv.id)+'">← '+vhE(pv.titel)+'</button>':'<span></span>')+(nx?'<button class="btn s" data-vgo="'+vhE(nx.id)+'">'+vhE(nx.titel)+' →</button>':'')+'</div>';
+  vhEl('vh-det').innerHTML=h;
+}
+function vhFoe(v,i){
+  var b=VH.sb[v.k],q=v.q||1,name=v.naam||(b?b.n:v.k);
+  var h='<div class="vh-foe"><div class="vh-fh"><span class="fn" data-vsb="'+i+'">▸ '+vhE(name)+(v.naam&&b?' <span style="font-weight:400;color:var(--text3)">('+vhE(b.n)+')</span>':'')+'</span><span class="fq">×'+q+'</span>'+(v.opt?'<span class="vh-tag" title="Gaat niet mee met de Combat-knop bovenaan">indien nodig</span>':'')+(b?'<span class="fs">AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+' · CR '+vhE(vhCR(b))+'</span><button class="btn s" data-vc="'+i+'" title="Voeg toe aan de initiative tracker">⚔ +'+q+'</button>':'<span class="fs">geen statblok</span>')+'</div>';
+  if(v.noot)h+='<div class="vh-fnote">'+vhTxt(v.noot)+'</div>';
+  h+='<div id="vhsb-'+i+'" style="display:none">'+(b?vhSbHtml(b):'')+'</div></div>';
+  return h;
+}
+function vhMod(n){var m=Math.floor((n-10)/2);return (m>=0?'+':'')+m;}
+function vhSbHtml(b){
+  var h='<div class="vh-sb"><div class="sbn">'+vhE(b.n)+'</div><div class="sbm">'+vhE(b.m)+'</div><hr>';
+  h+='<p><b>Armor Class</b> '+vhE(b.ac)+'</p><p><b>Hit Points</b> '+vhE(b.hp)+'</p><p><b>Speed</b> '+vhE(b.spd)+'</p><hr>';
+  h+='<div class="abil">'+['STR','DEX','CON','INT','WIS','CHA'].map(function(a,i){return '<div><b>'+a+'</b>'+b.ab[i]+' ('+vhMod(b.ab[i])+')</div>';}).join('')+'</div><hr>';
+  (b.x||[]).forEach(function(x){h+='<p><b>'+vhE(x[0])+'</b> '+vhE(x[1])+'</p>';});
+  if(b.tr&&b.tr.length){h+='<hr>';b.tr.forEach(function(t){h+='<p><b><i>'+vhE(t[0])+'.</i></b> '+vhE(t[1]).replace(/\n/g,'<br>')+'</p>';});}
+  [['ac_','Actions'],['bo','Bonus Actions'],['re','Reactions'],['le','Legendary Actions']].forEach(function(k){var l=b[k[0]];if(l&&l.length){h+='<h4>'+k[1]+'</h4>';l.forEach(function(t){h+='<p><b><i>'+vhE(t[0])+'.</i></b> '+vhE(t[1]).replace(/\n/g,'<br>')+'</p>';});}});
+  if(b.note)h+='<div class="note">'+vhE(b.note)+'</div>';
+  return h+'<div class="ssrc">'+vhE(b.src||'')+'</div></div>';
+}
+// vijanden naar de initiative tracker (zelfde vorm als fzAdd)
+function vhToCombat(v,quiet){
+  var b=VH.sb[v.k];if(!b)return[];
+  var base=v.naam||b.n,mod=Math.floor((b.ab[1]-10)/2),ac=parseInt(b.ac,10)||10,hp=b.hpn||parseInt(b.hp,10)||1,out=[];
+  for(var k=0;k<(v.q||1);k++){
+    var same=S.combat.combatants.filter(function(c){return c.base===base;}),mx=0;
+    same.forEach(function(c){mx=Math.max(mx,c.num||1);});
+    var num=same.length?mx+1:1,roll=fzRoll();
+    var c={id:Date.now()+'_'+Math.random().toString(36).slice(2,8),name:((v.q||1)>1||same.length)?base+' '+num:base,base:base,num:num,
+      init:roll+mod,roll:roll,mod:mod,dex:mod,ac:ac,hp:hp,maxHp:hp,isPlayer:false,active:true,side:'f',node:VH.sel};
+    fzInsert(c);out.push(c);
+  }
+  if(!quiet){SS();fzToast(out);}
+  return out;
+}
+function vhRenderSbList(){
+  var sb=VH.sb,keys=Object.keys(sb).sort(function(a,b){return sb[a].n.localeCompare(sb[b].n);});
+  if(VH.q)keys=keys.filter(function(k){return (sb[k].n+' '+sb[k].m+' '+(sb[k].note||'')).toLowerCase().indexOf(VH.q)>=0;});
+  var used={};VH.d.scenes.forEach(function(s){(s.vijanden||[]).forEach(function(v){used[v.k]=(used[v.k]||0)+1;});});
+  vhEl('vh-list').innerHTML='<div class="vh-grp"><div class="vh-gh"><div class="vh-gt">Statblokken<span class="vh-cnt">'+keys.length+'</span></div></div>'+keys.map(function(k){var b=sb[k];return '<button class="vh-row" data-vsbk="'+vhE(k)+'"><span class="vh-rt"><div class="vh-rn">'+vhE(b.n)+'</div><div class="vh-rw">CR '+vhE(vhCR(b))+' · AC '+vhE(String(b.ac).split(' ')[0])+' · HP '+vhE(String(b.hp).split(' ')[0])+(used[k]?' · '+used[k]+'× in het verhaal':'')+'</div></span></button>';}).join('')+'</div>';
+}
+function vhShowSb(k){
+  var b=VH.sb[k];if(!b)return;
+  var used=VH.d.scenes.filter(function(s){return (s.vijanden||[]).some(function(v){return v.k===k;});});
+  vhEl('vh-det').innerHTML='<div class="vh-dh"><button class="btn s vh-back" data-vback="1">← Lijst</button><h2>'+vhE(b.n)+'</h2></div>'+vhSbHtml(b)+(used.length?'<div class="vh-sec" style="margin-top:12px"><h3>Komt voor in</h3><ul>'+used.map(function(s){return '<li><a href="#" data-vgo2="'+vhE(s.id)+'">'+vhE(s.titel)+'</a></li>';}).join('')+'</ul></div>':'');
+  vhEl('vh-lay').classList.add('showd');
+}
+function vhInit(){
+  var root=vhEl('tab-verhaal');if(!root)return;
+  root.addEventListener('click',function(ev){
+    var a=ev.target.closest('[data-vgo2]');if(a){ev.preventDefault();VH.sbMode=false;vhEl('vh-sbm').classList.remove('on');vhRenderList();vhSelect(a.dataset.vgo2);return;}
+    var t=ev.target.closest('[data-vsb]');if(t){var w=vhEl('vhsb-'+t.dataset.vsb);if(w){var o=w.style.display==='none';w.style.display=o?'block':'none';t.innerHTML=t.innerHTML.replace(o?'▸':'▾',o?'▾':'▸');}return;}
+    var b=ev.target.closest('button');if(!b)return;
+    var D=VH.d;
+    if(b.dataset.vtog){var k=b.dataset.vtog,g=k.slice(2),def=k[0]==='a'?(g==='A1'):!(D.gById[g]&&D.gById[g].dicht);VH.ui.open[k]=!vhIsOpen(k,def);vhUiSave();vhRenderList();return;}
+    if(b.dataset.vfork){VH.ui.fork[b.dataset.vfork]=b.dataset.vg;vhUiSave();vhRenderList();return;}
+    if(b.dataset.vid){vhSelect(b.dataset.vid);return;}
+    if(b.dataset.vsbk){vhShowSb(b.dataset.vsbk);return;}
+    if(b.dataset.vback){vhEl('vh-lay').classList.remove('showd');vhScrollRow(VH.sel);return;}
+    if(b.dataset.vst){vhSetStatus(VH.sel,b.dataset.vst);return;}
+    if(b.dataset.vgo){vhSelect(b.dataset.vgo);vhScrollRow(b.dataset.vgo);return;}
+    if(b.dataset.vc!==undefined){vhToCombat(D.byId[VH.sel].vijanden[+b.dataset.vc]);return;}
+    if(b.dataset.vcall){var out=[];D.byId[VH.sel].vijanden.forEach(function(v){if(!v.opt)out=out.concat(vhToCombat(v,true));});SS();fzToast(out);return;}
+  });
+  root.addEventListener('change',function(ev){
+    var t=ev.target;if(t.dataset.vchk===undefined)return;
+    var all=vhS().chk,c=all[VH.sel]||{};if(t.checked)c[t.dataset.vchk]=1;else delete c[t.dataset.vchk];
+    if(Object.keys(c).length)all[VH.sel]=c;else delete all[VH.sel];
+    t.parentNode.className=t.checked?'done':'';SS();
+  });
+  var qT=null;
+  vhEl('vh-q').addEventListener('input',function(){clearTimeout(qT);var v=this.value;qT=setTimeout(function(){VH.q=v.trim().toLowerCase();vhRenderList();},120);});
+  vhEl('vh-open').addEventListener('click',function(){VH.onlyOpen=!VH.onlyOpen;this.classList.toggle('on',VH.onlyOpen);vhRenderList();});
+  vhEl('vh-sbm').addEventListener('click',function(){VH.sbMode=!VH.sbMode;this.classList.toggle('on',VH.sbMode);vhRenderList();});
+  vhEl('vh-reload').addEventListener('click',function(){vhLoad(true);});
+}
+// ---- END VERHAAL ----
+
+
 // ---- GITHUB SYNC ----
 var GKEY='odl-gh-cfg', DKEY='odl-dirty';
 var GH={owner:'',repo:'',path:'campaign.json',branch:'main',token:''};
@@ -1618,7 +1954,7 @@ function notice(kind,txt,btns){
 }
 function noticeOff(){var e=document.getElementById('ghNotice');if(e)e.style.display='none';}
 
-var SNAPKEYS=['players','ns','sn','npcs','threads','sessions','nfilt','combat','lvl'];
+var SNAPKEYS=['players','ns','sn','npcs','threads','sessions','nfilt','combat','lvl','vs'];
 function snap(){var o={};SNAPKEYS.forEach(function(k){o[k]=S[k];});return o;}
 function applySnap(d){SNAPKEYS.forEach(function(k){if(d[k]!==undefined)S[k]=d[k];});}
 
@@ -1677,7 +2013,7 @@ function ghPush(force,cb){
 function ghForce(){noticeOff();ghPull(function(d,st){if(st==='error')return;ghPush(true);});}
 function rActive(){
   var t='characters';
-  ['characters','campaign','milestones','npcs','threads','sessions','combat'].forEach(function(x){
+  ['characters','campaign','verhaal','milestones','npcs','threads','sessions','combat'].forEach(function(x){
     var b=document.getElementById('tb-'+x);
     if(b&&b.classList.contains('on'))t=x;
   });
@@ -1790,7 +2126,8 @@ function ghDisconnect(){
 
 ghLoadCfg();
 LS();
-rP();
+vhInit();
+if(/^#verhaal/.test(location.hash)){var _vp=location.hash.split('/')[1];if(_vp){VH.sel=decodeURIComponent(_vp);VH.fromHash=true;}ST('verhaal');}else rP();
 ghBoot();
 
 if(navigator.storage&&navigator.storage.persist){navigator.storage.persist();}

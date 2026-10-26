@@ -1,5 +1,5 @@
-var CACHE='odl-shell-v9';
-var SHELL=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
+var CACHE='odl-shell-v10';
+var SHELL=['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png','./statblokken.json'];
 
 self.addEventListener('install',function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){return c.addAll(SHELL);}).then(function(){return self.skipWaiting();}));

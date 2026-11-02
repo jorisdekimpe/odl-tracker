@@ -261,6 +261,22 @@ a{color:var(--zee)}
 .mini i{display:block;height:100%}
 .pbody{padding:0 0 12px 52px}
 
+/* NPC's */
+.zoekveld{position:relative;margin-bottom:10px}
+.zoekveld svg{position:absolute;left:14px;top:13px;color:var(--inkt3);pointer-events:none}
+.zoekveld input{padding-left:44px;margin:0}
+.keuze{min-height:40px;padding:0 12px;border-radius:20px;border:1px solid var(--lijn-sterk);background:var(--vlak);font-weight:600;font-size:14px;color:var(--inkt2);display:inline-flex;align-items:center;gap:4px}
+.keuze.on{border-color:var(--zee);color:var(--zee)}
+.groepkop{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--inkt2);margin:16px 0 6px}
+.npcrij{min-height:60px}
+.npcrij .chip{vertical-align:2px;margin-left:4px}
+.houding{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:600;white-space:nowrap;flex:none;text-transform:lowercase}
+.houding.vriendelijk{color:var(--goed)} .houding.vijandig{color:var(--fout)} .houding.neutraal{color:var(--inkt2)} .houding.onbekend{color:var(--inkt3)}
+.terug{min-height:44px;background:none;border:0;color:var(--zee);font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:4px;margin-left:-6px;padding:0 6px}
+.npcnaam{font-family:var(--titel);font-size:32px;line-height:1.1;margin-top:6px}
+.lore2{background:var(--vlak2)}
+.lore2 p{font-family:var(--titel);font-style:italic;font-size:17px;margin-top:4px;color:var(--inkt)}
+
 /* blad (modal) */
 .modal{position:fixed;inset:0;z-index:20;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
 .modal.on{display:flex}
@@ -299,9 +315,13 @@ a{color:var(--zee)}
 <main>
   <section class="sec on" id="s-verhaal"></section>
   <section class="sec" id="s-npcs">
-    <input class="search" id="npcQ" type="search" placeholder="Zoek een naam of plek…" oninput="renderNpcs()">
-    <div class="filters" id="npcF"></div>
-    <div id="npcList"></div>
+    <div id="npcLijst">
+      <div class="zoekveld"><svg class="i s" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input class="search" id="npcQ" type="search" placeholder="Zoek naam, plek of notitie" aria-label="Zoek naam, plek of notitie" oninput="renderNpcs()"></div>
+      <div class="filt" id="npcF"></div>
+      <div class="row" id="npcK" style="gap:8px;margin-bottom:4px"></div>
+      <div id="npcList"></div>
+    </div>
+    <div id="npcPagina" class="hide"></div>
   </section>
   <section class="sec" id="s-held"></section>
   <section class="sec" id="s-party"></section>
@@ -556,7 +576,7 @@ function loadPdfJs(){
 function openSheet(owner,sid){
   var x=owner===heroId()?inv():party[owner];if(!x)return;
   var s=null;x.sheets.forEach(function(q){if(q.id===sid)s=q;});if(!s)return;
-  $('vTitle').textContent=s.name;$('vBody').innerHTML='<div class="empty">Laden…</div>';$('viewer').classList.add('on');
+  ovOpen();$('vTitle').textContent=s.name;$('vBody').innerHTML='<div class="empty">Laden…</div>';$('viewer').classList.add('on');
   vState={scale:1,doc:null,url:null,kind:s.type};
   loadSheetBlob(owner,s).then(function(b){
     if(s.type==='img'){vState.url=URL.createObjectURL(b);renderViewer();return;}
@@ -575,6 +595,7 @@ function closeViewer(){$('viewer').classList.remove('on');if(vState.url)URL.revo
 /* ============ tabs ============ */
 function tab(t){
   if(!$('s-'+t))t='verhaal';
+  npcSel=null;
   curTab=t;lsSet('zs.tab',t);
   document.querySelectorAll('.sec').forEach(function(s){s.classList.toggle('on',s.id==='s-'+t);});
   document.querySelectorAll('.nav button').forEach(function(b){var on=b.getAttribute('data-t')===t;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
@@ -644,7 +665,6 @@ function renderVerhaal(){
   if(D.recapLink)h.push('<a class="recaplink" href="'+esc(D.recapLink)+'" target="_blank" rel="noopener">Volledige spelersrecap op Homebrewery '+ic('extern','s')+'</a>');
   $('s-verhaal').innerHTML=h.join('');
 }
-function openNpc(naam){tab('npcs');$('npcQ').value=npcNaamKort(naam);renderNpcs();}
 
 /* ============ buit met geheugen ============ */
 function slug(t){return String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
@@ -683,21 +703,85 @@ function neemBuit(i){
 function toonBuitItem(k){var x=inv(),id=null;if(x)x.items.forEach(function(it){if(it.buit===k&&!it.del)id=it.id;});tab('held');if(!id)return;setTimeout(function(){var e=$('it-'+id);if(!e)return;e.scrollIntoView({block:'center'});e.classList.remove('licht');void e.offsetWidth;e.classList.add('licht');},60);}
 
 /* ============ NPC's ============ */
-var NF=[['alle','Alle'],['ontmoet','Ontmoet'],['bij naam','Enkel bij naam'],['dood','Dood'],['vriendelijk','Vriendelijk'],['vijandig','Vijandig']];
+var NF=[['alle','Alle'],['ontmoet','Ontmoet'],['bij naam','Bij naam'],['dood','Dood']];
+var HOUD=[['alle','Alle'],['vriendelijk','Vriendelijk'],['vijandig','Vijandig'],['neutraal','Neutraal'],['onbekend','Onbekend']];
+var GROEP=[['sessie','Per sessie'],['plek','Per plek'],['az','A–Z']];
+var npcHouding=lsGet('zs.npcHouding','alle'),npcGroep=lsGet('zs.npcGroep','sessie'),npcSel=null;
+function houdingHtml(h){h=h||'onbekend';return '<span class="houding '+esc(h)+'">'+ic(IC[h]?h:'onbekend','s')+esc(h)+'</span>';}
+function sessieNr(n){var m=String(n.eerst||'').match(/(\d+)/);return m?+m[1]:0;}
+function plekKort(n){var w=String(n.waar||'').split(' —')[0].split(' (')[0].split(',')[0].trim();return (!w||w==='—')?'Geen vaste plek':w;}
+function npcZoekTekst(n,notes){return (n.naam+' '+n.wie+' '+(n.lore||'')+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase();}
 function renderNpcs(){
   if(!D)return;
-  $('npcF').innerHTML=NF.map(function(f){return '<button class="'+(npcFilter===f[0]?'on':'')+'" onclick="npcFilter=\''+f[0]+'\';renderNpcs()">'+f[1]+'</button>';}).join('');
+  if(npcSel){$('npcLijst').classList.add('hide');$('npcPagina').classList.remove('hide');renderNpcPagina();return;}
+  $('npcLijst').classList.remove('hide');$('npcPagina').classList.add('hide');$('npcPagina').innerHTML='';
+  var cnt={};D.npcs.forEach(function(n){cnt[n.status]=(cnt[n.status]||0)+1;});
+  $('npcF').innerHTML=NF.map(function(f){return '<button class="'+(npcFilter===f[0]?'on':'')+'" aria-pressed="'+(npcFilter===f[0])+'" onclick="npcFilter=\''+f[0]+'\';renderNpcs()">'+f[1]+' '+(f[0]==='alle'?D.npcs.length:(cnt[f[0]]||0))+'</button>';}).join('');
+  var hl=HOUD.filter(function(h){return h[0]===npcHouding;})[0]||HOUD[0],gl=GROEP.filter(function(g){return g[0]===npcGroep;})[0]||GROEP[0];
+  $('npcK').innerHTML='<button class="keuze'+(npcHouding!=='alle'?' on':'')+'" onclick="keuzeBlad(\'houding\')">Houding: '+esc(hl[1].toLowerCase())+ic('omlaag','s')+'</button><button class="keuze" onclick="keuzeBlad(\'groep\')">'+esc(gl[1])+ic('omlaag','s')+'</button>';
   var q=($('npcQ').value||'').toLowerCase().trim(),notes=lsGet('zs.npcnotes',{});
   var L=D.npcs.filter(function(n){
-    if(npcFilter!=='alle'&&n.status!==npcFilter&&n.houding!==npcFilter)return false;
-    if(q&&(n.naam+' '+n.wie+' '+(n.lore||'')+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase().indexOf(q)<0)return false;return true;
+    if(npcFilter!=='alle'&&n.status!==npcFilter)return false;
+    if(npcHouding!=='alle'&&(n.houding||'onbekend')!==npcHouding)return false;
+    if(q&&npcZoekTekst(n,notes).indexOf(q)<0)return false;return true;
   });
-  $('npcList').innerHTML=L.length?L.map(function(n){
-    var st=n.status==='dood'?'<span class="chip b">dood</span>':n.status==='bij naam'?'<span class="chip">bij naam</span>':'';
-    return '<details class="card npc"><summary><div class="row" style="align-items:flex-start"><span class="att '+esc(n.houding)+'" title="'+esc(n.houding)+'"></span><div class="grow"><div class="row"><h3 class="grow" style="margin:0">'+esc(n.naam)+'</h3>'+st+'</div><div class="muted">'+esc(n.waar)+' · '+esc(n.eerst)+'</div></div></div></summary><div style="margin-top:8px" class="small">'+esc(n.wie)+'</div>'+(n.lore?'<div class="lore"><span class="kicker">Wat men zegt</span><div>'+esc(n.lore)+'</div></div>':'')+'<div class="note"><label class="f" style="margin-top:0">Mijn notitie (enkel op dit toestel)</label><textarea data-npc="'+esc(n.naam)+'" oninput="saveNpcNote(this)" placeholder="Wat weet jij nog over '+esc(n.naam)+'?">'+esc(notes[n.naam]||'')+'</textarea></div></details>';
-  }).join(''):'<div class="empty">Niemand gevonden.</div>';
+  if(!L.length){$('npcList').innerHTML='<div class="empty">'+(q?'Niemand gevonden voor “'+esc(q)+'”.<br><button class="knop" style="margin-top:10px" onclick="$(\'npcQ\').value=\'\';renderNpcs()">Wis zoekterm</button>':'Niemand in deze selectie.')+'</div>';return;}
+  var groepen=[],idx={};
+  function g(k,label,sort){if(!idx[k]){idx[k]={k:k,label:label,sort:sort,L:[]};groepen.push(idx[k]);}return idx[k];}
+  L.forEach(function(n){
+    if(npcGroep==='sessie'){var s=sessieNr(n);g('s'+s,s?'Sessie '+s:'Onbekend',-s).L.push(n);}
+    else if(npcGroep==='plek'){var p=plekKort(n);g('p'+p,p,p==='Geen vaste plek'?'zzz':p.toLowerCase()).L.push(n);}
+    else{var l=n.naam.charAt(0).toUpperCase();g('a'+l,l,l).L.push(n);}
+  });
+  groepen.sort(function(a,b){return a.sort<b.sort?-1:a.sort>b.sort?1:0;});
+  if(npcGroep==='az')groepen.forEach(function(x){x.L.sort(function(a,b){return a.naam.localeCompare(b.naam,'nl');});});
+  $('npcList').innerHTML=groepen.map(function(x){
+    return '<div class="groepkop">'+esc(x.label)+' · '+x.L.length+'</div><div class="kaart lijst">'+x.L.map(function(n){
+      var st=n.status==='dood'?' <span class="chip fout">dood</span>':n.status==='bij naam'?' <span class="chip">bij naam</span>':'';
+      return '<button class="itemrij npcrij" onclick="openNpc(D.npcs['+D.npcs.indexOf(n)+'].naam)"><span class="grow"><span class="nm">'+esc(n.naam)+st+'</span><span class="nt">'+esc(n.waar&&n.waar!=='—'?n.waar:'Geen vaste plek')+'</span></span>'+houdingHtml(n.houding)+'</button>';
+    }).join('')+'</div>';
+  }).join('');
+}
+function keuzeBlad(wat){
+  var L=wat==='houding'?HOUD:GROEP,cur=wat==='houding'?npcHouding:npcGroep;
+  $('modalBox').innerHTML='<div class="greep" aria-hidden="true"></div><h2 style="margin-top:0">'+(wat==='houding'?'Houding':'Groeperen')+'</h2>'+L.map(function(o){return '<button class="rij rijknop vol" onclick="zetKeuze(\''+wat+'\',\''+o[0]+'\')">'+(wat==='houding'&&o[0]!=='alle'?houdingHtml(o[0]):'<span style="font-weight:600">'+o[1]+'</span>')+'<span class="grow"></span>'+(cur===o[0]?'<span style="color:var(--zee)">'+ic('vinkje')+'</span>':'')+'</button>';}).join('');
+  openModal('keuze');
+}
+function zetKeuze(wat,v){if(wat==='houding'){npcHouding=v;lsSet('zs.npcHouding',v);}else{npcGroep=v;lsSet('zs.npcGroep',v);}closeModal();renderNpcs();}
+function npcByNaam(nm){for(var i=0;i<D.npcs.length;i++)if(D.npcs[i].naam===nm)return D.npcs[i];return null;}
+function genoemdIn(n){var k=npcNaamKort(n.naam);return D.quests.filter(function(q){return npcsIn(q).indexOf(n)>=0||(q.titel+' '+q.tekst).indexOf(k)>=0;});}
+function renderNpcPagina(){
+  var n=npcByNaam(npcSel);if(!n){npcSel=null;renderNpcs();return;}
+  var notes=lsGet('zs.npcnotes',{}),s=sessieNr(n);
+  var stTxt=n.status==='dood'?'Dood'+(s?' · ontmoet in sessie '+s:''):n.status==='bij naam'?'Bij naam gekend'+(s?' sinds sessie '+s:''):'Ontmoet'+(s?' in sessie '+s:'');
+  var gi=genoemdIn(n);
+  var o=['<button class="terug" onclick="sluitNpc()">'+ic('links','s')+'NPC\'s</button>'];
+  o.push('<h1 class="npcnaam">'+esc(n.naam)+'</h1><div class="row wrap" style="gap:8px;margin:8px 0 6px">'+houdingHtml(n.houding)+'<span class="chip'+(n.status==='dood'?' fout':'')+'">'+esc(stTxt)+'</span></div>');
+  if(n.waar&&n.waar!=='—')o.push('<p class="row small" style="font-size:14px;gap:6px">'+ic('pin','s')+esc(n.waar)+'</p>');
+  o.push('<div class="kaart" style="margin-top:14px"><span class="lbl">Wie</span><p style="margin-top:4px;font-size:15px">'+esc(n.wie)+'</p></div>');
+  if(n.lore)o.push('<div class="kaart lore2"><span class="lbl">Wat men zegt</span><p>“'+esc(n.lore)+'”</p></div>');
+  if(gi.length)o.push('<div class="kaart lijst"><span class="lbl" style="display:block;padding-top:10px">Genoemd in</span>'+gi.map(function(q){return '<button class="itemrij" onclick="npcSel=null;naarQuestVanNpc('+D.quests.indexOf(q)+')"><span class="grow nm">'+esc(q.titel)+'</span>'+ic('rechts','s')+'</button>';}).join('')+'</div>');
+  o.push('<div class="row" style="margin:18px 0 8px"><h2 class="grow" style="margin:0">Mijn notitie</h2><span class="chip">'+ic('toestel','s')+'Enkel op dit toestel</span></div><textarea data-npc="'+esc(n.naam)+'" aria-label="Mijn notitie over '+esc(n.naam)+'" oninput="saveNpcNote(this)" placeholder="Wat weet jij nog over '+esc(npcNaamKort(n.naam))+'?">'+esc(notes[n.naam]||'')+'</textarea>');
+  $('npcPagina').innerHTML=o.join('');
 }
 function saveNpcNote(el){var n=lsGet('zs.npcnotes',{});n[el.getAttribute('data-npc')]=el.value;lsSet('zs.npcnotes',n);}
+function openNpc(naam){tab('npcs');npcSel=naam;renderNpcs();ovOpen();}
+function sluitNpc(){npcSel=null;renderNpcs();window.scrollTo(0,0);}
+function naarQuestVanNpc(i){tab('verhaal');naarQuest(i);}
+
+/* ============ terugknop (Android) ============ */
+var ovEntry=false;
+function ovOpen(){if(!ovEntry){try{history.pushState({ov:1},'');ovEntry=true;}catch(e){}}}
+function iets_open(){return $('viewer').classList.contains('on')||!!bladOpen||(typeof gevOpen!=='undefined'&&gevOpen)||(!!npcSel&&curTab==='npcs');}
+window.addEventListener('popstate',function(){
+  ovEntry=false;
+  if($('viewer').classList.contains('on'))closeViewer();
+  else if(bladOpen)closeModal();
+  else if(typeof gevOpen!=='undefined'&&gevOpen)sluitGevecht();
+  else if(npcSel&&curTab==='npcs')sluitNpc();
+  else return;
+  if(iets_open())ovOpen();
+});
 
 /* ============ mijn held ============ */
 function num(v,d){var n=parseInt(v,10);return isNaN(n)?d:n;}
@@ -861,7 +945,7 @@ function renderParty(){
 
 /* ============ instellingen ============ */
 var bladOpen=null;
-function openModal(naam){bladOpen=naam||'blad';var bx=$('modalBox');if(bx.firstChild&&!(bx.firstChild.classList&&bx.firstChild.classList.contains('greep')))bx.insertAdjacentHTML('afterbegin','<div class="greep" aria-hidden="true"></div>');$('modal').classList.add('on');}
+function openModal(naam){ovOpen();bladOpen=naam||'blad';var bx=$('modalBox');if(bx.firstChild&&!(bx.firstChild.classList&&bx.firstChild.classList.contains('greep')))bx.insertAdjacentHTML('afterbegin','<div class="greep" aria-hidden="true"></div>');$('modal').classList.add('on');}
 function closeModal(){bladOpen=null;$('modal').classList.remove('on');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('viewer').classList.contains('on'))closeViewer();else if(bladOpen)closeModal();}});
 function openSync(){renderSyncBlad();openModal('sync');}

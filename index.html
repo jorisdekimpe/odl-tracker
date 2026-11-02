@@ -285,6 +285,14 @@
   /* ---- GEVECHT (fase 5) ---- */
   .gv-lay { display:grid; grid-template-columns:minmax(0,1fr) 430px; gap:20px; align-items:start; }
   .gv-head { display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
+  .gv-sp { font-size:12px; font-weight:600; color:var(--text2); display:inline-flex; align-items:center; gap:5px; }
+  .gv-sp i { width:8px; height:8px; border-radius:50%; background:var(--bewaard); display:inline-block; }
+  .gv-sp.fout { color:var(--fout); } .gv-sp.fout i { background:var(--fout); }
+  .gv-sp.wacht i { background:var(--wacht); }
+  .gv-spel-opt { margin:0 0 12px; padding:10px 12px; border:1px solid var(--lijn); border-radius:12px; font-size:13px; }
+  .gv-spel-opt .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:6px; }
+  .gv-spel-opt button { min-height:36px; padding:0 12px; border-radius:10px; border:1px solid var(--lijn-sterk); background:transparent; color:inherit; font:inherit; font-weight:600; }
+  .gv-spel-opt button.on { background:var(--zee); border-color:var(--zee); color:var(--zee-op); }
   .gv-ronde { background:var(--zee); color:var(--zee-op); border-radius:14px; min-width:96px; height:76px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
   .gv-ronde small { font-size:12px; letter-spacing:.12em; text-transform:uppercase; }
   .gv-ronde b { font-size:32px; line-height:1; }
@@ -665,6 +673,9 @@
     <div style="margin-top:12px;"><label>Token</label><input id="gf-token" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="github_pat_...">
       <div class="hint">Fine-grained token met toegang tot enkel deze repo, en Contents op "Read and write". De token blijft op dit toestel staan en gaat nergens anders heen.</div>
     </div>
+    <div style="margin-top:12px;"><label>Spelers-sleutel (voor odl-spelers)</label><input id="gf-sptoken" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="github_pat_...">
+      <div class="hint">De gedeelde sleutel van de spelersapp. Daarmee ziet de party het gevecht (volgorde en beurt, nooit HP). Leeg laten = de token hierboven proberen.</div>
+    </div>
     <div class="row" style="margin:12px 0 0;">
       <button class="btn s p" onclick="ghSaveCfgForm()">Verbinden</button>
       <button class="btn s" onclick="ghDisconnect()">Verbinding wissen</button>
@@ -832,10 +843,10 @@
     <div class="gv-lay">
       <div class="gv-main">
         <div class="gv-head">
-          <div class="gv-ronde"><small>Ronde</small><b id="gv-r">–</b></div>
+          <div class="gv-ronde"><small>Ronde</small><b id="gv-r">–</b></div><span id="gv-sp" class="gv-sp"></span>
           <div class="gv-beurt"><small>Aan de beurt</small><b id="gv-naam">Nog niet gestart</b></div>
           <span style="flex:1"></span>
-          <button class="vh-knop" onclick="sortByInit()">Sorteer</button>
+          <button class="vh-knop" onclick="sortByInit()">Sorteer</button><button class="vh-knop" id="gv-einde" onclick="gvEinde()">Einde gevecht</button>
           <button class="gv-volg" onclick="nextTurn()"><span id="gv-volgtxt">Volgende beurt</span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
         </div>
         <div id="gv-herinner"></div>
@@ -1311,6 +1322,7 @@ var KEY='odl-dm-tracker-v2';
 function LS(){try{var d=localStorage.getItem(KEY);if(d){var p=JSON.parse(d);['players','ns','sn','npcs','threads','sessions','nal','nfilt','combat','lvl','vs','buit'].forEach(function(k){if(p[k]!==undefined)S[k]=p[k];});}}catch(e){}}
 function SS(){
   try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){alert('Opslaan op dit toestel mislukt: '+e.message);}
+  if(typeof spGevPlan==='function')spGevPlan();
   if(typeof ghOn==='function'&&ghOn()&&!ghBooting){
     setDirty(true);ghPendN++;ghDueAt=Date.now()+8000;syncStat('busy','Wijzigingen…');
     clearTimeout(ghTimer);ghTimer=setTimeout(function(){ghPush();},8000);
@@ -2018,6 +2030,7 @@ function rCombat(){
   if(S.combat.scene&&!VH.d)vhLoad(false);
   var c=S.combat,cs=c.combatants;
   document.getElementById('gv-r').textContent=c.round>0?c.round:'–';
+  if(!spTok())spGevLabel('','');else if(c.current<0&&SPG.state!=='fout')spGevLabel('','');else if(c.current>=0&&!SPG.state)spGevLabel('','Spelers zien dit');
   var cur=c.current>=0?cs[c.current]:null;
   document.getElementById('gv-naam').textContent=cur?(gvSpeler(cur)?(gvSpeler(cur).name||cur.name):cur.name):(cs.length?'Nog niet gestart':'Niemand in de tracker');
   document.getElementById('gv-volgtxt').textContent=c.current<0?'Start gevecht':'Volgende beurt';
@@ -2060,11 +2073,70 @@ function rCombat(){
   gvSb();
 }
 function gvCond(i,v){var x=S.combat.combatants[i];if(!x)return;if(v)x.cond=v;else delete x.cond;SS();rCombat();}
+/* ===== gevecht zichtbaar voor de spelers (odl-spelers/gevecht.json) ===== */
+var SPG={t:null,laatst:'',sha:null,state:'',busy:false,again:false};
+function spKant(x){return x.side==='a'?'bondgenoot':'vijand';}
+function spToon(x){return x.toon!==undefined?!!x.toon:spKant(x)==='bondgenoot';}
+function spGevData(){
+  var c=S.combat,cs=c.combatants||[];
+  if(c.current<0||!cs.length)return {v:1,actief:false};
+  var v=[],nv=0,beurt=0;
+  cs.forEach(function(x,i){
+    var o;
+    if(x.isPlayer){var pl=gvSpeler(x),hk=heroKey(pl?(pl.name||x.name):x.name);o=hk?{held:hk,init:x.init}:{naam:(pl&&pl.name)||x.name,kant:'bondgenoot',init:x.init};}
+    else{var k=spKant(x);if(k==='vijand')nv++;o={naam:spToon(x)?(x.name||'?'):(k==='vijand'?'Vijand '+nv:'Bondgenoot'),kant:k,init:x.init};}
+    if(!x.isPlayer&&(!x.active||x.hp<=0))o.uit=true;
+    if(i===c.current)beurt=v.length;
+    v.push(o);
+  });
+  return {v:1,actief:true,ronde:c.round||1,beurt:beurt,volgorde:v};
+}
+function spTok(){return GH.sptoken||GH.token;}
+function spGevPlan(){if(!spTok()||ghBooting)return;clearTimeout(SPG.t);SPG.t=setTimeout(spGevSchrijf,1000);}
+function spGevLabel(st,tx){SPG.state=st;var e=document.getElementById('gv-sp');if(!e)return;e.className='gv-sp'+(st?' '+st:'');e.innerHTML=tx?'<i></i>'+tx:'';}
+function spGevSchrijf(){
+  if(!spTok())return;
+  var d=spGevData(),key=JSON.stringify(d);
+  if(key===SPG.laatst)return;
+  if(SPG.busy){SPG.again=true;return;}
+  if(!d.actief&&!SPG.laatst){SPG.laatst=key;return;}
+  SPG.busy=true;spGevLabel('wacht',d.actief?'Spelers zien dit':'');
+  d.bijgewerkt=Date.now();
+  var url='https://api.github.com/repos/'+GH.sprepo+'/contents/gevecht.json',hd={'Accept':'application/vnd.github+json','Authorization':'Bearer '+spTok(),'X-GitHub-Api-Version':'2022-11-28'};
+  function haalSha(){return fetch(url+'?t='+Date.now(),{headers:hd,cache:'no-store'}).then(function(r){if(r.status===404)return null;if(!r.ok)throw r.status;return r.json().then(function(j){return j.sha;});});}
+  function zet(sha,poging){
+    return fetch(url,{method:'PUT',headers:Object.assign({'Content-Type':'application/json'},hd),body:JSON.stringify({message:d.actief?'Gevecht: ronde '+d.ronde:'Gevecht voorbij',content:b64e(JSON.stringify(d)),sha:sha||undefined})}).then(function(r){
+      if((r.status===409||r.status===422)&&poging<2)return haalSha().then(function(s2){return zet(s2,poging+1);});
+      if(!r.ok)throw r.status;return r.json().then(function(j){SPG.sha=j.content&&j.content.sha;});
+    });
+  }
+  (SPG.sha?Promise.resolve(SPG.sha):haalSha()).then(function(sha){return zet(sha,0);}).then(function(){
+    SPG.laatst=key;SPG.busy=false;spGevLabel(d.actief?'':'',d.actief?'Spelers zien dit':'');
+    if(SPG.again){SPG.again=false;spGevSchrijf();}
+  },function(st){
+    SPG.busy=false;SPG.sha=null;
+    spGevLabel('fout',st===401||st===403||st===404?'Spelers zien dit niet: sleutel zonder toegang tot '+GH.sprepo:'Spelers zien dit niet: opslaan mislukt');
+    if(SPG.again){SPG.again=false;setTimeout(spGevSchrijf,3000);}
+  });
+}
+function gvEinde(){
+  var btn=document.getElementById('gv-einde');
+  if(btn&&btn.dataset.armed!=='1'){btn.dataset.armed='1';btn.textContent='Zeker? Tik nogmaals';setTimeout(function(){if(btn.dataset.armed==='1'){btn.dataset.armed='0';btn.textContent='Einde gevecht';}},3000);return;}
+  if(btn){btn.dataset.armed='0';btn.textContent='Einde gevecht';}
+  S.combat.current=-1;S.combat.round=0;SS();rCombat();
+}
+function gvSpelOpt(x){
+  if(x.isPlayer)return '';
+  var k=spKant(x),t=spToon(x),i=S.combat.combatants.indexOf(x);
+  return '<div class="gv-spel-opt"><b>Wat de spelers zien</b><div class="row"><button class="'+(k==='vijand'?'on':'')+'" onclick="gvZetKant('+i+',\'f\')">Vijand</button><button class="'+(k==='bondgenoot'?'on':'')+'" onclick="gvZetKant('+i+',\'a\')">Bondgenoot</button><span style="flex:1"></span><button class="'+(t?'on':'')+'" aria-pressed="'+t+'" onclick="gvZetToon('+i+')">Naam tonen</button></div><div style="margin-top:6px;color:var(--text2)">Spelers zien: '+vhE(t?x.name:(k==='vijand'?'Vijand N':'Bondgenoot'))+'. Toon enkel namen die in de spelersrecap staan.</div></div>';
+}
+function gvZetKant(i,s){var x=S.combat.combatants[i];if(!x)return;x.side=s;delete x.toon;SS();rCombat();}
+function gvZetToon(i){var x=S.combat.combatants[i];if(!x)return;x.toon=!spToon(x);SS();rCombat();}
 function gvSb(){
   var el=document.getElementById('gv-sb');if(!el)return;
   var x=S.combat.combatants.find(function(c){return c.id===GV.sel;});
   if(!x){el.innerHTML='<div class="gv-leeg">Tik een monster in de lijst om zijn statblok hier te zien.</div>';return;}
-  var k=gvSbKey(x),b=k?VH.sb[k]:null,h='';
+  var k=gvSbKey(x),b=k?VH.sb[k]:null,h=spTok()?gvSpelOpt(x):'';
   var sc=x.scene&&VH.d?VH.d.byId[x.scene]:null;
   if(x.note||sc)h+='<div class="gv-noot"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h11"/></svg><div>'+(sc?'<button onclick="vhGoScene(\''+vhE(sc.id)+'\')">'+vhE(sc.titel)+'</button>'+(x.note?': ':''):'')+vhE(x.note||'')+'</div></div>';
   if(!b){el.innerHTML=h+'<div class="gv-sbn">'+vhE(x.name)+'</div><div class="gv-leeg">Geen statblok gevonden'+(x.isPlayer?' (held)':'')+'.</div>';return;}
@@ -2578,7 +2650,7 @@ function drInit(){
 
 // ---- GITHUB SYNC ----
 var GKEY='odl-gh-cfg', DKEY='odl-dirty';
-var GH={owner:'',repo:'',path:'campaign.json',branch:'main',token:''};
+var GH={owner:'',repo:'',path:'campaign.json',branch:'main',token:'',sptoken:'',sprepo:'jorisdekimpe/odl-spelers'};
 var ghSha=null, ghTimer=null, ghBusy=false, ghCommits=[], ghArmed=-1, ghBooting=true;
 
 function ghEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -2858,6 +2930,7 @@ function ghOpenCfg(){
   document.getElementById('gf-branch').value=GH.branch||'main';
   document.getElementById('gf-path').value=GH.path||'campaign.json';
   document.getElementById('gf-token').value=GH.token;
+  document.getElementById('gf-sptoken').value=GH.sptoken||'';
   document.getElementById('gf-msg').textContent='';
 }
 function ghSaveCfgForm(){
@@ -2866,6 +2939,7 @@ function ghSaveCfgForm(){
   GH.branch=document.getElementById('gf-branch').value.trim()||'main';
   GH.path=document.getElementById('gf-path').value.trim()||'campaign.json';
   GH.token=document.getElementById('gf-token').value.trim();
+  GH.sptoken=document.getElementById('gf-sptoken').value.trim();
   var m=document.getElementById('gf-msg');
   if(!ghOn()){m.textContent='Vul eigenaar, repo en token in.';return;}
   ghSaveCfg();

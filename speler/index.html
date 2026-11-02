@@ -277,6 +277,27 @@ a{color:var(--zee)}
 .lore2{background:var(--vlak2)}
 .lore2 p{font-family:var(--titel);font-style:italic;font-size:17px;margin-top:4px;color:var(--inkt)}
 
+/* gevecht */
+.gevbalk{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 16px;border:0;border-bottom:1px solid var(--lijn);background:var(--zee-bg);color:var(--inkt);text-align:left;font-size:14px}
+.gevbalk.nu{background:var(--nu-bg);color:var(--nu-tx);border-bottom-color:var(--nu-bd)}
+.gevbalk .volg{display:inline-flex;align-items:center;gap:2px;font-weight:600;color:var(--zee);white-space:nowrap}
+.gevbalk.nu .volg{color:var(--nu-tx)}
+.gevecht{position:fixed;inset:0;z-index:25;background:var(--grond);display:none;overflow:auto}
+.gevecht.on{display:block}
+.gevin{max-width:720px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+.rondeblok{background:var(--zee);color:var(--zee-op);border-radius:12px;width:76px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
+.rondeblok span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.rondeblok b{font-family:var(--titel);font-size:24px;line-height:1}
+.volgorde{list-style:none;display:grid;gap:8px}
+.volgorde li{display:flex;align-items:center;gap:12px;min-height:56px;border-radius:12px;padding:6px 12px;background:var(--vlak);border:1px solid var(--lijn)}
+.volgorde li.cur{background:var(--zee-bg);border:2px solid var(--zee)}
+.volgorde li.uit{opacity:.55}
+.volgorde li.uit .nm{text-decoration:line-through}
+.volgorde .nm{font-weight:600}
+.ini{font-family:var(--titel);font-size:20px;min-width:28px;text-align:center}
+.chip.curchip{background:var(--zee);color:var(--zee-op)}
+.vijand-ic{width:36px;height:36px;border-radius:50%;background:var(--fout-bg);color:var(--fout);display:grid;place-items:center;flex:none}
+
 /* blad (modal) */
 .modal{position:fixed;inset:0;z-index:20;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
 .modal.on{display:flex}
@@ -310,6 +331,7 @@ a{color:var(--zee)}
 </header>
 <svg class="meander" aria-hidden="true" preserveAspectRatio="none"><defs><pattern id="meander" width="20" height="12" patternUnits="userSpaceOnUse"><path d="M0 11.25H20M2 11.25V1H16V8H7V4H12" style="fill:none;stroke:var(--zee);stroke-width:1.4"/></pattern></defs><rect width="100%" height="12" fill="url(#meander)"/></svg>
 <div id="banner"></div>
+<div id="gevbalk"></div>
 </div>
 
 <main>
@@ -334,6 +356,7 @@ a{color:var(--zee)}
   <div class="vt"><button class="btn s" onclick="closeViewer()">Sluiten</button><span class="grow" id="vTitle" style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span><button class="btn s" onclick="zoom(-1)">−</button><button class="btn s" onclick="zoom(1)">+</button></div>
   <div class="vb" id="vBody"></div>
 </div>
+<div class="gevecht" id="gevecht" role="dialog" aria-label="Gevecht"><div class="gevin" id="gevBody"></div></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" class="hide" accept="application/pdf,image/*" onchange="onSheetFile(this)">
 
@@ -590,7 +613,7 @@ function renderViewer(){
   for(var i=1;i<=doc.numPages;i++)(function(n){p=p.then(function(){return doc.getPage(n);}).then(function(pg){var v0=pg.getViewport({scale:1}),sc=W/v0.width,vp=pg.getViewport({scale:sc*dpr});var c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;c.style.width=W+'px';body.appendChild(c);return pg.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;});})(i);
 }
 function zoom(d){vState.scale=Math.max(.6,Math.min(3,vState.scale*(d>0?1.25:.8)));if(vState.doc||vState.url)renderViewer();}
-function closeViewer(){$('viewer').classList.remove('on');if(vState.url)URL.revokeObjectURL(vState.url);vState={scale:1};$('vBody').innerHTML='';}
+function closeViewer(){if(!$('viewer').classList.contains('on'))return;$('viewer').classList.remove('on');if(vState.url)URL.revokeObjectURL(vState.url);vState={scale:1};$('vBody').innerHTML='';}
 
 /* ============ tabs ============ */
 function tab(t){
@@ -983,7 +1006,7 @@ function saveCfg(){
   var c={token:$('cfgTok').value.trim(),repo:($('cfgRepo').value||DEFAULT_REPO).trim()};lsSet('zs.sync',c);
   $('cfgMsg').textContent='Testen…';
   fetch('https://api.github.com/repos/'+c.repo,{headers:{'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'}}).then(function(r){
-    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld.';setSync('ok');syncOwn().then(pullParty);});
+    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld.';setSync('ok');syncOwn().then(pullParty);gevHaal();});
     $('cfgMsg').textContent=r.status===404?'De opslag is niet gevonden of de sleutel heeft er geen toegang toe.':'GitHub weigert deze sleutel.';setSync('fout',{code:r.status===404?'repo':'sleutel',status:r.status});
   },function(){$('cfgMsg').textContent='Geen verbinding.';});
 }
@@ -1014,6 +1037,60 @@ function dmBlad(){$('modalBox').innerHTML='<div class="greep" aria-hidden="true"
 function askDM(){var p=($('dmP')&&$('dmP').value||'').trim();if(!p)return;sha256('zeven:'+p).then(function(h){if(D&&h===D.dmPinHash){lsSet('zs.held','dm');closeModal();toast('DM-modus aan');tab('party');}else{$('dmM').textContent='Die code klopt niet.';$('dmP').select();}});}
 function stopDM(){lsSet('zs.held',null);render();toast('DM-modus uit');}
 
+function agoS(t){var s=Math.max(0,Math.round((now()-t)/1000));return s<60?s+' s geleden':ago(t);}
+/* ============ gevecht volgen ============ */
+var GEV=null,gevEtag='',gevT=null,gevOpen=false,gevAt=0,gevVolgendeWasIk=false;
+function gevActief(){return !!(GEV&&GEV.actief&&GEV.volgorde&&GEV.volgorde.length&&(!GEV.bijgewerkt||now()-GEV.bijgewerkt<6*3600*1000));}
+function gevPlan(){clearTimeout(gevT);if(!syncOn()||document.hidden)return;gevT=setTimeout(gevHaal,gevActief()?4000:20000);}
+function gevHaal(){
+  clearTimeout(gevT);
+  if(!syncOn()||document.hidden||!navigator.onLine){gevPlan();return Promise.resolve();}
+  var c=syncCfg(),h={'Accept':'application/vnd.github.raw','Authorization':'Bearer '+c.token};if(gevEtag)h['If-None-Match']=gevEtag;
+  return fetch('https://api.github.com/repos/'+c.repo+'/contents/gevecht.json',{headers:h,cache:'no-store'}).then(function(r){
+    gevAt=now();
+    if(r.status===304)return;
+    if(r.status===404){gevEtag='';GEV=null;return;}
+    if(!r.ok)return;
+    gevEtag=r.headers.get('ETag')||'';
+    return r.json().then(function(j){GEV=j;});
+  }).catch(function(){}).then(function(){toonGevecht();gevPlan();});
+}
+function gevMijnIdx(){var me=heroId();if(!GEV||!me||me==='dm')return -1;for(var i=0;i<GEV.volgorde.length;i++)if(GEV.volgorde[i].held===me)return i;return -1;}
+function gevVolgende(){var v=GEV.volgorde,n=v.length,b=num(GEV.beurt,0);for(var k=1;k<=n;k++){var j=(b+k)%n;if(!v[j].uit)return j;}return -1;}
+function gevNaam(x){if(x.held){var h=heroInfo(x.held);return h?h.naam.split(' ')[0]:x.held;}return x.naam||'?';}
+function toonGevecht(){
+  var el=$('gevbalk');if(!el)return;
+  if(!syncOn()||!gevActief()){el.innerHTML='';if(gevOpen)sluitGevecht();gevVolgendeWasIk=false;return;}
+  var v=GEV.volgorde,b=num(GEV.beurt,0),cur=v[b],mi=gevMijnIdx(),vi=gevVolgende(),me=heroId();
+  var ikNu=mi>=0&&mi===b,ikNa=mi>=0&&mi===vi&&!ikNu;
+  if(ikNa&&!gevVolgendeWasIk&&lsGet('zs.tril',false)&&navigator.vibrate)try{navigator.vibrate(200);}catch(e){}
+  gevVolgendeWasIk=ikNa;
+  var tx;
+  if(!me||me==='dm'||mi<0)tx='Ronde '+esc(GEV.ronde)+' · nu: <b>'+esc(cur?gevNaam(cur):'—')+'</b>';
+  else if(ikNu)tx='<b>Jij bent aan de beurt</b> · ronde '+esc(GEV.ronde);
+  else tx='Nu: <b>'+esc(cur?gevNaam(cur):'—')+'</b> · daarna: <b>'+(ikNa?'jij':esc(vi>=0?gevNaam(v[vi]):'—'))+'</b>';
+  el.innerHTML='<button class="gevbalk'+(ikNu?' nu':'')+'" onclick="openGevecht()">'+ic('gevecht','s')+'<span class="grow">'+tx+'</span><span class="volg">Volgorde'+ic('rechts','s')+'</span></button>';
+  if(gevOpen)renderGevecht();
+}
+function openGevecht(){gevOpen=true;$('gevecht').classList.add('on');document.body.style.overflow='hidden';renderGevecht();ovOpen();gevHaal();}
+function sluitGevecht(){gevOpen=false;$('gevecht').classList.remove('on');document.body.style.overflow='';}
+function renderGevecht(){
+  if(!gevActief()){$('gevBody').innerHTML='<div class="empty">Het gevecht is voorbij.</div>';return;}
+  var v=GEV.volgorde,b=num(GEV.beurt,0),mi=gevMijnIdx(),vi=gevVolgende(),cur=v[b];
+  var st=mi>=0&&mi===b?'Jij bent aan de beurt.':mi>=0&&mi===vi?'Jij bent hierna. Nu is '+gevNaam(cur)+' aan de beurt.':'';
+  var o=['<div class="row" style="align-items:flex-start;gap:12px"><button class="knop" onclick="sluitGevecht()" aria-label="Sluiten">'+ic('kruis','s')+'Sluiten</button><span class="grow"></span><div class="rondeblok"><span>Ronde</span><b>'+esc(GEV.ronde)+'</b></div></div>'];
+  o.push('<h1 class="npcnaam" style="margin:14px 0 10px">Gevecht</h1>');
+  if(st)o.push('<div class="kaart" style="background:var(--nu-bg);border-color:var(--nu-bd);color:var(--nu-tx);font-weight:600">'+esc(st)+'</div>');
+  o.push('<ol class="volgorde">'+v.map(function(x,i){
+    var isCur=i===b,isMe=i===mi,av_=x.held?av(x.held,36):x.kant==='bondgenoot'?'<span class="av" style="--av:var(--vlak2);color:var(--inkt);width:36px;height:36px;font-size:16px">'+esc(String(x.naam||'?').charAt(0).toUpperCase())+'</span>':'<span class="vijand-ic">'+ic('vijandig','s')+'</span>';
+    return '<li class="'+(isCur?'cur ':'')+(x.uit?'uit':'')+'"'+(isCur?' aria-current="step"':'')+'><b class="ini">'+esc(x.init)+'</b>'+av_+'<span class="grow nm">'+esc(gevNaam(x))+(isMe?' <span class="muted">(jij)</span>':'')+(x.uit?' <span class="muted">uitgeschakeld</span>':'')+'</span>'+(isCur?'<span class="chip curchip">Aan de beurt</span>':isMe&&i===vi?'<span class="chip nu">Jij · hierna</span>':'')+'</li>';
+  }).join('')+'</ol>');
+  if('vibrate' in navigator)o.push('<div class="rij" style="margin-top:12px"><span class="grow"><b>Tril als ik hierna ben</b></span>'+sw(lsGet('zs.tril',false),"lsSet('zs.tril',!lsGet('zs.tril',false));renderGevecht()",'Tril als ik hierna ben')+'</div>');
+  o.push('<p class="muted" style="margin-top:12px">Volgt de DM-tracker · bijgewerkt '+(gevAt?agoS(gevAt):'—')+'. Geen HP: die houdt de DM bij.</p>');
+  $('gevBody').innerHTML=o.join('');
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')gevHaal();else clearTimeout(gevT);});
+
 /* ============ start ============ */
 function loadData(){
   return fetch('spelers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d;lsSet('zs.data',d);},function(){D=lsGet('zs.data',null);if(!D)$('s-verhaal').innerHTML='<div class="empty">Geen verbinding en nog niets opgeslagen.</div>';});
@@ -1023,7 +1100,7 @@ loadData().then(function(){
   migreerBuit();
   tab(curTab);
   toonSync();
-  if(syncOn())syncOwn().then(function(){return pullParty();});
+  if(syncOn()){syncOwn().then(function(){return pullParty();});gevHaal();}
 });
 window.addEventListener('online',function(){toonSync();if(syncOn())syncOwn();});
 window.addEventListener('offline',toonSync);

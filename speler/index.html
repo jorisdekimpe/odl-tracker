@@ -282,8 +282,11 @@ a{color:var(--zee)}
 .gevbalk.nu{background:var(--nu-bg);color:var(--nu-tx);border-bottom-color:var(--nu-bd)}
 .gevbalk .volg{display:inline-flex;align-items:center;gap:2px;font-weight:600;color:var(--zee);white-space:nowrap}
 .gevbalk.nu .volg{color:var(--nu-tx)}
-.gevecht{position:fixed;inset:0;z-index:25;background:var(--grond);display:none;overflow:auto}
-.gevecht.on{display:block}
+.gevecht,.instel{position:fixed;inset:0;z-index:25;background:var(--grond);display:none;overflow:auto}
+.gevecht.on,.instel.on{display:block}
+.instel{z-index:26}
+.instel details>summary{list-style:none}
+.instel details[open]>summary svg:last-child{transform:rotate(180deg)}
 .gevin{max-width:720px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
 .rondeblok{background:var(--zee);color:var(--zee-op);border-radius:12px;width:76px;height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none}
 .rondeblok span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
@@ -299,7 +302,7 @@ a{color:var(--zee)}
 .vijand-ic{width:36px;height:36px;border-radius:50%;background:var(--fout-bg);color:var(--fout);display:grid;place-items:center;flex:none}
 
 /* blad (modal) */
-.modal{position:fixed;inset:0;z-index:20;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
+.modal{position:fixed;inset:0;z-index:28;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
 .modal.on{display:flex}
 .modal .box,.blad{background:var(--vlak);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25)}
 .greep{width:40px;height:5px;border-radius:3px;background:var(--lijn-sterk);margin:0 auto 12px}
@@ -357,6 +360,7 @@ a{color:var(--zee)}
   <div class="vb" id="vBody"></div>
 </div>
 <div class="gevecht" id="gevecht" role="dialog" aria-label="Gevecht"><div class="gevin" id="gevBody"></div></div>
+<div class="instel" id="instel" role="dialog" aria-label="Instellingen"><div class="gevin" id="instelBody"></div></div>
 <div class="toast" id="toast"></div>
 <input type="file" id="fileIn" class="hide" accept="application/pdf,image/*" onchange="onSheetFile(this)">
 
@@ -795,11 +799,12 @@ function naarQuestVanNpc(i){tab('verhaal');naarQuest(i);}
 /* ============ terugknop (Android) ============ */
 var ovEntry=false;
 function ovOpen(){if(!ovEntry){try{history.pushState({ov:1},'');ovEntry=true;}catch(e){}}}
-function iets_open(){return $('viewer').classList.contains('on')||!!bladOpen||(typeof gevOpen!=='undefined'&&gevOpen)||(!!npcSel&&curTab==='npcs');}
+function iets_open(){return $('viewer').classList.contains('on')||!!bladOpen||instOpen||(typeof gevOpen!=='undefined'&&gevOpen)||(!!npcSel&&curTab==='npcs');}
 window.addEventListener('popstate',function(){
   ovEntry=false;
   if($('viewer').classList.contains('on'))closeViewer();
   else if(bladOpen)closeModal();
+  else if(instOpen)sluitInstel();
   else if(typeof gevOpen!=='undefined'&&gevOpen)sluitGevecht();
   else if(npcSel&&curTab==='npcs')sluitNpc();
   else return;
@@ -987,30 +992,68 @@ function renderSyncBlad(){
     var x=inv(),bad=x?x.sheets.filter(function(q){return !q.del&&!q.up&&q.err;}):[];
     if(bad.length)o.push('<div class="kaart" style="margin-top:12px;background:var(--kaart)"><span class="lbl">Sheets niet geüpload</span>'+bad.map(function(q){return '<div class="rij"><span class="grow"><b>'+esc(q.name)+'</b><br><span class="small">'+esc(q.err)+'</span></span>'+(teGroot(q)&&q.type==='img'?'<button class="knop" onclick="verklein(\''+q.id+'\')">Verklein</button>':'<button class="knop" onclick="retrySheet(\''+q.id+'\')">Opnieuw</button>')+'</div>';}).join('')+'</div>');
     o.push('<div class="twee"><div><span class="lbl">Op GitHub</span><ul><li>HP en stats</li><li>Inventaris</li><li>Sheets</li></ul></div><div><span class="lbl">Enkel dit toestel</span><ul><li>Notities</li><li>NPC-notities</li></ul><span class="muted">Zit in je back-up via Instellingen.</span></div></div>');
-    o.push('<div style="display:grid;gap:10px"><button class="knop p vol" onclick="syncOwn().then(function(){return pullParty();})">'+ic('ververs','s')+'Opnieuw proberen</button><button class="knop vol" onclick="closeModal();openSettings()">Koppeling nakijken</button></div>');
+    o.push('<div style="display:grid;gap:10px"><button class="knop p vol" onclick="syncOwn().then(function(){return pullParty();})">'+ic('ververs','s')+'Opnieuw proberen</button><button class="knop vol" onclick="closeModal();openSettings()">'+(code==='sleutel'?'Tafelcode invoeren':'Koppeling nakijken')+'</button></div>');
   }
   $('modalBox').innerHTML=o.join('');
 }
-function openSettings(){
-  var c=syncCfg(),h=heroInfo(heroId());
-  $('modalBox').innerHTML='<h2 style="margin-top:0">Instellingen</h2>'+
-  '<div class="card"><h3>Held</h3><div class="small">'+(isDM()?'DM-modus':h?esc(h.naam)+' ('+esc(h.speler)+')':'Nog niet gekozen')+'</div><button class="knop" style="margin-top:8px" onclick="lsSet(\'zs.held\',null);closeModal();tab(\'held\')">Andere held kiezen</button></div>'+
-  '<div class="card"><h3>Sync</h3><div class="small">Plak hier de sleutel die je van de DM kreeg. Daarmee worden je inventaris en sheet gedeeld met de DM en zie je de rest van de party.</div><label class="f">Sleutel</label><input id="cfgTok" type="password" autocomplete="off" value="'+esc(c.token)+'" placeholder="github_pat_…"><details style="margin-top:8px"><summary class="muted">Geavanceerd</summary><label class="f">Repo</label><input id="cfgRepo" value="'+esc(c.repo)+'"></details><div class="row" style="margin-top:10px"><button class="btn p" onclick="saveCfg()">Bewaar &amp; test</button>'+(c.token?'<button class="btn" onclick="clearCfg()">Ontkoppel</button>':'')+'</div><div id="cfgMsg" class="muted" style="margin-top:6px"></div></div>'+
-  '<div class="card"><h3>Weergave</h3><div class="seg" style="margin-top:8px">'+[['system','Systeem'],['light','Licht'],['dark','Donker']].map(function(o){return '<button data-thema="'+o[0]+'" class="'+(thema()===o[0]?'on':'')+'" onclick="zetThema(\''+o[0]+'\')">'+o[1]+'</button>';}).join('')+'</div></div>'+
-  '<div class="card"><h3>Back-up</h3><div class="small">Met HP, inventaris, notities en NPC-notities. Handig bij een nieuw toestel.</div><div class="knoprij"><button class="knop" onclick="exportAll()">Exporteer alles</button><button class="knop" onclick="importAll()">Importeer</button></div></div>'+
-  '<div class="card"><h3>Geavanceerd</h3><button class="knop vol" style="margin-top:8px" onclick="dmBlad()">'+ic('oog','s')+'Ik ben de DM</button></div>'+
-  '<div class="row"><span class="grow muted">Verhaal bijgewerkt '+(D?esc(D.bijgewerkt):'—')+'</span><button class="btn" onclick="closeModal()">Sluiten</button></div>';
-  openModal('instellingen');
+/* ============ instellingen (volledig scherm) ============ */
+var instOpen=false;
+function openSettings(code){instOpen=true;$('instel').classList.add('on');document.body.style.overflow='hidden';renderInstel(code);ovOpen();}
+function sluitInstel(){if(!instOpen)return;instOpen=false;$('instel').classList.remove('on');document.body.style.overflow='';render();}
+function renderInstel(code){
+  var c=syncCfg(),hid=heroId(),h=heroInfo(hid),o=[];
+  o.push('<div class="row" style="margin-bottom:6px"><h1 class="npcnaam grow" style="margin:0">Instellingen</h1><button class="knop p" onclick="sluitInstel()">Klaar</button></div>');
+  o.push('<div class="groepkop">Jouw held</div><div class="kaart"><div class="row" style="gap:12px">'+(isDM()?'<span class="vijand-ic" style="background:var(--nu-bg);color:var(--nu-tx)">'+ic('oog','s')+'</span><span class="grow"><b>DM-modus</b></span><button class="knop" onclick="stopDM();renderInstel()">Stop</button>':h?av(h.id,44)+'<span class="grow"><b style="display:block">'+esc(h.naam)+'</b><span class="small">'+esc(h.speler)+' · '+esc(kortKlasse(h.klasse))+'</span></span><button class="knop" onclick="wisselHeld()">Wissel</button>':'<span class="grow small" style="font-size:15px">Nog geen held gekozen.</span><button class="knop p" onclick="wisselHeld()">Kies</button>')+'</div></div>');
+  o.push('<div class="groepkop">Koppelen met de tafel</div><div class="kaart">');
+  if(syncOn()){
+    o.push('<div class="row" style="gap:10px">'+ic('link')+'<span class="grow"><b style="display:block">Gekoppeld met de tafel</b><span class="small">Bewaard '+esc(agoLang(lsGet('zs.lastSync',0)))+'</span></span><button class="knop" onclick="clearCfg()">Ontkoppel</button></div>');
+  }else{
+    o.push('<label class="f" for="tcode" style="margin-top:0">Tafelcode van de DM</label><input id="tcode" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="bv. zwijn-hoorn-meander" value="'+esc(code||'')+'" onkeydown="if(event.key===\'Enter\')koppel()"><p class="small" style="margin-top:8px">Drie woorden, die de DM aan tafel zegt of in de groepschat zet. Je hoeft niets te plakken.</p><p id="tmsg" class="small" style="margin-top:6px" role="status"></p><button class="knop p groot vol" style="margin-top:10px" onclick="koppel()">Koppel</button>');
+  }
+  o.push('</div>');
+  o.push('<div class="groepkop">Weergave</div><div class="seg">'+[['system','Systeem'],['light','Licht'],['dark','Donker']].map(function(t){return '<button data-thema="'+t[0]+'" class="'+(thema()===t[0]?'on':'')+'" onclick="zetThema(\''+t[0]+'\')">'+t[1]+'</button>';}).join('')+'</div>');
+  o.push('<div class="groepkop">Back-up</div><div class="kaart"><p class="small" style="font-size:14px">Met HP, inventaris, notities en NPC-notities. Handig bij een nieuw toestel.</p><div class="knoprij"><button class="knop" onclick="exportAll()">Exporteer alles</button><button class="knop" onclick="importAll()">Importeer</button></div></div>');
+  o.push('<div class="groepkop">Geavanceerd</div><div class="kaart lijst"><details'+(syncOn()?'':'')+'><summary class="rij rijknop">'+ic('sleutel','s')+'<span class="grow" style="font-weight:600">Sleutel plakken</span>'+ic('omlaag','s')+'</summary><div style="padding-bottom:12px"><label class="f" for="cfgTok">Sleutel</label><input id="cfgTok" type="password" autocomplete="off" value="'+esc(c.token)+'" placeholder="github_pat_…"><label class="f" for="cfgRepo">Repo</label><input id="cfgRepo" autocapitalize="off" value="'+esc(c.repo)+'"><p id="cfgMsg" class="small" style="margin-top:6px" role="status"></p><button class="knop vol" style="margin-top:8px" onclick="saveCfg()">Bewaar en test</button></div></details>');
+  o.push('<button class="rij rijknop vol" onclick="dmBlad()">'+ic('oog','s')+'<span class="grow" style="font-weight:600">Ik ben de DM</span>'+ic('rechts','s')+'</button></div>');
+  o.push('<p class="muted" style="text-align:center;margin:18px 0 8px">Verhaal bijgewerkt '+(D?esc(datumLang(D.bijgewerkt)):'—')+'</p>');
+  $('instelBody').innerHTML=o.join('');
 }
+function wisselHeld(){lsSet('zs.held',null);sluitInstel();tab('held');}
+function b64buf(s){var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+function normCode(v){return String(v||'').trim().toLowerCase().replace(/[\s_.,]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');}
+var koppelBezig=false;
+function koppel(){
+  if(koppelBezig)return;
+  var code=normCode($('tcode').value),m=$('tmsg');
+  if(code.split('-').length<3){m.style.color='var(--fout-tx)';m.textContent='Een tafelcode heeft drie woorden, zoals zwijn-hoorn-meander.';return;}
+  if(!window.crypto||!crypto.subtle){m.style.color='var(--fout-tx)';m.textContent='Deze browser kan niet koppelen met een code. Gebruik Sleutel plakken onder Geavanceerd.';return;}
+  koppelBezig=true;m.style.color='';m.textContent='Koppelen…';
+  fetch('koppel.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw {k:'geen'};return r.json();}).then(function(k){
+    return crypto.subtle.importKey('raw',new TextEncoder().encode(code),'PBKDF2',false,['deriveKey']).then(function(base){
+      return crypto.subtle.deriveKey({name:'PBKDF2',hash:'SHA-256',salt:b64buf(k.salt),iterations:k.iter||600000},base,{name:'AES-GCM',length:256},false,['decrypt']);
+    }).then(function(key){return crypto.subtle.decrypt({name:'AES-GCM',iv:b64buf(k.iv)},key,b64buf(k.data));}).catch(function(){throw {k:'code'};});
+  }).then(function(buf){
+    var j=JSON.parse(new TextDecoder().decode(buf));
+    return fetch('https://api.github.com/repos/'+j.repo,{headers:{'Authorization':'Bearer '+j.token,'Accept':'application/vnd.github+json'}}).then(function(r){
+      if(!r.ok)throw {k:'sleutel'};
+      lsSet('zs.sync',{repo:j.repo,token:j.token});setSync('ok');
+      koppelBezig=false;renderInstel();toast('Gekoppeld met de tafel');syncOwn().then(pullParty);gevHaal();
+    },function(){throw {k:'net'};});
+  }).catch(function(e){
+    koppelBezig=false;var k=e&&e.k;m.style.color='var(--fout-tx)';
+    m.textContent=k==='code'?'Die code klopt niet. Kijk de woorden na.':k==='geen'?'Er is nog geen tafelcode gemaakt. Vraag het de DM.':k==='sleutel'?'De code klopt, maar de sleutel erachter werkt niet meer. Vraag de DM een nieuwe code.':'Geen verbinding. Probeer het opnieuw als je online bent.';
+  });
+}
+function leesCodeUitLink(){var m=String(location.hash||'').match(/code=([^&]+)/);if(!m)return;var code=normCode(decodeURIComponent(m[1]));try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}if(!syncOn())setTimeout(function(){openSettings(code);},50);}
 function saveCfg(){
   var c={token:$('cfgTok').value.trim(),repo:($('cfgRepo').value||DEFAULT_REPO).trim()};lsSet('zs.sync',c);
   $('cfgMsg').textContent='Testen…';
   fetch('https://api.github.com/repos/'+c.repo,{headers:{'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'}}).then(function(r){
-    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld.';setSync('ok');syncOwn().then(pullParty);gevHaal();});
+    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld.';setSync('ok');syncOwn().then(pullParty);gevHaal();setTimeout(function(){if(instOpen)renderInstel();},900);});
     $('cfgMsg').textContent=r.status===404?'De opslag is niet gevonden of de sleutel heeft er geen toegang toe.':'GitHub weigert deze sleutel.';setSync('fout',{code:r.status===404?'repo':'sleutel',status:r.status});
   },function(){$('cfgMsg').textContent='Geen verbinding.';});
 }
-function clearCfg(){lsSet('zs.sync',{repo:DEFAULT_REPO,token:''});SYNC={state:'ok'};lsSet('zs.syncState',SYNC);toonSync();closeModal();render();}
+function clearCfg(){lsSet('zs.sync',{repo:DEFAULT_REPO,token:''});SYNC={state:'ok'};lsSet('zs.syncState',SYNC);GEV=null;toonSync();toonGevecht();closeModal();if(instOpen)renderInstel();render();}
 function vandaag(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function exportAll(){var x=inv();if(!x){toast('Kies eerst een held');return;}var o={v:1,held:x.held,inventaris:x,notities:lsGet('zs.notes.'+x.held,''),npcNotities:lsGet('zs.npcnotes',{}),thema:thema(),gemaakt:now()};var b=new Blob([JSON.stringify(o,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='de-zeven-'+x.held+'-'+vandaag()+'.json';document.body.appendChild(a);a.click();a.remove();toast('Back-up bewaard');}
 var IMP=null;
@@ -1034,7 +1077,7 @@ function impNotities(vervang){var o=IMP;IMP=null;if(!o)return;var y=o.y,ln=lsGet
   closeModal();render();toast('Back-up teruggezet');}
 function sha256(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}
 function dmBlad(){$('modalBox').innerHTML='<div class="greep" aria-hidden="true"></div><h2 style="margin-top:0">DM-modus</h2><p class="small" style="font-size:15px">Enkel voor de DM. Je ziet dan alle inventarissen, ook privé-items, en alle sheets.</p><input id="dmP" class="groot-veld" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-label="DM-pincode" placeholder="Pincode" onkeydown="if(event.key===\'Enter\')askDM()"><p id="dmM" class="small" style="margin-top:6px;color:var(--fout-tx)"></p><div class="knoprij"><button class="knop" onclick="closeModal()">Annuleer</button><button class="knop p" onclick="askDM()">Open</button></div>';openModal('dm');setTimeout(function(){var e=$('dmP');if(e)e.focus();},60);}
-function askDM(){var p=($('dmP')&&$('dmP').value||'').trim();if(!p)return;sha256('zeven:'+p).then(function(h){if(D&&h===D.dmPinHash){lsSet('zs.held','dm');closeModal();toast('DM-modus aan');tab('party');}else{$('dmM').textContent='Die code klopt niet.';$('dmP').select();}});}
+function askDM(){var p=($('dmP')&&$('dmP').value||'').trim();if(!p)return;sha256('zeven:'+p).then(function(h){if(D&&h===D.dmPinHash){lsSet('zs.held','dm');closeModal();sluitInstel();toast('DM-modus aan');tab('party');}else{$('dmM').textContent='Die code klopt niet.';$('dmP').select();}});}
 function stopDM(){lsSet('zs.held',null);render();toast('DM-modus uit');}
 
 function agoS(t){var s=Math.max(0,Math.round((now()-t)/1000));return s<60?s+' s geleden':ago(t);}
@@ -1095,7 +1138,7 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 function loadData(){
   return fetch('spelers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d;lsSet('zs.data',d);},function(){D=lsGet('zs.data',null);if(!D)$('s-verhaal').innerHTML='<div class="empty">Geen verbinding en nog niets opgeslagen.</div>';});
 }
-pasThemaToe();bouwNav();
+pasThemaToe();bouwNav();leesCodeUitLink();window.addEventListener('hashchange',leesCodeUitLink);
 loadData().then(function(){
   migreerBuit();
   tab(curTab);

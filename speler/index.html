@@ -73,8 +73,22 @@ svg.i.s{width:18px;height:18px}
 .top h1{font-family:var(--titel);font-size:22px;font-weight:700;color:var(--zee);line-height:1.15}
 .top .sub{font-size:13px;color:var(--inkt2);display:flex;align-items:center}
 .rond{width:44px;height:44px;border-radius:22px;border:1px solid var(--lijn);background:var(--vlak);color:var(--inkt2);display:grid;place-items:center;flex:none}
-.sync{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--inkt3);margin-right:6px}
-.sync.ok{background:var(--goed)} .sync.busy{background:var(--wacht)} .sync.err{background:var(--fout)}
+.top .sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.pil{min-height:44px;border-radius:22px;padding:0 14px;border:1px solid var(--lijn);background:var(--vlak);display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--inkt2);white-space:nowrap;flex:none}
+.pil .d{width:9px;height:9px;border-radius:50%;background:var(--goed);flex:none}
+.pil.bezig .d{background:var(--wacht)}
+.pil.fout{background:var(--fout-bg);border-color:var(--fout-bd);color:var(--fout-tx)} .pil.fout .d{background:var(--fout)}
+.pil.offline .d{background:none;border:2px solid var(--inkt3)}
+.pil.geen{border-style:dashed;border-color:var(--lijn-sterk)} .pil.geen .d{display:none}
+.banner{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:10px 16px;font-size:14px;line-height:1.4;border:0;border-bottom:1px solid var(--lijn);background:var(--vlak2);color:var(--inkt)}
+.banner.fout{background:var(--fout-bg);border-bottom-color:var(--fout-bd);color:var(--fout-tx)}
+.banner svg{margin-top:-1px}
+.twee{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.twee>div{background:var(--kaart);border:1px solid var(--lijn);border-radius:12px;padding:10px 12px;font-size:14px}
+.twee ul{list-style:none;margin-top:4px}
+.twee li{padding:2px 0}
+.bladkop{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.bladkop h2{margin:0}
 .meander{display:block;width:100%;height:12px}
 .kopblok{position:sticky;top:0;z-index:5;background:var(--grond)}
 
@@ -204,11 +218,13 @@ a{color:var(--zee)}
 <header class="top">
   <div class="grow">
     <h1>De Zeven</h1>
-    <div class="sub"><span class="sync" id="syncDot"></span><span id="subline">Odyssey of the Dragonlords</span></div>
+    <div class="sub" id="subline">Odyssey of the Dragonlords</div>
   </div>
+  <button class="pil geen" id="pil" onclick="openSync()"><span class="d"></span><span id="pilTx">Enkel dit toestel</span></button>
   <button class="rond" id="cfgBtn" onclick="openSettings()" aria-label="Instellingen"></button>
 </header>
 <svg class="meander" aria-hidden="true" preserveAspectRatio="none"><defs><pattern id="meander" width="20" height="12" patternUnits="userSpaceOnUse"><path d="M0 11.25H20M2 11.25V1H16V8H7V4H12" style="fill:none;stroke:var(--zee);stroke-width:1.4"/></pattern></defs><rect width="100%" height="12" fill="url(#meander)"/></svg>
+<div id="banner"></div>
 </div>
 
 <main>
@@ -337,7 +353,7 @@ function gh(path,opt){
 function ghGetJson(path){
   return gh(path).then(function(r){
     if(r.status===404)return {data:null,sha:null};
-    if(!r.ok)throw new Error('GitHub '+r.status);
+    if(!r.ok){var e=new Error('GitHub '+r.status);e.status=r.status;throw e;}
     return r.json().then(function(j){return {data:JSON.parse(b64dec(j.content)),sha:j.sha};});
   });
 }
@@ -347,17 +363,37 @@ function ghPutRaw(path,b64,sha,msg){
     return r.json();
   });
 }
-function ghSha(path){return gh(path).then(function(r){if(r.status===404)return null;if(!r.ok)throw new Error('GitHub '+r.status);return r.json().then(function(j){return j.sha;});});}
+function ghSha(path){return gh(path).then(function(r){if(r.status===404)return null;if(!r.ok){var e=new Error('GitHub '+r.status);e.status=r.status;throw e;}return r.json().then(function(j){return j.sha;});});}
 function ghDelete(path){return ghSha(path).then(function(sha){if(!sha)return;return gh(path,{method:'DELETE',body:{message:'Verwijder '+path,sha:sha}});});}
 
 var pushT=null,busy=false;
-function setDot(s){var d=$('syncDot');d.className='sync'+(s?' '+s:'');}
-function schedulePush(){if(!syncOn())return;clearTimeout(pushT);pushT=setTimeout(syncOwn,2500);setDot('busy');}
+/* ============ syncstatus in woorden ============ */
+var SYNC=lsGet('zs.syncState',{state:'ok',detail:null,t:0});
+function syncState(){if(!syncOn())return 'geen';if(!navigator.onLine)return 'offline';return SYNC.state||'ok';}
+function errCode(e){if(!e)return 'net';if(e.status===401||e.status===403)return 'sleutel';if(e.status===404)return 'repo';if(e.status)return 'gh';return 'net';}
+function setSync(state,detail){SYNC={state:state,detail:detail||null,t:now()};lsSet('zs.syncState',SYNC);if(state==='ok')lsSet('zs.lastSync',now());toonSync();}
+function tijdKort(t){if(!t)return 'nog nooit';var d=new Date(t),n=new Date();var u=d.toLocaleTimeString('nl-BE',{hour:'2-digit',minute:'2-digit'});return d.toDateString()===n.toDateString()?u:datumLang(t)+', '+u;}
+function agoLang(t){if(!t)return 'nog nooit';var s=Math.round((now()-t)/1000);if(s<60)return 'net nu';var m=Math.round(s/60);if(m<60)return m+(m===1?' minuut':' minuten')+' geleden';var h=Math.round(m/60);if(h<24)return h+' uur geleden';return datumLang(t);}
+var PILTX={ok:'Bewaard',bezig:'Bewaren…',fout:'Niet bewaard',offline:'Offline',geen:'Enkel dit toestel'};
+var FOUTKORT={sleutel:'De sleutel werd geweigerd.',repo:'De opslag van de tafel is niet gevonden.',net:'GitHub was niet bereikbaar.',gh:'GitHub gaf een fout.'};
+var FOUTLANG={sleutel:'GitHub weigert de sleutel. Waarschijnlijk is de tafelcode vernieuwd. Vraag de DM de nieuwe code.',repo:'De opslag van de tafel is niet gevonden. Kijk de koppeling na.',net:'Geen verbinding met GitHub. Je wijzigingen staan veilig op dit toestel.',gh:'GitHub gaf een onverwachte fout. Je wijzigingen staan veilig op dit toestel; probeer het zo opnieuw.'};
+function toonSync(){
+  var st=syncState(),pil=$('pil');if(!pil)return;
+  pil.className='pil '+st;$('pilTx').textContent=PILTX[st];
+  var last=lsGet('zs.lastSync',0);
+  pil.setAttribute('aria-label','Sync: '+PILTX[st].toLowerCase().replace('…','')+(syncOn()?', laatst bewaard '+agoLang(last):''));
+  var b=$('banner'),code=SYNC.detail&&SYNC.detail.code;
+  if(st==='fout')b.innerHTML='<button class="banner fout" role="alert" onclick="openSync()">'+ic('letop','s')+'<span><b>Niet bewaard op GitHub.</b> '+esc(FOUTKORT[code]||FOUTKORT.gh)+' Je wijzigingen staan veilig op dit toestel.</span></button>';
+  else if(!navigator.onLine)b.innerHTML='<button class="banner" role="status" onclick="openSync()">'+ic('offline','s')+'<span><b>Offline.</b> Je ziet het verhaal'+(D?' van '+esc(datumLang(D.bijgewerkt)):'')+'.'+(syncOn()?' Wat je wijzigt, wordt bewaard zodra je weer online bent.':'')+'</span></button>';
+  else b.innerHTML='';
+  if(bladOpen==='sync')renderSyncBlad();
+}
+function schedulePush(){if(!syncOn())return;clearTimeout(pushT);pushT=setTimeout(syncOwn,2500);if(navigator.onLine&&SYNC.state!=='fout')setSync('bezig');}
 function syncOwn(){
   var x=inv();if(!x||!syncOn())return Promise.resolve();
   if(busy){schedulePush();return Promise.resolve();}
-  if(!navigator.onLine){setDot('err');return Promise.resolve();}
-  busy=true;setDot('busy');
+  if(!navigator.onLine){toonSync();return Promise.resolve();}
+  busy=true;if(SYNC.state!=='fout')setSync('bezig');
   var path='inventaris/'+x.held+'.json',needRender=false;
   return uploadPendingSheets(x).then(function(){
     x=inv();
@@ -370,12 +406,11 @@ function syncOwn(){
     if(!changed){lsSet('zs.dirty.'+x.held,false);return;}
     var info=heroInfo(x.held);
     return ghPutRaw(path,b64enc(JSON.stringify(m,null,1)),rem.sha,'Inventaris '+(info?info.naam:x.held)).then(function(){lsSet('zs.dirty.'+x.held,false);});
-  }).then(function(){busy=false;setDot('ok');lsSet('zs.lastSync',now());if(needRender&&curTab==='held'&&!typing())renderHeld();},function(e){
-    busy=false;setDot('err');
+  }).then(function(){busy=false;setSync('ok');if(needRender&&curTab==='held'&&!typing())renderHeld();},function(e){
+    busy=false;
     if(e&&e.status===409){schedulePush();return;}
-    if(e&&(e.status===401||e.status===403))toast('Sync geweigerd — controleer de sleutel');
-    else if(e&&e.status===404)toast('Repo niet gevonden — controleer instellingen');
-    else toast('Sync mislukt, ik probeer later opnieuw');
+    if(!navigator.onLine){toonSync();return;}
+    setSync('fout',{code:errCode(e),status:e&&e.status||0});
   });
 }
 
@@ -387,10 +422,10 @@ var memBlobs={};
 function idbGet(k){if(memBlobs[k])return Promise.resolve(memBlobs[k]);return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f');var q=t.objectStore('f').get(k);q.onsuccess=function(){res(q.result||null);};q.onerror=function(){res(null);};});}).catch(function(){return null;});}
 function idbDel(k){return idb().then(function(db){return new Promise(function(res){var t=db.transaction('f','readwrite');t.objectStore('f').delete(k);t.oncomplete=res;t.onerror=res;});});}
 function blobB64(b){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1]);};r.onerror=rej;r.readAsDataURL(b);});}
-function shrinkImage(file){
+function shrinkImage(file,maxZ,kw){
   return new Promise(function(res){
     var url=URL.createObjectURL(file),img=new Image();
-    img.onload=function(){var M=2000,w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,M/Math.max(w,h));var c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){res(b||file);},'image/jpeg',.85);};
+    img.onload=function(){var M=maxZ||2000,w=img.naturalWidth,h=img.naturalHeight,s=Math.min(1,M/Math.max(w,h));var c=document.createElement('canvas');c.width=Math.round(w*s);c.height=Math.round(h*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(function(b){res(b||file);},'image/jpeg',kw||.85);};
     img.onerror=function(){URL.revokeObjectURL(url);res(file);};
     img.src=url;
   });
@@ -421,12 +456,19 @@ function uploadPendingSheets(x){
     if(!b){markSheet(x.held,s.id,function(q){q.err='bestand staat niet meer op dit toestel, verwijder en upload opnieuw';});fails.push(s.name);return;}
     return blobB64(b).then(function(b64){return ghSha(s.path).then(function(sha){return ghPutRaw(s.path,b64,sha,'Sheet '+s.name);});})
       .then(function(){markSheet(x.held,s.id,function(q){q.up=true;delete q.err;q.t=now();});delete memBlobs[x.held+'/'+s.id];})
-      .catch(function(e){markSheet(x.held,s.id,function(q){q.err=sheetErr(e);});fails.push(s.name);});
+      .catch(function(e){markSheet(x.held,s.id,function(q){q.err=sheetErr(e);q.errc=e&&e.status||0;});fails.push(s.name);});
   });});
   gone.forEach(function(s){p=p.then(function(){return ghDelete(s.path);}).then(function(){markSheet(x.held,s.id,function(q){q.gone=true;q.t=now();});}).catch(function(){});});
-  return p.then(function(){if(fails.length)toast('Sheet niet geüpload: '+fails.join(', ')+'. Inventaris is wel gesynct.');if(todo.length&&curTab==='held'&&!typing())renderHeld();});
+  return p.then(function(){if(todo.length&&curTab==='held'&&!typing())renderHeld();if(bladOpen==='sync')renderSyncBlad();});
 }
-function retrySheet(sid){var x=inv();x.sheets.forEach(function(s){if(s.id===sid)delete s.err;});lsSet('zs.inv.'+x.held,x);renderHeld();if(syncOn()){toast('Opnieuw proberen…');syncOwn();}}
+function retrySheet(sid){var x=inv();x.sheets.forEach(function(s){if(s.id===sid){delete s.err;delete s.errc;}});lsSet('zs.inv.'+x.held,x);if(curTab==='held')renderHeld();if(syncOn())syncOwn();}
+function teGroot(s){return s.errc===413||/te groot/.test(s.err||'');}
+function verklein(sid){
+  var x=inv(),s=null;x.sheets.forEach(function(q){if(q.id===sid)s=q;});if(!s)return;var key=x.held+'/'+sid;
+  idbGet(key).then(function(b){if(!b)throw new Error('Het bestand staat niet meer op dit toestel.');if(s.type!=='img')throw new Error('Een PDF kan ik niet verkleinen. Maak er foto’s van of bewaar hem kleiner.');return shrinkImage(b,1600,.7);})
+  .then(function(b){return idbPut(key,b).catch(function(){memBlobs[key]=b;});}).then(function(){retrySheet(sid);toast('Verkleind, opnieuw proberen');})
+  .catch(function(e){toast(e.message);});
+}
 function loadSheetBlob(owner,s){
   return idbGet(owner+'/'+s.id).then(function(b){
     if(b)return b;
@@ -566,9 +608,9 @@ function delSheet(sid){if(!confirm('Deze sheet verwijderen?'))return;var x=inv()
 /* ============ party ============ */
 function pullParty(){
   if(!syncOn()||!D){renderParty();return Promise.resolve();}
-  partyAt=now();setDot('busy');
-  return Promise.all(D.helden.map(function(h){return ghGetJson('inventaris/'+h.id+'.json').then(function(r){party[h.id]=r.data;},function(){});})).then(function(){
-    setDot('ok');
+  partyAt=now();var nee=0;
+  return Promise.all(D.helden.map(function(h){return ghGetJson('inventaris/'+h.id+'.json').then(function(r){party[h.id]=r.data;},function(e){if(e&&(e.status===401||e.status===403))nee++;});})).then(function(){
+    if(nee===D.helden.length)setSync('fout',{code:'sleutel',status:401});
     var me=heroId();if(me&&me!=='dm'&&party[me]){var m=merge(inv(),party[me]);lsSet('zs.inv.'+me,m);}
     if(curTab==='party')renderParty();
   });
@@ -595,8 +637,30 @@ function renderParty(){
 }
 
 /* ============ instellingen ============ */
-function openModal(){$('modal').classList.add('on');}
-function closeModal(){$('modal').classList.remove('on');}
+var bladOpen=null;
+function openModal(naam){bladOpen=naam||'blad';var bx=$('modalBox');if(bx.firstChild&&!(bx.firstChild.classList&&bx.firstChild.classList.contains('greep')))bx.insertAdjacentHTML('afterbegin','<div class="greep" aria-hidden="true"></div>');$('modal').classList.add('on');}
+function closeModal(){bladOpen=null;$('modal').classList.remove('on');}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('viewer').classList.contains('on'))closeViewer();else if(bladOpen)closeModal();}});
+function openSync(){renderSyncBlad();openModal('sync');}
+function renderSyncBlad(){
+  var st=syncState(),last=lsGet('zs.lastSync',0),o=[];
+  o.push('<div class="greep" aria-hidden="true"></div><div class="bladkop"><h2 class="grow">Sync</h2><span class="muted">'+(syncOn()?'Laatst bewaard '+esc(tijdKort(last)):'')+'</span></div>');
+  if(!syncOn()){
+    o.push('<p class="small" style="font-size:15px">Je gegevens staan enkel op dit toestel. Koppel met de tafel om je HP, inventaris en sheet met de DM te delen en de rest van de party te zien.</p>');
+    o.push('<div class="twee"><div><span class="lbl">Op dit toestel</span><ul><li>HP en stats</li><li>Inventaris</li><li>Sheets</li><li>Notities</li></ul></div><div><span class="lbl">Na koppelen</span><ul><li>Gedeeld met de DM</li><li>Party zichtbaar</li></ul></div></div>');
+    o.push('<button class="knop p vol" onclick="closeModal();openSettings()">'+ic('link','s')+'Koppel met de tafel</button>');
+  }else{
+    var code=SYNC.detail&&SYNC.detail.code;
+    var zin=st==='ok'?'Alles is bewaard op GitHub.':st==='bezig'?'Je wijzigingen worden nu bewaard.':st==='offline'?'Geen verbinding. Je wijzigingen staan veilig op dit toestel en worden bewaard zodra je weer online bent.':(FOUTLANG[code]||FOUTLANG.gh);
+    o.push('<p style="font-size:15px;'+(st==='fout'?'color:var(--fout-tx)':'')+'">'+esc(zin)+'</p>');
+    var h=heroId();if(h&&h!=='dm'&&lsGet('zs.dirty.'+h,false)&&st!=='ok')o.push('<p class="small" style="margin-top:6px">Wacht om bewaard te worden: je laatste wijzigingen.</p>');
+    var x=inv(),bad=x?x.sheets.filter(function(q){return !q.del&&!q.up&&q.err;}):[];
+    if(bad.length)o.push('<div class="kaart" style="margin-top:12px;background:var(--kaart)"><span class="lbl">Sheets niet geüpload</span>'+bad.map(function(q){return '<div class="rij"><span class="grow"><b>'+esc(q.name)+'</b><br><span class="small">'+esc(q.err)+'</span></span>'+(teGroot(q)&&q.type==='img'?'<button class="knop" onclick="verklein(\''+q.id+'\')">Verklein</button>':'<button class="knop" onclick="retrySheet(\''+q.id+'\')">Opnieuw</button>')+'</div>';}).join('')+'</div>');
+    o.push('<div class="twee"><div><span class="lbl">Op GitHub</span><ul><li>HP en stats</li><li>Inventaris</li><li>Sheets</li></ul></div><div><span class="lbl">Enkel dit toestel</span><ul><li>Notities</li><li>NPC-notities</li></ul><span class="muted">Zit in je back-up via Instellingen.</span></div></div>');
+    o.push('<div style="display:grid;gap:10px"><button class="knop p vol" onclick="syncOwn().then(function(){return pullParty();})">'+ic('ververs','s')+'Opnieuw proberen</button><button class="knop vol" onclick="closeModal();openSettings()">Koppeling nakijken</button></div>');
+  }
+  $('modalBox').innerHTML=o.join('');
+}
 function openSettings(){
   var c=syncCfg(),h=heroInfo(heroId());
   $('modalBox').innerHTML='<h2 style="margin-top:0">Instellingen</h2>'+
@@ -605,17 +669,17 @@ function openSettings(){
   '<div class="card"><h3>Weergave</h3><div class="seg" style="margin-top:8px">'+[['system','Systeem'],['light','Licht'],['dark','Donker']].map(function(o){return '<button data-thema="'+o[0]+'" class="'+(thema()===o[0]?'on':'')+'" onclick="zetThema(\''+o[0]+'\')">'+o[1]+'</button>';}).join('')+'</div></div>'+
   '<div class="card"><h3>Back-up</h3><div class="small">Je inventaris als bestand bewaren of terugzetten.</div><div class="row" style="margin-top:8px"><button class="btn s" onclick="exportInv()">Exporteer</button><button class="btn s" onclick="importInv()">Importeer</button></div></div>'+
   '<div class="row"><span class="grow muted">Verhaal bijgewerkt '+(D?esc(D.bijgewerkt):'—')+'</span><button class="btn" onclick="closeModal()">Sluiten</button></div>';
-  openModal();
+  openModal('instellingen');
 }
 function saveCfg(){
   var c={token:$('cfgTok').value.trim(),repo:($('cfgRepo').value||DEFAULT_REPO).trim()};lsSet('zs.sync',c);
   $('cfgMsg').textContent='Testen…';
   fetch('https://api.github.com/repos/'+c.repo,{headers:{'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'}}).then(function(r){
-    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld ✓';setDot('ok');syncOwn().then(pullParty);});
-    $('cfgMsg').textContent=r.status===404?'Repo niet gevonden of geen toegang.':'Sleutel geweigerd ('+r.status+').';setDot('err');
+    if(r.ok)return r.json().then(function(j){if(j.permissions&&!j.permissions.push){$('cfgMsg').textContent='Gekoppeld, maar deze sleutel mag niet schrijven.';return;}$('cfgMsg').textContent='Gekoppeld.';setSync('ok');syncOwn().then(pullParty);});
+    $('cfgMsg').textContent=r.status===404?'De opslag is niet gevonden of de sleutel heeft er geen toegang toe.':'GitHub weigert deze sleutel.';setSync('fout',{code:r.status===404?'repo':'sleutel',status:r.status});
   },function(){$('cfgMsg').textContent='Geen verbinding.';});
 }
-function clearCfg(){lsSet('zs.sync',{repo:DEFAULT_REPO,token:''});setDot('');closeModal();render();}
+function clearCfg(){lsSet('zs.sync',{repo:DEFAULT_REPO,token:''});SYNC={state:'ok'};lsSet('zs.syncState',SYNC);toonSync();closeModal();render();}
 function exportInv(){var x=inv();if(!x){toast('Kies eerst een held');return;}var b=new Blob([JSON.stringify(x,null,1)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='inventaris-'+x.held+'.json';a.click();}
 function importInv(){var i=document.createElement('input');i.type='file';i.accept='application/json,.json';i.onchange=function(){var f=i.files[0];if(!f)return;f.text().then(function(t){var y=JSON.parse(t),x=inv();if(!x||y.held!==x.held){toast('Dit bestand hoort bij een andere held');return;}saveInv(merge(x,y));closeModal();renderHeld();toast('Teruggezet');}).catch(function(){toast('Ongeldig bestand');});};i.click();}
 function sha256(s){return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2);}).join('');});}
@@ -628,9 +692,12 @@ function loadData(){
 pasThemaToe();bouwNav();
 loadData().then(function(){
   tab(curTab);
-  if(syncOn()){setDot('ok');syncOwn().then(function(){return pullParty();});}
+  toonSync();
+  if(syncOn())syncOwn().then(function(){return pullParty();});
 });
-window.addEventListener('online',function(){if(syncOn()&&lsGet('zs.dirty.'+heroId(),false))syncOwn();});
+window.addEventListener('online',function(){toonSync();if(syncOn())syncOwn();});
+window.addEventListener('offline',toonSync);
+setInterval(function(){if(syncOn()&&!document.hidden)toonSync();},60000);
 document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){loadData().then(function(){if(!typing())render();});if(syncOn())syncOwn();}});
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
 </script>

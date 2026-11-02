@@ -2134,7 +2134,7 @@ function spGevData(){
   return {v:1,actief:true,ronde:c.round||1,beurt:beurt,volgorde:v};
 }
 function spTok(){return GH.sptoken||GH.token;}
-function spGevPlan(){if(!spTok()||ghBooting)return;clearTimeout(SPG.t);SPG.t=setTimeout(spGevSchrijf,1000);}
+function spGevPlan(){if(!spTok()||ghBooting)return;clearTimeout(SPG.t);SPG.t=setTimeout(spGevSchrijf,4000);}
 function spGevLabel(st,tx){SPG.state=st;var e=document.getElementById('gv-sp');if(!e)return;e.className='gv-sp'+(st?' '+st:'');e.innerHTML=tx?'<i></i>'+tx:'';}
 function spGevSchrijf(){
   if(!spTok())return;

@@ -301,6 +301,51 @@ a{color:var(--zee)}
 .chip.curchip{background:var(--zee);color:var(--zee-op)}
 .vijand-ic{width:36px;height:36px;border-radius:50%;background:var(--fout-bg);color:var(--fout);display:grid;place-items:center;flex:none}
 
+/* kolommen: op telefoon een rij, volgorde via order */
+.heldgrid{display:flex;flex-direction:column}
+.heldgrid .kol{display:contents}
+.heldgrid>.kol>div>h2:first-child{margin-top:20px}
+.tabletje{display:none!important}
+
+/* tablet */
+@media (min-width:900px){
+  body{padding-left:96px;padding-bottom:24px}
+  .nav{top:0;bottom:0;right:auto;width:96px;display:flex;flex-direction:column;align-items:center;gap:8px;padding:calc(16px + env(safe-area-inset-top)) 0 16px;border-top:0;border-right:1px solid var(--lijn)}
+  .nav::before{content:'DZ';font-family:var(--titel);font-weight:700;font-size:24px;color:var(--zee);margin-bottom:14px}
+  .nav button{width:76px;min-height:64px;border-top:0;border-radius:16px;flex:none}
+  .nav button.on{background:var(--zee);color:var(--zee-op);border-top:0}
+  .kopblok{padding:0}
+  .top{max-width:1100px;margin:0 auto;padding-left:24px;padding-right:24px}
+  #gevbalk,#banner{max-width:1100px;margin:0 auto;padding:0 24px}
+  .gevbalk{border-radius:12px;border:1px solid var(--lijn);margin-top:8px}
+  .banner{border-radius:12px;border:1px solid var(--lijn);margin-top:8px}
+  .banner.fout{border-color:var(--fout-bd)}
+  main{max-width:1100px;padding:20px 24px}
+  #s-verhaal,#s-npcs{max-width:720px;margin:0 auto}
+  #s-npcs.naast{max-width:none;grid-template-columns:360px 1fr;gap:24px;align-items:start}
+  #s-npcs.naast.on{display:grid}
+  #s-npcs.naast #npcPagina{position:sticky;top:110px;max-height:calc(100vh - 130px);overflow:auto}
+  #s-npcs.naast .terug{display:none}
+  .npcrij.sel{background:var(--zee-bg);border-radius:10px;padding-left:8px;margin-left:-8px;padding-right:8px;margin-right:-8px}
+  .heldgrid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+  .heldgrid .kol{display:block}
+  .heldgrid .kol>div:first-child>h2:first-child{margin-top:4px}
+  .partygrid{display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start}
+  .kaart.lijst.helden{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;background:none;border:0;padding:0;align-items:start}
+  .helden .prij>.kopknop>.grow{flex:1 1 calc(100% - 56px)}
+  .helden .prij>.kopknop>.muted{width:100%;padding-left:52px}
+  .heldgrid .kol:last-child>div:first-child>.row:first-child{margin-top:8px!important}
+  .helden .prij{background:var(--vlak);border:1px solid var(--lijn);border-radius:14px;padding:6px 14px}
+  .helden .prij.ik{border:2px solid var(--zee)}
+  .helden .prij>.kopknop{flex-wrap:wrap;align-items:flex-start}
+  .helden .prij .phw{width:100%;flex-direction:row;justify-content:space-between;align-items:center}
+  .helden .pbody{padding:0 0 10px}
+  .tabletje{display:block!important}
+  .buitkol>.row:first-child{margin-top:4px!important}
+  .modal .box,.blad{max-width:560px;border-radius:20px;margin-bottom:auto;margin-top:auto}
+  .modal{align-items:center}
+}
+
 /* blad (modal) */
 .modal{position:fixed;inset:0;z-index:28;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
 .modal.on{display:flex}
@@ -740,8 +785,10 @@ function plekKort(n){var w=String(n.waar||'').split(' —')[0].split(' (')[0].sp
 function npcZoekTekst(n,notes){return (n.naam+' '+n.wie+' '+(n.lore||'')+' '+n.waar+' '+(notes[n.naam]||'')).toLowerCase();}
 function renderNpcs(){
   if(!D)return;
-  if(npcSel){$('npcLijst').classList.add('hide');$('npcPagina').classList.remove('hide');renderNpcPagina();return;}
-  $('npcLijst').classList.remove('hide');$('npcPagina').classList.add('hide');$('npcPagina').innerHTML='';
+  var breed=isBreed();$('s-npcs').classList.toggle('naast',breed&&!!npcSel);
+  if(npcSel){$('npcPagina').classList.remove('hide');renderNpcPagina();if(!breed){$('npcLijst').classList.add('hide');return;}}
+  else{$('npcPagina').classList.add('hide');$('npcPagina').innerHTML='';}
+  $('npcLijst').classList.remove('hide');
   var cnt={};D.npcs.forEach(function(n){cnt[n.status]=(cnt[n.status]||0)+1;});
   $('npcF').innerHTML=NF.map(function(f){return '<button class="'+(npcFilter===f[0]?'on':'')+'" aria-pressed="'+(npcFilter===f[0])+'" onclick="npcFilter=\''+f[0]+'\';renderNpcs()">'+f[1]+' '+(f[0]==='alle'?D.npcs.length:(cnt[f[0]]||0))+'</button>';}).join('');
   var hl=HOUD.filter(function(h){return h[0]===npcHouding;})[0]||HOUD[0],gl=GROEP.filter(function(g){return g[0]===npcGroep;})[0]||GROEP[0];
@@ -765,7 +812,7 @@ function renderNpcs(){
   $('npcList').innerHTML=groepen.map(function(x){
     return '<div class="groepkop">'+esc(x.label)+' · '+x.L.length+'</div><div class="kaart lijst">'+x.L.map(function(n){
       var st=n.status==='dood'?' <span class="chip fout">dood</span>':n.status==='bij naam'?' <span class="chip">bij naam</span>':'';
-      return '<button class="itemrij npcrij" onclick="openNpc(D.npcs['+D.npcs.indexOf(n)+'].naam)"><span class="grow"><span class="nm">'+esc(n.naam)+st+'</span><span class="nt">'+esc(n.waar&&n.waar!=='—'?n.waar:'Geen vaste plek')+'</span></span>'+houdingHtml(n.houding)+'</button>';
+      return '<button class="itemrij npcrij'+(n.naam===npcSel?' sel':'')+'"'+(n.naam===npcSel?' aria-current="true"':'')+' onclick="openNpc(D.npcs['+D.npcs.indexOf(n)+'].naam)"><span class="grow"><span class="nm">'+esc(n.naam)+st+'</span><span class="nt">'+esc(n.waar&&n.waar!=='—'?n.waar:'Geen vaste plek')+'</span></span>'+houdingHtml(n.houding)+'</button>';
     }).join('')+'</div>';
   }).join('');
 }
@@ -793,7 +840,9 @@ function renderNpcPagina(){
 }
 function saveNpcNote(el){var n=lsGet('zs.npcnotes',{});n[el.getAttribute('data-npc')]=el.value;lsSet('zs.npcnotes',n);}
 function openNpc(naam){tab('npcs');npcSel=naam;renderNpcs();ovOpen();}
-function sluitNpc(){npcSel=null;renderNpcs();window.scrollTo(0,0);}
+function sluitNpc(){npcSel=null;renderNpcs();if(!isBreed())window.scrollTo(0,0);}
+function isBreed(){return !!window.matchMedia&&matchMedia('(min-width:900px)').matches;}
+var rsT;window.addEventListener('resize',function(){clearTimeout(rsT);rsT=setTimeout(function(){if(!typing())render();},200);});
 function naarQuestVanNpc(i){tab('verhaal');naarQuest(i);}
 
 /* ============ terugknop (Android) ============ */
@@ -829,7 +878,9 @@ function renderHeld(){
   var items=x.items.filter(function(i){return !i.del;}),att=items.filter(function(i){return i.att;}).length;
   var sheets=x.sheets.filter(function(s){return !s.del;});
   var o=[];
+  o.push('\u0001held');
   o.push('<div class="row" style="gap:14px;margin:4px 0 14px">'+av(id,48)+'<div class="grow"><h2 style="margin:0">'+esc(h.naam)+'</h2><div class="small">'+esc(h.ras)+' · '+esc(h.klasse)+'</div></div></div>');
+  o.push('\u0001hp');
   // HP-blok
   o.push('<div class="kaart hpblok"><div class="row"><span class="lbl grow">Hitpoints</span><button class="tekstknop" onclick="maxHpBlad()">'+(hpm>0?'Max '+hpm+' · wijzig':'Max instellen')+'</button></div>');
   o.push('<div class="row" style="align-items:flex-end;margin-top:4px"><button class="hpgetal" onclick="hpBlad()" aria-label="HP typen, nu '+(hp===null?'niet ingesteld':hp)+'"><b>'+(hp===null?'—':hp)+'</b>'+(hpm>0?'<span>/ '+hpm+'</span>':'')+'</button><span class="grow"></span>'+(thp>0?'<span class="chip zee" style="margin-bottom:8px">+'+thp+' temp</span>':'')+'</div>');
@@ -837,9 +888,11 @@ function renderHeld(){
   o.push('<div class="hpknoppen"><button class="knop groot" onclick="hpSchade(5)" aria-label="5 schade">−5</button><button class="knop groot" onclick="hpSchade(1)" aria-label="1 schade">−1</button><button class="knop groot" onclick="hpGenees(1)" aria-label="1 genezen">+1</button><button class="knop groot" onclick="hpGenees(5)" aria-label="5 genezen">+5</button></div>');
   o.push('<div class="row muted" style="font-size:12px;margin-top:6px"><span class="grow">Schade · eerst van temp HP</span><span>Genezen</span></div>');
   o.push('<div class="row" style="margin-top:12px;border-top:1px solid var(--lijn);padding-top:10px"><span class="grow" style="font-weight:600">Temp HP</span><button class="knop stap" onclick="bump(\'thp\',-1)" aria-label="1 temp HP minder">'+ic('min','s')+'</button><b class="stapw">'+thp+'</b><button class="knop stap" onclick="bump(\'thp\',1)" aria-label="1 temp HP meer">'+ic('plus','s')+'</button></div></div>');
+  o.push('\u0001stat');
   // stat-rij
   var insp=num(fv(x,'insp',0),0)>0,goud=num(fv(x,'goud',0),0),ac=fv(x,'ac','');
   o.push('<div class="statrij"><button class="tegel" onclick="acBlad()" aria-label="AC '+esc(ac===''?'niet ingesteld':ac)+', tik om te wijzigen"><span class="lbl">AC</span><b>'+(ac===''?'—':esc(ac))+'</b></button><button class="tegel" aria-pressed="'+insp+'" onclick="toggleInsp()"><span class="lbl">Inspiration</span><b>'+(insp?'Ja':'Nee')+'</b></button><button class="tegel" onclick="goudBlad()" aria-label="Goud '+goud+' gp, tik om te wijzigen"><span class="lbl">Goud</span><b>'+goud+' <small>gp</small></b></button></div>');
+  o.push('\u0001inv');
   // inventaris
   o.push('<div class="row" style="margin:20px 0 10px"><h2 class="grow" style="margin:0">Inventaris</h2><span class="chip'+(att>=MAX_ATTUNE?' nu':'')+'">'+att+' van '+MAX_ATTUNE+' attuned</span></div>');
   o.push('<div class="kaart"><div class="row"><input id="newItem" placeholder="Item toevoegen…" enterkeyhint="done" onkeydown="if(event.key===\'Enter\')addItem()"><button class="knop p vierkant" onclick="addItem()" aria-label="Item toevoegen">'+ic('plus')+'</button></div>');
@@ -847,6 +900,7 @@ function renderHeld(){
     return '<button class="itemrij" id="it-'+esc(it.id)+'" onclick="itemBlad(\''+it.id+'\')"><span class="grow"><span class="nm">'+esc(it.naam)+'</span>'+(it.notitie?'<span class="nt">'+esc(it.notitie)+'</span>':'')+((it.att||it.priv)?'<span class="row" style="gap:6px;margin-top:4px">'+(it.att?'<span class="chip zee">'+ic('ster','s f')+'attuned</span>':'')+(it.priv?'<span class="chip">'+ic('slot','s')+'privé</span>':'')+'</span>':'')+'</span><span class="aant">×'+esc(it.aantal)+'</span>'+ic('rechts','s')+'</button>';
   }).join('')+'</div>':'<div class="empty">Nog niets. Voeg iets toe of neem het mee uit de party-buit.<br><button class="knop" style="margin-top:10px" onclick="tab(\'party\')">Naar de party-buit</button></div>');
   o.push('</div>');
+  o.push('\u0001sheet');
   // sheet
   o.push('<h2>Mijn sheet</h2><div class="kaart">');
   o.push(sheets.map(function(s){
@@ -856,9 +910,13 @@ function renderHeld(){
   var ddb=fv(x,'ddb','');
   o.push('<div class="rij">'+(ddb?'<a class="rijknop grow" href="'+esc(ddb)+'" target="_blank" rel="noopener">'+ic('link')+'<span class="grow"><b>D&amp;D Beyond</b><span class="status"><i style="display:none"></i>Open je character '+ic('extern','s')+'</span></span></a><button class="ico" onclick="ddbBlad()" aria-label="D&amp;D Beyond-link wijzigen">'+ic('bewerk')+'</button>':'<button class="rijknop grow" onclick="ddbBlad()">'+ic('link')+'<span class="grow"><b>D&amp;D Beyond</b><span class="status"><i style="display:none"></i>Link toevoegen</span></span>'+ic('plus','s')+'</button>')+'</div>');
   o.push('<button class="knop vol" style="margin-top:12px" onclick="pickSheet()">'+ic('plus','s')+'PDF of foto toevoegen</button><p class="muted" style="margin-top:8px">Enkel jij en de DM kunnen je sheet openen. Op papier? Eén foto per pagina.</p></div>');
+  o.push('\u0001notes');
   // notities
   o.push('<div class="row" style="margin:20px 0 10px"><h2 class="grow" style="margin:0">Notities</h2><span class="chip">'+ic('toestel','s')+'Enkel op dit toestel</span></div>');
   o.push('<textarea id="myNotes" aria-label="Notities" oninput="lsSet(\'zs.notes.'+id+'\',this.value)" placeholder="Wat wil je onthouden? Ook de DM ziet dit niet.">'+esc(lsGet('zs.notes.'+id,''))+'</textarea><p class="muted" style="margin-top:6px">Zit in je back-up via Instellingen › Exporteer alles.</p>');
+  var SEG={},cur=null;o.forEach(function(x){if(x.charAt(0)==='\u0001'){cur=x.slice(1);SEG[cur]='';}else if(cur)SEG[cur]+=x;});
+  el.innerHTML='<div class="heldgrid"><div class="kol"><div style="order:1">'+SEG.held+'</div><div style="order:2">'+SEG.hp+'</div><div style="order:3">'+SEG.stat+'</div><div style="order:5">'+SEG.sheet+'</div></div><div class="kol"><div style="order:4">'+SEG.inv+'</div><div style="order:6">'+SEG.notes+'</div></div></div>';
+  return;
   el.innerHTML=o.join('');
 }
 function setStat(k,v){var x=inv(),n=parseInt(v,10);setF(x,k,isNaN(n)?'':n);saveInv(x);renderHeld();}
@@ -947,10 +1005,11 @@ function renderParty(){
   if(dm)o.push('<div class="kaart" style="background:var(--nu-bg);border-color:var(--nu-bd);color:var(--nu-tx)"><div class="row">'+ic('oog')+'<span class="grow">Je ziet ook privé-items en alle sheets.</span><button class="knop" onclick="stopDM()">Stop</button></div></div>');
   var helden=D.helden.slice();if(me&&me!=='dm')helden.sort(function(a,b){return (b.id===me)-(a.id===me);});
   if(!sync)helden=helden.filter(function(h){return h.id===me;});
-  if(helden.length)o.push('<div class="kaart lijst">'+helden.map(function(h){
+  o.push('<div class="partygrid"><div class="pkol">');
+  if(helden.length)o.push('<div class="kaart lijst helden">'+helden.map(function(h){
     var x=h.id===me?inv():party[h.id],open=isPOpen(h.id);
     var hp=num(fv(x,'hp',''),null),hpm=num(fv(x,'hpmax',''),0),pct=hpm>0&&hp!==null?Math.max(0,Math.min(100,Math.round(hp/hpm*100))):0;
-    var r='<div class="prij"><button class="kopknop" aria-expanded="'+open+'" onclick="togglePH(\''+h.id+'\')">'+av(h.id,40)+'<span class="grow"><span class="nm">'+esc(h.naam)+(h.id===me?' <span class="chip zee">jij</span>':'')+'</span><span class="nt">'+esc(h.speler)+' · '+esc(kortKlasse(h.klasse))+'</span></span>';
+    var r='<div class="prij'+(h.id===me?' ik':'')+'"><button class="kopknop" aria-expanded="'+open+'" onclick="togglePH(\''+h.id+'\')">'+av(h.id,40)+'<span class="grow"><span class="nm">'+esc(h.naam)+(h.id===me?' <span class="chip zee">jij</span>':'')+'</span><span class="nt">'+esc(h.speler)+' · '+esc(kortKlasse(h.klasse))+'</span>'+(x?'<span class="nt tabletje">'+x.items.filter(function(i){return !i.del&&(dm||h.id===me||!i.priv);}).length+' items · '+esc(num(fv(x,'goud',0),0))+' gp</span>':'')+'</span>';
     r+=x?'<span class="phw"><span><b>'+(hp===null?'—':hp)+(hpm?'/'+hpm:'')+'</b> · AC '+esc(fv(x,'ac','—'))+'</span>'+(hpm?'<span class="mini"><i style="width:'+pct+'%;background:'+hpKleur(pct)+'"></i></span>':'')+'</span>':'<span class="muted">Synct nog niet</span>';
     r+='</button>';
     if(open&&x){
@@ -963,11 +1022,13 @@ function renderParty(){
     return r+'</div>';
   }).join('')+'</div>');
   if(!sync)o.push('<div class="kaart" style="background:var(--zee-bg);border-color:transparent"><div class="row" style="align-items:flex-start;gap:12px">'+ic('link')+'<span class="grow"><b>De anderen zie je na het koppelen</b><p class="small" style="font-size:14px;margin-top:2px">Met de tafelcode van de DM zie je de zes andere helden en volg je het gevecht.</p></span></div><button class="knop p vol" style="margin-top:12px" onclick="openSettings()">Koppel met de tafel</button></div>');
+  o.push('</div><div class="pkol buitkol">');
   // buit
   var B=D.buit,toon=buitAlles?B:B.slice(0,8);
   o.push('<div class="row" style="margin:20px 0 4px"><h2 class="grow" style="margin:0">Party-buit</h2><span class="chip">'+B.length+'</span></div>');
   o.push('<p class="small" style="margin-bottom:10px">'+(inv()?'Neem iets mee in je inventaris. De app onthoudt wat je al hebt.':dm?'Wat de party vond en bij wie het ligt.':'Kies je held bij Mijn held om iets mee te nemen.')+'</p>');
   o.push('<div class="kaart lijst">'+toon.map(function(b){return buitRij(b,B.indexOf(b));}).join('')+(B.length>8&&!buitAlles?'<button class="tekstknop" style="width:100%" onclick="buitAlles=true;renderParty()">Toon alle '+B.length+'</button>':'')+'</div>');
+  o.push('</div></div>');
   el.innerHTML=o.join('');
 }
 

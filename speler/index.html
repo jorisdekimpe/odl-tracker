@@ -5,136 +5,211 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>De Zeven — Speler</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#8C3A1E">
+<meta name="theme-color" content="#F3ECDD">
+<script>(function(){try{var t=JSON.parse(localStorage.getItem('zs.thema'));if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
-  --parch:#F6EEDC; --card:#FCF7EA; --ink:#2E2418; --ink2:#5A5142; --ink3:#8d826f;
-  --rust:#8C3A1E; --rust-soft:#f0dccb; --rule:#C9B489; --rule2:#e3d6b6;
-  --good:#4f6b2c; --good-soft:#e5ebd3; --bad:#a3321f; --bad-soft:#f5d9d0; --mid:#6b6250; --mid-soft:#ebe4d2;
-  --shadow:0 1px 0 rgba(46,36,24,.06), 0 2px 8px rgba(46,36,24,.06);
-  --serif: 'Caladea', Cambria, Georgia, 'Times New Roman', serif;
-  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --titel:'Iowan Old Style','Palatino Linotype',Palatino,'Book Antiqua',Georgia,'Noto Serif',serif;
+  --tekst:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --grond:#F3ECDD; --vlak:#FBF7EE; --vlak2:#EFE6D3; --kaart:#FFFFFF;
+  --lijn:#DED2BC; --lijn-sterk:#C9B99B;
+  --inkt:#2A2520; --inkt2:#5C5247; --inkt3:#6E6254;
+  --zee:#1F5560; --zee-op:#FBF7EE; --zee-bg:#E3EDEC;
+  --nu:#9A6410; --nu-bg:#F6E3BD; --nu-bd:#E2C38A; --nu-tx:#3D2803;
+  --goed:#2E7D4F; --goed-bg:#DDEBDD; --goed-tx:#24502F;
+  --wacht:#B9770E;
+  --fout:#A32D2D; --fout-bg:#FAEDE6; --fout-bd:#E6CFC4; --fout-tx:#7A2E17;
+  --h-orelle:#B0432A; --h-kyrenos:#8F6208; --h-dragini:#6A4C93; --h-apollodorus:#2F6690;
+  --h-sirius:#1C7568; --h-ox:#5B7A22; --h-wauros:#A23A6E; --h-op:#FFFFFF;
+  --schaduw:0 8px 28px rgba(42,37,32,.22);
+  --scrim:rgba(20,15,10,.55);
+  --donker:#111416; --donker2:#22282B; --donker-lijn:#3A4246; --donker-tx:#EDE4D3; --donker-tx2:#A39886; --papier:#FFFFFF;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --parch:#1b1611; --card:#251e17; --ink:#efe5d2; --ink2:#c2b59b; --ink3:#8a7d66;
-    --rust:#d9835a; --rust-soft:#3d2619; --rule:#5a4a33; --rule2:#3a3024;
-    --good:#a9c47c; --good-soft:#283120; --bad:#e8826a; --bad-soft:#3d211a; --mid:#b5a98f; --mid-soft:#2f281f;
-    --shadow:none;
+:root[data-theme="dark"]{
+  --grond:#12181B; --vlak:#1A2226; --vlak2:#222C31; --kaart:#1F292E;
+  --lijn:#2E3A40; --lijn-sterk:#46555C;
+  --inkt:#EDE4D3; --inkt2:#C2B6A3; --inkt3:#A39886;
+  --zee:#7FC1C4; --zee-op:#0E1F22; --zee-bg:#17303A;
+  --nu:#E0A955; --nu-bg:#3A2C12; --nu-bd:#6A4E1E; --nu-tx:#F7E3BA;
+  --goed:#6CC08F; --goed-bg:#1C3324; --goed-tx:#A9D9B5;
+  --wacht:#E0A955;
+  --fout:#F0908F; --fout-bg:#26191A; --fout-bd:#4A2C23; --fout-tx:#F2B7A2;
+  --h-orelle:#F08C6E; --h-kyrenos:#E8B64E; --h-dragini:#B9A0E6; --h-apollodorus:#8DBDE6;
+  --h-sirius:#74CDBE; --h-ox:#A9C96B; --h-wauros:#E991BE; --h-op:#12181B;
+  --schaduw:0 8px 28px rgba(0,0,0,.5);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --grond:#12181B; --vlak:#1A2226; --vlak2:#222C31; --kaart:#1F292E;
+    --lijn:#2E3A40; --lijn-sterk:#46555C;
+    --inkt:#EDE4D3; --inkt2:#C2B6A3; --inkt3:#A39886;
+    --zee:#7FC1C4; --zee-op:#0E1F22; --zee-bg:#17303A;
+    --nu:#E0A955; --nu-bg:#3A2C12; --nu-bd:#6A4E1E; --nu-tx:#F7E3BA;
+    --goed:#6CC08F; --goed-bg:#1C3324; --goed-tx:#A9D9B5;
+    --wacht:#E0A955;
+    --fout:#F0908F; --fout-bg:#26191A; --fout-bd:#4A2C23; --fout-tx:#F2B7A2;
+    --h-orelle:#F08C6E; --h-kyrenos:#E8B64E; --h-dragini:#B9A0E6; --h-apollodorus:#8DBDE6;
+    --h-sirius:#74CDBE; --h-ox:#A9C96B; --h-wauros:#E991BE; --h-op:#12181B;
+    --schaduw:0 8px 28px rgba(0,0,0,.5);
+    color-scheme:dark;
   }
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--parch);color:var(--ink)}
-body{font-family:var(--sans);font-size:15px;line-height:1.45;min-height:100vh;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+html,body{background:var(--grond);color:var(--inkt)}
+body{font-family:var(--tekst);font-size:15px;line-height:1.45;min-height:100vh;padding-bottom:calc(96px + env(safe-area-inset-bottom));-webkit-tap-highlight-color:transparent}
 button,input,textarea,select{font:inherit;color:inherit}
-.top{position:sticky;top:0;z-index:5;background:var(--parch);border-bottom:1px solid var(--rule);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:10px}
-.top h1{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:.01em}
-.top .sub{font-size:12px;color:var(--ink3)}
-.top .gear{margin-left:auto;background:none;border:1px solid var(--rule);border-radius:999px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;color:var(--ink2)}
-.sync{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink3);margin-right:6px;vertical-align:middle}
-.sync.ok{background:var(--good)} .sync.busy{background:#c9a227} .sync.err{background:var(--bad)}
-.meander{height:6px;background:repeating-linear-gradient(90deg,var(--rule) 0 6px,transparent 6px 12px);opacity:.55}
-main{max-width:680px;margin:0 auto;padding:14px 16px}
+button{cursor:pointer}
+svg.i{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+svg.i.f{fill:currentColor}
+svg.i.s{width:18px;height:18px}
+:focus-visible{outline:2px solid var(--zee);outline-offset:2px}
+
+/* kop */
+.top{position:sticky;top:0;z-index:5;background:var(--grond);padding:calc(10px + env(safe-area-inset-top)) 16px 8px;display:flex;align-items:center;gap:10px}
+.top h1{font-family:var(--titel);font-size:22px;font-weight:700;color:var(--zee);line-height:1.15}
+.top .sub{font-size:13px;color:var(--inkt2);display:flex;align-items:center}
+.rond{width:44px;height:44px;border-radius:22px;border:1px solid var(--lijn);background:var(--vlak);color:var(--inkt2);display:grid;place-items:center;flex:none}
+.sync{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--inkt3);margin-right:6px}
+.sync.ok{background:var(--goed)} .sync.busy{background:var(--wacht)} .sync.err{background:var(--fout)}
+.meander{display:block;width:100%;height:12px}
+.kopblok{position:sticky;top:0;z-index:5;background:var(--grond)}
+
+/* opbouw */
+main{max-width:720px;margin:0 auto;padding:14px 16px}
 .sec{display:none}.sec.on{display:block}
-h2{font-family:var(--serif);font-size:19px;margin:18px 0 8px;color:var(--ink)}
+h2{font-family:var(--titel);font-size:21px;font-weight:700;margin:20px 0 10px;color:var(--inkt);line-height:1.2}
 h2:first-child{margin-top:4px}
-h3{font-family:var(--serif);font-size:16px;margin-bottom:4px}
-.card{background:var(--card);border:1px solid var(--rule2);border-radius:12px;padding:12px 14px;margin-bottom:10px;box-shadow:var(--shadow)}
-.card.hero{border-color:var(--rule);background:linear-gradient(180deg,var(--card),var(--parch))}
-.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rust);font-weight:600}
-.muted{color:var(--ink3);font-size:13px}
-.small{font-size:13px;color:var(--ink2)}
-.chip{display:inline-block;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--mid-soft);color:var(--mid);white-space:nowrap}
-.chip.g{background:var(--good-soft);color:var(--good)} .chip.b{background:var(--bad-soft);color:var(--bad)} .chip.r{background:var(--rust-soft);color:var(--rust)}
+h3{font-family:var(--titel);font-size:17px;font-weight:700;margin-bottom:2px;line-height:1.25}
+.card,.kaart{background:var(--vlak);border:1px solid var(--lijn);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.card.hero{background:var(--nu-bg);border-color:var(--nu-bd);color:var(--nu-tx)}
+.card.hero .small,.card.hero .kicker{color:var(--nu-tx)}
+.kicker,.lbl{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--inkt2);font-weight:700}
+.muted{color:var(--inkt3);font-size:13px}
+.small{font-size:13px;color:var(--inkt2)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:3px 8px;border-radius:8px;background:var(--vlak2);color:var(--inkt2);white-space:nowrap}
+.chip.nu{background:var(--nu-bg);color:var(--nu-tx)} .chip.goed,.chip.g{background:var(--goed-bg);color:var(--goed-tx)}
+.chip.fout,.chip.b{background:var(--fout-bg);color:var(--fout-tx)} .chip.zee,.chip.r{background:var(--zee-bg);color:var(--zee)}
+.chip.kaart{background:var(--kaart);color:var(--inkt2)}
 .row{display:flex;align-items:center;gap:8px}
 .wrap{flex-wrap:wrap}
 .grow{flex:1;min-width:0}
-.btn{border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer;min-height:40px}
-.btn.p{background:var(--rust);border-color:var(--rust);color:#fff8ee}
-.btn.s{min-height:32px;padding:4px 10px;font-size:13px}
-.btn.g{background:none;border-color:transparent;color:var(--ink2)}
-.btn:disabled{opacity:.5}
-input,textarea,select{width:100%;background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:9px 11px;font-size:15px}
-input:focus,textarea:focus{outline:2px solid var(--rust);outline-offset:-1px}
-textarea{min-height:80px;resize:vertical}
-label.f{display:block;font-size:12px;color:var(--ink2);margin:8px 0 4px}
+
+/* knoppen en velden */
+.knop,.btn{min-height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--lijn-sterk);background:var(--vlak);color:var(--inkt);font-size:15px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+.knop.p,.btn.p{background:var(--zee);border-color:var(--zee);color:var(--zee-op)}
+.knop.groot{min-height:56px;font-size:19px}
+.knop.gevaar{color:var(--fout-tx);border-color:var(--fout-bd);background:var(--fout-bg)}
+.knop.ok{background:var(--goed-bg);border-color:transparent;color:var(--goed-tx)}
+.btn.s{padding:0 12px;font-size:14px}
+.btn.g,.knop.g{background:none;border-color:transparent;color:var(--inkt2)}
+.knop:disabled,.btn:disabled{opacity:.5}
+.knop.vol{width:100%}
+input,textarea,select,.veld{width:100%;min-height:48px;border:1px solid var(--lijn-sterk);border-radius:12px;background:var(--kaart);padding:0 14px;font-size:16px;color:var(--inkt)}
+textarea{min-height:96px;padding:12px 14px;resize:vertical;line-height:1.45}
+input::placeholder,textarea::placeholder{color:var(--inkt3)}
+input:focus,textarea:focus{outline:2px solid var(--zee);outline-offset:-1px}
+label.f{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--inkt2);margin:12px 0 6px}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--vlak2);border-radius:12px;padding:4px;gap:4px}
+.seg button{min-height:40px;border:0;border-radius:9px;background:transparent;font-weight:600;color:var(--inkt2)}
+.seg button.on{background:var(--kaart);color:var(--zee);box-shadow:0 1px 2px rgba(0,0,0,.14)}
+.filt,.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;margin-bottom:4px;scrollbar-width:none}
+.filt button,.filters button{min-height:40px;padding:0 14px;border-radius:20px;border:1px solid var(--lijn-sterk);background:transparent;font-weight:600;color:var(--inkt2);white-space:nowrap;flex:none}
+.filt button.on,.filters button.on{background:var(--zee);border-color:var(--zee);color:var(--zee-op)}
+.rij{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 0;border-bottom:1px solid var(--lijn)}
+.rij:last-child{border-bottom:0}
+.sw{width:52px;height:32px;border-radius:16px;border:0;background:var(--lijn-sterk);position:relative;flex:none}
+.sw i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:var(--kaart);box-shadow:0 1px 3px rgba(0,0,0,.3);transition:left .15s}
+.sw[aria-checked="true"]{background:var(--zee)} .sw[aria-checked="true"] i{left:23px}
+.sw:disabled{opacity:.45}
+
+/* heldenavatar */
+.av{display:inline-grid;place-items:center;border-radius:50%;background:var(--av);color:var(--h-op);font-family:var(--titel);font-weight:700;flex:none;line-height:1}
+
+/* details */
 details>summary{cursor:pointer;list-style:none}
 details>summary::-webkit-details-marker{display:none}
-details>summary .chev{transition:transform .15s;display:inline-block;color:var(--ink3)}
+details>summary .chev{transition:transform .15s;display:inline-flex;color:var(--inkt3)}
 details[open]>summary .chev{transform:rotate(90deg)}
-.steps{margin:8px 0 0 0;list-style:none}
-.steps li{padding:4px 0 4px 22px;position:relative;font-size:14px}
-.steps li::before{content:"";position:absolute;left:2px;top:9px;width:10px;height:10px;border:1.5px solid var(--rust);border-radius:2px;transform:rotate(45deg)}
-.steps li.done::before{background:var(--rust)}
-.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--card);border-top:1px solid var(--rule);display:flex;padding-bottom:env(safe-area-inset-bottom)}
-.nav button{flex:1;background:none;border:none;padding:8px 0 9px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--ink3);cursor:pointer}
-.nav button svg{width:22px;height:22px}
-.nav button.on{color:var(--rust);font-weight:600}
-.search{margin-bottom:8px}
-.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px}
-.filters button{border:1px solid var(--rule);background:var(--card);border-radius:999px;padding:5px 12px;font-size:13px;white-space:nowrap;cursor:pointer}
-.filters button.on{background:var(--rust);border-color:var(--rust);color:#fff8ee}
+.steps{margin:10px 0 0 0;list-style:none}
+.steps li{padding:5px 0 5px 24px;position:relative;font-size:14px}
+.steps li::before{content:"";position:absolute;left:3px;top:11px;width:10px;height:10px;border:1.5px solid var(--zee);border-radius:2px;transform:rotate(45deg)}
+.steps li.done::before{background:var(--zee)}
+
+/* onderbalk */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--vlak);border-top:1px solid var(--lijn);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:max(16px,env(safe-area-inset-bottom))}
+.nav button{background:none;border:0;border-top:3px solid transparent;min-height:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--inkt2)}
+.nav button.on{color:var(--zee);border-top-color:var(--zee);font-weight:700}
+
+/* lijsten */
+.search{margin-bottom:10px}
 .npc .att{width:10px;height:10px;border-radius:50%;flex:none;margin-top:6px}
-.att.vriendelijk{background:var(--good)} .att.vijandig{background:var(--bad)} .att.neutraal{background:#c9a227} .att.onbekend{background:var(--ink3)}
-.lore{margin-top:8px;padding:8px 10px;border-left:3px solid var(--rule);background:var(--parch);border-radius:0 8px 8px 0;font-size:14px;font-style:italic;color:var(--ink2)}
-.lore .kicker{font-style:normal;display:block;margin-bottom:2px;font-size:10px}
-.note{margin-top:8px;border-top:1px dashed var(--rule);padding-top:8px}
-.note textarea{min-height:56px;font-size:14px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0}
-.stat{background:var(--card);border:1px solid var(--rule2);border-radius:12px;padding:8px 10px;text-align:center}
-.stat .lbl{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);font-weight:600}
-.stat .val{font-family:var(--serif);font-size:26px;font-weight:700;line-height:1.1;margin:2px 0}
-.stat .val input{font-family:var(--serif);font-size:24px;font-weight:700;text-align:center;border:none;background:none;padding:0;width:3.2ch}
-.stat .ctl{display:flex;justify-content:center;gap:6px}
-.stat .ctl button{width:34px;height:30px;border-radius:8px;border:1px solid var(--rule);background:var(--parch);cursor:pointer;font-size:16px}
-.hpbar{height:6px;border-radius:3px;background:var(--rule2);overflow:hidden;margin-top:4px}
-.hpbar i{display:block;height:100%;background:var(--good)}
-.item{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--rule2)}
+.att.vriendelijk{background:var(--goed)} .att.vijandig{background:var(--fout)} .att.neutraal{background:var(--inkt2)} .att.onbekend{background:var(--inkt3)}
+.lore{margin-top:10px;padding:10px 12px;background:var(--vlak2);border-radius:10px;font-family:var(--titel);font-size:16px;font-style:italic;color:var(--inkt2)}
+.lore .kicker{font-family:var(--tekst);font-style:normal;display:block;margin-bottom:2px}
+.note{margin-top:10px;border-top:1px dashed var(--lijn-sterk);padding-top:10px}
+.note textarea{min-height:64px;font-size:16px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0}
+.stat{background:var(--vlak);border:1px solid var(--lijn);border-radius:14px;padding:10px;text-align:center}
+.stat .val{font-family:var(--titel);font-size:26px;font-weight:700;line-height:1.1;margin:2px 0}
+.stat .val input{font-family:var(--titel);font-size:26px;font-weight:700;text-align:center;border:none;background:none;padding:0;width:4ch;min-height:40px}
+.stat .ctl{display:flex;justify-content:center;gap:8px}
+.stat .ctl button{width:44px;height:44px;border-radius:12px;border:1px solid var(--lijn-sterk);background:var(--kaart);font-size:18px}
+.hpbar{height:8px;border-radius:4px;background:var(--vlak2);overflow:hidden;margin-top:6px}
+.hpbar i{display:block;height:100%;background:var(--goed)}
+.item{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px solid var(--lijn)}
 .item:last-child{border-bottom:none}
 .item .nm{font-weight:600}
 .item .qty{display:flex;align-items:center;gap:4px}
-.item .qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--rule);background:var(--parch);cursor:pointer}
+.item .qty button{width:44px;height:44px;border-radius:12px;border:1px solid var(--lijn-sterk);background:var(--kaart)}
 .item .qty span{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
-.ico{background:none;border:none;cursor:pointer;color:var(--ink3);padding:4px;border-radius:6px;display:inline-grid;place-items:center}
-.ico.on{color:var(--rust)}
-.ico svg{width:18px;height:18px}
-.heroes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.heroes button{text-align:left;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;cursor:pointer}
-.heroes button b{display:block;font-family:var(--serif);font-size:16px}
-.sheet{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--rule2)}
+.ico{background:none;border:none;color:var(--inkt3);width:44px;height:44px;border-radius:12px;display:inline-grid;place-items:center;flex:none}
+.ico.on{color:var(--zee)}
+.heroes{display:grid;grid-template-columns:1fr;gap:10px}
+.heroes button{text-align:left;background:var(--vlak);border:1px solid var(--lijn);border-radius:14px;padding:10px 14px;min-height:66px;display:flex;align-items:center;gap:12px}
+.heroes button b{display:block;font-size:17px}
+.sheet{display:flex;align-items:center;gap:8px;min-height:52px;padding:4px 0;border-bottom:1px solid var(--lijn)}
 .sheet:last-child{border-bottom:none}
-.modal{position:fixed;inset:0;z-index:20;background:rgba(20,15,10,.55);display:none;align-items:flex-end;justify-content:center}
-.modal.on{display:flex}
-.modal .box{background:var(--parch);width:100%;max-width:680px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
-.viewer{position:fixed;inset:0;z-index:30;background:#111;display:none;flex-direction:column}
-.viewer.on{display:flex}
-.viewer .vt{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px;color:#eee}
-.viewer .vt .btn{background:#2a2a2a;border-color:#444;color:#eee}
-.viewer .vb{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px}
-.viewer canvas,.viewer img{display:block;margin:0 auto 8px;background:#fff;max-width:none}
-.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--parch);padding:8px 14px;border-radius:999px;font-size:13px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
-.toast.on{opacity:1}
-.empty{text-align:center;color:var(--ink3);padding:18px 8px;font-size:14px}
-.pmember{cursor:pointer}
-.lock{font-size:11px;color:var(--rust)}
-a{color:var(--rust)}
+.lock{font-size:12px;color:var(--zee)}
+a{color:var(--zee)}
+.empty{text-align:center;color:var(--inkt3);padding:18px 8px;font-size:15px}
 .hide{display:none!important}
+
+/* blad (modal) */
+.modal{position:fixed;inset:0;z-index:20;background:var(--scrim);display:none;align-items:flex-end;justify-content:center}
+.modal.on{display:flex}
+.modal .box,.blad{background:var(--vlak);width:100%;max-width:720px;max-height:92vh;overflow:auto;border-radius:20px 20px 0 0;padding:10px 20px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px rgba(0,0,0,.25)}
+.greep{width:40px;height:5px;border-radius:3px;background:var(--lijn-sterk);margin:0 auto 12px}
+.modal .card{background:var(--kaart)}
+
+/* viewer */
+.viewer{position:fixed;inset:0;z-index:30;background:var(--donker);color:var(--donker-tx);display:none;flex-direction:column}
+.viewer.on{display:flex}
+.viewer .vt{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 8px}
+.viewer .btn{background:var(--donker2);border-color:var(--donker-lijn);color:var(--donker-tx)}
+.viewer .vb{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px}
+.viewer canvas,.viewer img{display:block;margin:0 auto 8px;background:var(--papier);max-width:none}
+.viewer .empty{color:var(--donker-tx2)}
+.toast{position:fixed;left:50%;bottom:calc(100px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--inkt);color:var(--grond);padding:10px 16px;border-radius:12px;font-size:14px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;display:flex;align-items:center;gap:12px}
+.toast.on{opacity:1;pointer-events:auto}
+.toast button{background:none;border:0;color:var(--grond);font-weight:700;text-decoration:underline;min-height:32px}
 </style>
 </head>
 <body>
 
+<div class="kopblok">
 <header class="top">
-  <div>
+  <div class="grow">
     <h1>De Zeven</h1>
     <div class="sub"><span class="sync" id="syncDot"></span><span id="subline">Odyssey of the Dragonlords</span></div>
   </div>
-  <button class="gear" onclick="openSettings()" aria-label="Instellingen">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-  </button>
+  <button class="rond" id="cfgBtn" onclick="openSettings()" aria-label="Instellingen"></button>
 </header>
-<div class="meander"></div>
+<svg class="meander" aria-hidden="true" preserveAspectRatio="none"><defs><pattern id="meander" width="20" height="12" patternUnits="userSpaceOnUse"><path d="M0 11.25H20M2 11.25V1H16V8H7V4H12" style="fill:none;stroke:var(--zee);stroke-width:1.4"/></pattern></defs><rect width="100%" height="12" fill="url(#meander)"/></svg>
+</div>
 
 <main>
   <section class="sec on" id="s-verhaal"></section>
@@ -147,12 +222,7 @@ a{color:var(--rust)}
   <section class="sec" id="s-party"></section>
 </main>
 
-<nav class="nav" id="nav">
-  <button data-t="verhaal" class="on" onclick="tab('verhaal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2.5zM4 19.5A2 2 0 0 0 6 21h13"/><path d="M9 7h6M9 11h6"/></svg>Verhaal</button>
-  <button data-t="npcs" onclick="tab('npcs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.6c2.6.1 4.6 1.8 5.3 4.9"/></svg>NPC's</button>
-  <button data-t="held" onclick="tab('held')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l7 3v6c0 5-3.5 9-7 11-3.5-2-7-6-7-11V5z"/></svg>Mijn held</button>
-  <button data-t="party" onclick="tab('party')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3M3 12h18"/></svg>Party</button>
-</nav>
+<nav class="nav" id="nav" aria-label="Hoofdmenu"></nav>
 
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="box" id="modalBox"></div></div>
 <div class="viewer" id="viewer">
@@ -170,7 +240,7 @@ var MAX_ATTUNE=3;
 var D=null;               // spelers.json
 var party={};             // id -> remote inventaris (Party-tab)
 var partyAt=0;
-var curTab='verhaal';
+var curTab=lsGet('zs.tab','verhaal');
 var npcFilter='alle';
 
 function $(id){return document.getElementById(id);}
@@ -183,13 +253,54 @@ var toastT;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('o
 function typing(){var a=document.activeElement;return !!a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA');}
 function ago(t){if(!t)return'nooit';var s=Math.round((now()-t)/1000);if(s<60)return'net nu';if(s<3600)return Math.round(s/60)+' min geleden';if(s<86400)return Math.round(s/3600)+' u geleden';return new Date(t).toLocaleDateString('nl-BE',{day:'numeric',month:'short'});}
 
-var ICON={
-  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
-  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
-  starOn:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
-  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
-  del:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>'
+var IC={
+  verhaal:'<path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2zM5 18a2 2 0 0 1 2-2h11"/>',
+  npcs:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',
+  held:'<path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/>',
+  party:'<circle cx="12" cy="7" r="3"/><circle cx="5.5" cy="9.5" r="2.2"/><circle cx="18.5" cy="9.5" r="2.2"/><path d="M6.5 20a5.5 5.5 0 0 1 11 0M1.5 18.5a4 4 0 0 1 5.5-3.7M22.5 18.5a4 4 0 0 0-5.5-3.7"/>',
+  instellingen:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+  gevecht:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+  ververs:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>',
+  offline:'<path d="M2 8.5a15 15 0 0 1 20 0M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h.01M3 3l18 18"/>',
+  letop:'<path d="M12 3 2 21h20zM12 10v5M12 18h.01"/>',
+  toestel:'<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',
+  slot:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  ster:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+  bestand:'<path d="M6 3h8l5 5v13H6zM14 3v5h5"/>',
+  foto:'<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-8 8"/>',
+  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+  sleutel:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/>',
+  oog:'<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  vinkje:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  rechts:'<path d="M9 6l6 6-6 6"/>', links:'<path d="M15 6l-6 6 6 6"/>', omlaag:'<path d="M6 9l6 6 6-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', min:'<path d="M5 12h14"/>', kruis:'<path d="M6 6l12 12M18 6 6 18"/>',
+  zoek:'<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>',
+  vriendelijk:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
+  vijandig:'<path d="M12 3l9 9-9 9-9-9z"/><path d="M9.5 9.5l5 5M14.5 9.5l-5 5"/>',
+  neutraal:'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+  onbekend:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.5V14M12 17h.01"/>',
+  bewerk:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  wis:'<path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/>',
+  pin:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  meer:'<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>',
+  extern:'<path d="M14 4h6v6M20 4l-9 9M18 14v6H4V6h6"/>'
 };
+function ic(n,cls){return '<svg class="i'+(cls?' '+cls:'')+'" viewBox="0 0 24 24" aria-hidden="true">'+(IC[n]||'')+'</svg>';}
+var ICON={lock:ic('slot','s'),star:ic('ster','s'),starOn:ic('ster','s f'),edit:ic('bewerk','s'),del:ic('wis','s')};
+var HIDS=['orelle','kyrenos','dragini','apollodorus','sirius','ox','wauros'];
+function av(id,size){if(HIDS.indexOf(id)<0)return '';size=size||40;return '<span class="av" aria-hidden="true" style="--av:var(--h-'+id+');width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*.46)+'px">'+id.charAt(0).toUpperCase()+'</span>';}
+function heroByName(nm){if(!D||!nm)return null;var n=String(nm).toLowerCase().trim();for(var i=0;i<D.helden.length;i++){var h=D.helden[i],full=h.naam.toLowerCase();if(n===h.id||n===full||n===full.split(' ')[0]||full.split(' ').indexOf(n)>=0)return h;}return null;}
+function datumLang(d){var t=new Date(d);return isNaN(t)?String(d||''):t.toLocaleDateString('nl-BE',{day:'numeric',month:'long'});}
+
+/* ============ thema ============ */
+function thema(){return lsGet('zs.thema','system');}
+function isDonker(){var t=thema();return t==='dark'||(t!=='light'&&!!window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);}
+function pasThemaToe(){var t=thema(),r=document.documentElement;if(t==='light'||t==='dark')r.setAttribute('data-theme',t);else r.removeAttribute('data-theme');var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',getComputedStyle(r).getPropertyValue('--grond').trim());}
+function zetThema(t){lsSet('zs.thema',t);pasThemaToe();document.querySelectorAll('[data-thema]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-thema')===t);});}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',pasThemaToe);}catch(e){}
+var TABS=[['verhaal','Verhaal','verhaal'],['npcs',"NPC's",'npcs'],['held','Mijn held','held'],['party','Party','party']];
+function bouwNav(){$('nav').innerHTML=TABS.map(function(t){return '<button data-t="'+t[0]+'" onclick="tab(\''+t[0]+'\')">'+ic(t[2])+'<span>'+t[1]+'</span></button>';}).join('');$('cfgBtn').innerHTML=ic('instellingen');}
+
 
 /* ============ held / sync-config ============ */
 function heroId(){return lsGet('zs.held',null);}
@@ -333,12 +444,12 @@ function loadPdfJs(){
 function openSheet(owner,sid){
   var x=owner===heroId()?inv():party[owner];if(!x)return;
   var s=null;x.sheets.forEach(function(q){if(q.id===sid)s=q;});if(!s)return;
-  $('vTitle').textContent=s.name;$('vBody').innerHTML='<div class="empty" style="color:#bbb">Laden…</div>';$('viewer').classList.add('on');
+  $('vTitle').textContent=s.name;$('vBody').innerHTML='<div class="empty">Laden…</div>';$('viewer').classList.add('on');
   vState={scale:1,doc:null,url:null,kind:s.type};
   loadSheetBlob(owner,s).then(function(b){
     if(s.type==='img'){vState.url=URL.createObjectURL(b);renderViewer();return;}
     return loadPdfJs().then(function(lib){return b.arrayBuffer().then(function(buf){return lib.getDocument({data:buf}).promise;});}).then(function(doc){vState.doc=doc;renderViewer();});
-  }).catch(function(e){$('vBody').innerHTML='<div class="empty" style="color:#bbb">'+esc(e.message)+'</div>';});
+  }).catch(function(e){$('vBody').innerHTML='<div class="empty">'+esc(e.message)+'</div>';});
 }
 function renderViewer(){
   var body=$('vBody'),W=Math.min(window.innerWidth-16,1000)*vState.scale;
@@ -351,16 +462,17 @@ function closeViewer(){$('viewer').classList.remove('on');if(vState.url)URL.revo
 
 /* ============ tabs ============ */
 function tab(t){
-  curTab=t;
+  if(!$('s-'+t))t='verhaal';
+  curTab=t;lsSet('zs.tab',t);
   document.querySelectorAll('.sec').forEach(function(s){s.classList.toggle('on',s.id==='s-'+t);});
-  document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-t')===t);});
+  document.querySelectorAll('.nav button').forEach(function(b){var on=b.getAttribute('data-t')===t;b.classList.toggle('on',on);if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');});
   window.scrollTo(0,0);render();
   if(t==='party'&&now()-partyAt>60000)pullParty();
 }
 function render(){
   if(!D){$('s-verhaal').innerHTML='<div class="empty">Verhaal laden…</div>';return;}
   var h=heroInfo(heroId());
-  $('subline').textContent=isDM()?'DM-modus':(h?h.naam+' · level '+D.level:'Level '+D.level+' · kies je held');
+  $('subline').textContent=isDM()?'DM-modus · level '+D.level:(h?h.naam.split(' ')[0]+' · level '+D.level:'Level '+D.level+' · kies je held');
   if(curTab==='verhaal')renderVerhaal();
   if(curTab==='npcs')renderNpcs();
   if(curTab==='held')renderHeld();
@@ -371,7 +483,7 @@ function render(){
 function statusChip(s){return s==='actief'?'<span class="chip r">actief</span>':s==='afgerond'?'<span class="chip g">afgerond</span>':'<span class="chip">'+esc(s)+'</span>';}
 function questCard(q,open){
   var st=q.stappen?'<ul class="steps">'+q.stappen.map(function(s){return '<li class="'+(s.klaar?'done':'')+'">'+esc(s.t)+'</li>';}).join('')+'</ul>':'';
-  return '<details class="card"'+(open?' open':'')+'><summary><div class="row"><span class="chev">›</span><h3 class="grow">'+esc(q.titel)+'</h3>'+statusChip(q.status)+'</div></summary><div style="margin-top:6px"><div class="small">'+esc(q.tekst)+'</div>'+st+(q.bron?'<div class="muted" style="margin-top:6px">Bron: '+esc(q.bron)+'</div>':'')+'</div></details>';
+  return '<details class="card"'+(open?' open':'')+'><summary><div class="row"><span class="chev">'+ic('rechts','s')+'</span><h3 class="grow">'+esc(q.titel)+'</h3>'+statusChip(q.status)+'</div></summary><div style="margin-top:6px"><div class="small">'+esc(q.tekst)+'</div>'+st+(q.bron?'<div class="muted" style="margin-top:6px">Bron: '+esc(q.bron)+'</div>':'')+'</div></details>';
 }
 function renderVerhaal(){
   var w=D.waar,h=[];
@@ -380,8 +492,8 @@ function renderVerhaal(){
   h.push('<h2>Opdrachten</h2>'+act.map(function(q,i){return questCard(q,i===0);}).join(''));
   if(open.length)h.push('<h2>Open vragen</h2>'+open.map(function(q){return questCard(q,false);}).join(''));
   if(done.length)h.push('<h2>Afgerond</h2>'+done.map(function(q){return questCard(q,false);}).join(''));
-  h.push('<h2>Party-buit</h2><div class="card">'+D.buit.map(function(b,i){return '<div class="item"><div class="grow"><div class="nm">'+esc(b.item)+'</div><div class="muted">'+esc(b.bij)+' · '+esc(b.bron)+'</div></div>'+(heroId()&&!isDM()?'<button class="btn s" onclick="lootToInv('+i+')">+ Inventaris</button>':'')+'</div>';}).join('')+'</div>');
-  h.push('<h2>Sessies</h2>'+D.sessies.slice().reverse().map(function(s,i){return '<details class="card"'+(i===0?' open':'')+'><summary><div class="row"><span class="chev">›</span><span class="kicker" style="min-width:58px">Sessie '+esc(s.num)+'</span><h3 class="grow" style="margin:0">'+esc(s.titel)+'</h3></div></summary><div class="small" style="margin-top:6px">'+esc(s.tekst)+'</div></details>';}).join(''));
+  h.push('<h2>Party-buit</h2><div class="card">'+D.buit.map(function(b,i){return '<div class="item"><div class="grow"><div class="nm">'+esc(b.item)+'</div><div class="muted row" style="gap:6px">'+(heroByName(b.bij)?av(heroByName(b.bij).id,22):'')+'<span>'+esc(b.bij)+' · '+esc(b.bron)+'</span></div></div>'+(heroId()&&!isDM()?'<button class="btn s" onclick="lootToInv('+i+')">+ Inventaris</button>':'')+'</div>';}).join('')+'</div>');
+  h.push('<h2>Sessies</h2>'+D.sessies.slice().reverse().map(function(s,i){return '<details class="card"'+(i===0?' open':'')+'><summary><div class="row"><span class="chev">'+ic('rechts','s')+'</span><span class="kicker" style="min-width:58px">Sessie '+esc(s.num)+'</span><h3 class="grow" style="margin:0">'+esc(s.titel)+'</h3></div></summary><div class="small" style="margin-top:6px">'+esc(s.tekst)+'</div></details>';}).join(''));
   if(D.recapLink)h.push('<p style="margin:10px 0 4px;text-align:center"><a href="'+esc(D.recapLink)+'" target="_blank" rel="noopener">Volledige spelersrecap (Homebrewery) →</a></p>');
   $('s-verhaal').innerHTML=h.join('');
 }
@@ -406,7 +518,7 @@ function saveNpcNote(el){var n=lsGet('zs.npcnotes',{});n[el.getAttribute('data-n
 
 /* ============ mijn held ============ */
 function heroPicker(){
-  return '<h2>Wie speel jij?</h2><div class="heroes">'+D.helden.map(function(h){return '<button onclick="chooseHero(\''+h.id+'\')"><b>'+esc(h.naam)+'</b><span class="muted">'+esc(h.speler)+' · '+esc(h.klasse)+'</span></button>';}).join('')+'</div><p class="muted" style="margin-top:14px;text-align:center">Je inventaris en sheet worden aan deze held gekoppeld. Wisselen kan later via ⚙.</p><p style="text-align:center;margin-top:8px"><button class="btn g s" onclick="askDM()">Ik ben de DM</button></p>';
+  return '<h2>Wie speel jij?</h2><div class="heroes">'+D.helden.map(function(h){return '<button onclick="chooseHero(\''+h.id+'\')">'+av(h.id,44)+'<span class="grow"><b>'+esc(h.speler)+'</b><span class="muted">'+esc(h.naam)+' · '+esc(h.klasse)+'</span></span></button>';}).join('')+'</div><p class="muted" style="margin-top:14px;text-align:center">Je inventaris en sheet worden aan deze held gekoppeld. Wisselen kan later in Instellingen.</p><p style="text-align:center;margin-top:8px"><button class="btn g s" onclick="askDM()">Ik ben de DM</button></p>';
 }
 function chooseHero(id){lsSet('zs.held',id);render();if(syncOn())syncOwn();}
 function stepper(k,label,val,extra){return '<div class="stat"><div class="lbl">'+label+'</div><div class="val"><input inputmode="numeric" placeholder="—" value="'+esc(val)+'" onchange="setStat(\''+k+'\',this.value)"></div><div class="ctl"><button onclick="bump(\''+k+'\',-1)">−</button><button onclick="bump(\''+k+'\',1)">+</button></div>'+(extra||'')+'</div>';}
@@ -420,16 +532,16 @@ function renderHeld(){
   var items=x.items.filter(function(i){return !i.del;}),att=items.filter(function(i){return i.att;}).length;
   var sheets=x.sheets.filter(function(s){return !s.del;});
   var o=[];
-  o.push('<div class="card hero"><div class="kicker">'+esc(h.speler)+' · level '+esc(D.level)+'</div><h2 style="margin:2px 0 0">'+esc(h.naam)+'</h2><div class="small">'+esc(h.ras)+' · '+esc(h.klasse)+'</div></div>');
-  o.push('<div class="stats">'+stepper('hp','HP',hp,'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--bad)':pct<=50?'#c9a227':'var(--good)')+'"></i></div>')+stepper('hpmax','Max HP',hpm)+stepper('ac','AC',fv(x,'ac',''))+stepper('goud','Goud (gp)',fv(x,'goud',0))+stepper('thp','Temp HP',fv(x,'thp',0))+stepper('insp','Inspiration',fv(x,'insp',0))+'</div>');
-  o.push('<h2>Inventaris <span class="muted" style="font-family:var(--sans);font-size:13px;font-weight:400">· '+att+'/'+MAX_ATTUNE+' attuned</span></h2>');
+  o.push('<div class="row" style="gap:14px;margin:4px 0 12px">'+av(id,48)+'<div class="grow"><h2 style="margin:0">'+esc(h.naam)+'</h2><div class="small">'+esc(h.ras)+' · '+esc(h.klasse)+'</div></div></div>');
+  o.push('<div class="stats">'+stepper('hp','HP',hp,'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--fout)':pct<=50?'var(--wacht)':'var(--goed)')+'"></i></div>')+stepper('hpmax','Max HP',hpm)+stepper('ac','AC',fv(x,'ac',''))+stepper('goud','Goud (gp)',fv(x,'goud',0))+stepper('thp','Temp HP',fv(x,'thp',0))+stepper('insp','Inspiration',fv(x,'insp',0))+'</div>');
+  o.push('<h2>Inventaris <span class="muted" style="font-family:var(--tekst);font-size:13px;font-weight:400">· '+att+'/'+MAX_ATTUNE+' attuned</span></h2>');
   o.push('<div class="card"><div class="row"><input id="newItem" placeholder="Nieuw item…" onkeydown="if(event.key===\'Enter\')addItem()"><input id="newQty" inputmode="numeric" value="1" style="width:60px;text-align:center"><button class="btn p" onclick="addItem()">+</button></div>');
   o.push(items.length?items.map(function(it){
     return '<div class="item"><div class="grow"><div class="nm">'+esc(it.naam)+(it.priv?' <span class="lock">· privé</span>':'')+(it.att?' <span class="chip r">attuned</span>':'')+'</div>'+(it.notitie?'<div class="muted">'+esc(it.notitie)+'</div>':'')+'<div class="row" style="gap:2px;margin-top:2px"><button class="ico'+(it.att?' on':'')+'" title="Attuned" onclick="toggleItem(\''+it.id+'\',\'att\')">'+(it.att?ICON.starOn:ICON.star)+'</button><button class="ico'+(it.priv?' on':'')+'" title="Privé (enkel jij en de DM)" onclick="toggleItem(\''+it.id+'\',\'priv\')">'+ICON.lock+'</button><button class="ico" title="Bewerk" onclick="editItem(\''+it.id+'\')">'+ICON.edit+'</button></div></div><div class="qty"><button onclick="qty(\''+it.id+'\',-1)">−</button><span>'+esc(it.aantal)+'</span><button onclick="qty(\''+it.id+'\',1)">+</button></div></div>';
   }).join(''):'<div class="empty">Nog niets. Voeg items toe of neem ze over uit de party-buit.</div>');
   o.push('</div>');
   o.push('<h2>Character sheet</h2><div class="card"><label class="f" style="margin-top:0">D&amp;D Beyond-link</label><div class="row"><input id="ddb" type="url" placeholder="https://www.dndbeyond.com/characters/…" value="'+esc(fv(x,'ddb',''))+'" onchange="setDdb(this.value)">'+(fv(x,'ddb','')?'<a class="btn s" style="display:inline-flex;align-items:center;text-decoration:none" href="'+esc(fv(x,'ddb',''))+'" target="_blank" rel="noopener">Open</a>':'')+'</div>');
-  o.push('<label class="f">PDF of foto van je sheet</label>'+(sheets.length?sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a>'+(s.up?'<span class="muted">gesynct</span>':s.err?'<button class="btn s" style="color:var(--bad)" onclick="retrySheet(\''+s.id+'\')">Opnieuw</button>':'<span class="muted">'+(syncOn()?'wacht…':'lokaal')+'</span>')+'<button class="ico" onclick="renameSheet(\''+s.id+'\')">'+ICON.edit+'</button><button class="ico" onclick="delSheet(\''+s.id+'\')">'+ICON.del+'</button></div>';}).join(''):'')+sheets.filter(function(q){return q.err&&!q.up;}).map(function(q){return '<div class="small" style="color:var(--bad);margin-top:4px">'+esc(q.name)+': '+esc(q.err)+'</div>';}).join('')+'<button class="btn" style="margin-top:8px;width:100%" onclick="pickSheet()">Upload PDF of foto…</button><div class="muted" style="margin-top:6px">Op papier? Neem per pagina een foto. Enkel jij en de DM kunnen je sheet openen.</div></div>');
+  o.push('<label class="f">PDF of foto van je sheet</label>'+(sheets.length?sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a>'+(s.up?'<span class="muted">gesynct</span>':s.err?'<button class="btn s" style="color:var(--fout-tx)" onclick="retrySheet(\''+s.id+'\')">Opnieuw</button>':'<span class="muted">'+(syncOn()?'wacht…':'lokaal')+'</span>')+'<button class="ico" onclick="renameSheet(\''+s.id+'\')">'+ICON.edit+'</button><button class="ico" onclick="delSheet(\''+s.id+'\')">'+ICON.del+'</button></div>';}).join(''):'')+sheets.filter(function(q){return q.err&&!q.up;}).map(function(q){return '<div class="small" style="color:var(--fout-tx);margin-top:4px">'+esc(q.name)+': '+esc(q.err)+'</div>';}).join('')+'<button class="btn" style="margin-top:8px;width:100%" onclick="pickSheet()">Upload PDF of foto…</button><div class="muted" style="margin-top:6px">Op papier? Neem per pagina een foto. Enkel jij en de DM kunnen je sheet openen.</div></div>');
   o.push('<h2>Notities</h2><div class="card"><textarea id="myNotes" oninput="lsSet(\'zs.notes.'+id+'\',this.value)" placeholder="Enkel op dit toestel — ook de DM ziet dit niet.">'+esc(lsGet('zs.notes.'+id,''))+'</textarea></div>');
   o.push('<p class="muted" style="text-align:center;margin:10px 0">'+(syncOn()?'Sync: '+ago(lsGet('zs.lastSync',0))+' · <a href="#" onclick="syncOwn();return false">nu syncen</a>':'Alleen op dit toestel · <a href="#" onclick="openSettings();return false">sync koppelen</a>')+'</p>');
   el.innerHTML=o.join('');
@@ -443,7 +555,7 @@ function qty(id,d){var x=inv(),it=findItem(x,id);if(!it)return;it.aantal=Math.ma
 function toggleItem(id,k){var x=inv(),it=findItem(x,id);if(!it)return;if(k==='att'&&!it.att&&x.items.filter(function(i){return i.att&&!i.del;}).length>=MAX_ATTUNE){toast('Je kan maar '+MAX_ATTUNE+' items attunen');return;}it[k]=!it[k];it.t=now();saveInv(x);renderHeld();}
 function editItem(id){
   var x=inv(),it=findItem(x,id);if(!it)return;
-  $('modalBox').innerHTML='<h2 style="margin-top:0">Item bewerken</h2><label class="f">Naam</label><input id="eN" value="'+esc(it.naam)+'"><label class="f">Aantal</label><input id="eQ" inputmode="numeric" value="'+esc(it.aantal)+'"><label class="f">Notitie</label><textarea id="eT">'+esc(it.notitie||'')+'</textarea><div class="row" style="margin-top:12px"><button class="btn" style="color:var(--bad)" onclick="delItem(\''+id+'\')">Verwijderen</button><span class="grow"></span><button class="btn" onclick="closeModal()">Annuleer</button><button class="btn p" onclick="saveItem(\''+id+'\')">Bewaar</button></div>';
+  $('modalBox').innerHTML='<h2 style="margin-top:0">Item bewerken</h2><label class="f">Naam</label><input id="eN" value="'+esc(it.naam)+'"><label class="f">Aantal</label><input id="eQ" inputmode="numeric" value="'+esc(it.aantal)+'"><label class="f">Notitie</label><textarea id="eT">'+esc(it.notitie||'')+'</textarea><div class="row" style="margin-top:12px"><button class="knop gevaar" onclick="delItem(\''+id+'\')">Verwijderen</button><span class="grow"></span><button class="btn" onclick="closeModal()">Annuleer</button><button class="btn p" onclick="saveItem(\''+id+'\')">Bewaar</button></div>';
   openModal();
 }
 function saveItem(id){var x=inv(),it=findItem(x,id);if(!it)return;it.naam=$('eN').value.trim()||it.naam;it.aantal=Math.max(0,parseInt($('eQ').value,10)||0);it.notitie=$('eT').value.trim();it.t=now();saveInv(x);closeModal();renderHeld();}
@@ -472,7 +584,7 @@ function renderParty(){
     var items=x?x.items.filter(function(i){return !i.del&&(dm||h.id===me||!i.priv);}):[];
     var sheets=x?x.sheets.filter(function(s){return !s.del&&s.up;}):[];
     var showSheets=dm&&sheets.length;
-    o.push('<details class="card pmember"'+(h.id===me?' open':'')+'><summary><div class="row"><span class="chev">›</span><div class="grow"><h3 style="margin:0">'+esc(h.naam)+(h.id===me?' <span class="chip r">jij</span>':'')+'</h3><div class="muted">'+esc(h.speler)+' · '+esc(h.klasse)+'</div></div><div style="text-align:right;min-width:86px">'+(x?'<div style="font-family:var(--serif);font-weight:700">'+(hp!==null&&hp!==''?esc(hp)+'/'+esc(hpm||'?'):'—')+' HP</div><div class="muted">AC '+esc(fv(x,'ac','—'))+' · '+esc(fv(x,'goud',0))+' gp</div>':'<div class="muted">geen data</div>')+'</div></div>'+(x&&hpm>0?'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--bad)':pct<=50?'#c9a227':'var(--good)')+'"></i></div>':'')+'</summary>');
+    o.push('<details class="card pmember"'+(h.id===me?' open':'')+'><summary><div class="row">'+av(h.id,40)+'<div class="grow"><h3 style="margin:0">'+esc(h.naam)+(h.id===me?' <span class="chip r">jij</span>':'')+'</h3><div class="muted">'+esc(h.speler)+' · '+esc(h.klasse)+'</div></div><div style="text-align:right;min-width:86px">'+(x?'<div style="font-family:var(--serif);font-weight:700">'+(hp!==null&&hp!==''?esc(hp)+'/'+esc(hpm||'?'):'—')+' HP</div><div class="muted">AC '+esc(fv(x,'ac','—'))+' · '+esc(fv(x,'goud',0))+' gp</div>':'<div class="muted">geen data</div>')+'</div></div>'+(x&&hpm>0?'<div class="hpbar"><i style="width:'+pct+'%;background:'+(pct<=25?'var(--fout)':pct<=50?'var(--wacht)':'var(--goed)')+'"></i></div>':'')+'</summary>');
     o.push('<div style="margin-top:8px">'+(items.length?items.map(function(it){return '<div class="item"><div class="grow"><span class="nm">'+esc(it.naam)+'</span>'+(it.att?' <span class="chip r">attuned</span>':'')+(it.priv?' <span class="lock">· privé</span>':'')+(it.notitie?'<div class="muted">'+esc(it.notitie)+'</div>':'')+'</div><span class="muted">×'+esc(it.aantal)+'</span></div>';}).join(''):'<div class="muted">Geen zichtbare items.</div>'));
     if(showSheets)o.push('<div style="margin-top:8px">'+sheets.map(function(s){return '<div class="sheet"><span class="chip">'+(s.type==='pdf'?'PDF':'foto')+'</span><a href="#" class="grow" onclick="openSheet(\''+h.id+'\',\''+s.id+'\');return false">'+esc(s.name)+'</a></div>';}).join('')+'</div>');
     if(dm&&x&&fv(x,'ddb',''))o.push('<a class="btn s" style="display:inline-block;margin-top:8px;text-decoration:none" href="'+esc(fv(x,'ddb',''))+'" target="_blank" rel="noopener">D&amp;D Beyond</a>');
@@ -490,6 +602,7 @@ function openSettings(){
   $('modalBox').innerHTML='<h2 style="margin-top:0">Instellingen</h2>'+
   '<div class="card"><h3>Held</h3><div class="small">'+(isDM()?'DM-modus':h?esc(h.naam)+' ('+esc(h.speler)+')':'Nog niet gekozen')+'</div><button class="btn s" style="margin-top:8px" onclick="lsSet(\'zs.held\',null);closeModal();tab(\'held\')">Andere held kiezen</button></div>'+
   '<div class="card"><h3>Sync</h3><div class="small">Plak hier de sleutel die je van de DM kreeg. Daarmee worden je inventaris en sheet gedeeld met de DM en zie je de rest van de party.</div><label class="f">Sleutel</label><input id="cfgTok" type="password" autocomplete="off" value="'+esc(c.token)+'" placeholder="github_pat_…"><details style="margin-top:8px"><summary class="muted">Geavanceerd</summary><label class="f">Repo</label><input id="cfgRepo" value="'+esc(c.repo)+'"></details><div class="row" style="margin-top:10px"><button class="btn p" onclick="saveCfg()">Bewaar &amp; test</button>'+(c.token?'<button class="btn" onclick="clearCfg()">Ontkoppel</button>':'')+'</div><div id="cfgMsg" class="muted" style="margin-top:6px"></div></div>'+
+  '<div class="card"><h3>Weergave</h3><div class="seg" style="margin-top:8px">'+[['system','Systeem'],['light','Licht'],['dark','Donker']].map(function(o){return '<button data-thema="'+o[0]+'" class="'+(thema()===o[0]?'on':'')+'" onclick="zetThema(\''+o[0]+'\')">'+o[1]+'</button>';}).join('')+'</div></div>'+
   '<div class="card"><h3>Back-up</h3><div class="small">Je inventaris als bestand bewaren of terugzetten.</div><div class="row" style="margin-top:8px"><button class="btn s" onclick="exportInv()">Exporteer</button><button class="btn s" onclick="importInv()">Importeer</button></div></div>'+
   '<div class="row"><span class="grow muted">Verhaal bijgewerkt '+(D?esc(D.bijgewerkt):'—')+'</span><button class="btn" onclick="closeModal()">Sluiten</button></div>';
   openModal();
@@ -512,8 +625,9 @@ function askDM(){var p=prompt('DM-pincode');if(!p)return;sha256('zeven:'+p.trim(
 function loadData(){
   return fetch('spelers.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){D=d;lsSet('zs.data',d);},function(){D=lsGet('zs.data',null);if(!D)$('s-verhaal').innerHTML='<div class="empty">Geen verbinding en nog niets opgeslagen.</div>';});
 }
+pasThemaToe();bouwNav();
 loadData().then(function(){
-  render();
+  tab(curTab);
   if(syncOn()){setDot('ok');syncOwn().then(function(){return pullParty();});}
 });
 window.addEventListener('online',function(){if(syncOn()&&lsGet('zs.dirty.'+heroId(),false))syncOwn();});

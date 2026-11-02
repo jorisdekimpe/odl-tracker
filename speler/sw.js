@@ -1,4 +1,4 @@
-var CACHE='zeven-speler-v6';
+var CACHE='zeven-speler-v7';
 var SHELL=['./','./index.html','./manifest.json','./spelers.json','./icon-192.png','./icon-512.png'];
 var CDN='https://cdnjs.cloudflare.com/';
 
